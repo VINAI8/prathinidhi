@@ -437,13 +437,14 @@ const styles = {
   aboutImage: { maxWidth: "600px", width: "100%" },
   updates: {
     backgroundColor: "#f9f9f9",
-    padding: "40px 20px",
+    padding: "0px 0px",
     textAlign: "center",
+    margin : 0,
   },
   updateList: {
     listStyle: "none",
     padding: 0,
-    fontSize: "15px",
+    fontSize: "90px",
     lineHeight: "2",
     maxWidth: "600px",
     margin: "0 auto",
