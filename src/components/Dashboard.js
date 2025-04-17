@@ -306,10 +306,10 @@ const Dashboard = ({ userName = 'John Doe' }) => {
         }
       `}</style>
       <header className="header">
-        <img src="/images/emblem-of-india.png" alt="India Emblem" className="emblem" />
+        <img src="/indian-emblem.png" alt="India Emblem" className="emblem" /> 
         <h2 style={{ margin: 0, color: '#4f46e5' }}>Government of India</h2>
         <p>Ministry of Law and Justice</p>
-        <img src="/images/justice-scale.png" alt="Justice Symbol" className="justice" />
+        <img src="/justice.jpg" alt="Justice Symbol" className="justice" />
       </header>
       <nav className="nav">
         <span>{t.welcome}, {userName}</span>
@@ -319,7 +319,7 @@ const Dashboard = ({ userName = 'John Doe' }) => {
         </div>
       </nav>
       <div className="hero">
-        <img src="/images/legal-india-banner.jpg" alt="Legal Application India" />
+        <img src="/images/prathinidhi.svg" alt="Legal Application India" />
       </div>
       <main className="main">
         <div className="card">
