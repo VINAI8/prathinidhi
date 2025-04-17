@@ -129,7 +129,7 @@ const Home = () => {
       <header style={styles.header}>
         <div style={styles.headerContainer}>
           <div style={styles.logoSection}>
-            <img src="/prathinidhi.svg" alt="Emblem" style={styles.logo} />
+            <img src="/prathinidhi.png" alt="Emblem" style={styles.logo} />
             <div>
               <h1 style={styles.title}>Prathinidhi</h1>
               <p style={styles.subtitle}>
@@ -314,7 +314,7 @@ const styles = {
     alignItems: "center",
     gap: "15px",
   },
-  logo: { height: "48px" },
+  logo: { height: "90px" },
   title: { fontSize: "26px", fontWeight: "bold", margin: 0 },
   subtitle: { fontSize: "13px", margin: 0 },
   rightNav: {
@@ -419,7 +419,7 @@ const styles = {
   },
   heroImage: { maxWidth: "400px", width: "100%", marginTop: "20px" },
   about: {
-    padding: "60px 20px",
+    padding: "0px 0px",
     maxWidth: "1000px",
     margin: "0 auto",
     textAlign: "center",
@@ -437,7 +437,7 @@ const styles = {
   aboutImage: { maxWidth: "600px", width: "100%" },
   updates: {
     backgroundColor: "#f9f9f9",
-    padding: "0px 0px",
+    padding: "10px 0px",
     textAlign: "center",
     margin : 0,
   },
@@ -445,7 +445,7 @@ const styles = {
     listStyle: "none",
     padding: 0,
     fontSize: "90px",
-    lineHeight: "2",
+    lineHeight: "1",
     maxWidth: "600px",
     margin: "0 auto",
   },
