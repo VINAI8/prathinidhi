@@ -220,37 +220,41 @@ const Dashboard = () => {
   // Styles object
   const styles = {
     header: {
-      background: '#4632EA',
-      padding: '1rem',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-      position: 'relative'
+      backgroundColor: "#0b5394", // Keep your new background color
+      color: "#fff",
+      padding: "10px 0", // Changed from 1rem
+      position: "fixed", // Changed from relative
+      top: 0,
+      width: "100%",
+      zIndex: 999,
+      boxShadow: "0 2px 5px rgba(0,0,0,0.1)" // Updated shadow
     },
     headerContainer: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      maxWidth: '1200px',
-      margin: '0 auto'
+      maxWidth: "1200px",
+      margin: "0 auto",
+      padding: "0 20px", // Added horizontal padding
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center"
     },
     logoSection: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '1rem'
+      display: "flex",
+      alignItems: "center",
+      gap: "15px" // Changed from 1rem
     },
     logo: {
-      width: '60px',
-      height: 'auto'
+      height: "48px" // Changed from width: 60px
     },
     title: {
+      fontSize: "26px", 
+      fontWeight: "bold", 
       margin: 0,
-      fontSize: '1.8rem',
-      color: 'white',
-      fontWeight: 'bold'
+      color: "white" // Kept for visibility on dark background
     },
     subtitle: {
-      margin: '0.2rem 0 0 0',
-      fontSize: '0.9rem',
-      color: '#e0e0e0'
+      fontSize: "13px", 
+      margin: 0,
+      color: "#e0e0e0" // Kept for visibility on dark background
     },
     rightNav: {
       display: 'flex',
@@ -318,9 +322,16 @@ const Dashboard = () => {
   if (loading) return <p style={{ textAlign: 'center', marginTop: '100px' }}>Loading...</p>;
 
   return (
-    <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(to bottom right, #f3f4f6, #e0f2fe)' }}>
-      <style>{`
-        .nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #4338ca; color: white; }
+<div style={{ 
+  fontFamily: "Segoe UI, sans-serif", 
+  minHeight: '100vh', 
+  display: 'flex', 
+  flexDirection: 'column', 
+  background: 'linear-gradient(to bottom right, #f3f4f6, #e0f2fe)',
+  paddingTop: "80px" // Add this to account for fixed header
+}}>      
+<style>{`
+        .nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #0b5394; color: white; }
         .lang-btn { background: white; color: #4338ca; padding: 0.5rem 1rem; margin-right: 0.5rem; border: none; cursor: pointer; }
         .logout-btn { background: #ef4444; color: white; padding: 0.5rem 1rem; border: none; cursor: pointer; }
         .hero { display: flex; justify-content: center; padding: 2rem; }
@@ -344,7 +355,7 @@ const Dashboard = () => {
         .footer a { color: #93c5fd; text-decoration: none; }
         .footer a:hover { text-decoration: underline; }
       `}</style>
-
+      
       {/* New Header with Custom Style */}
       <header style={styles.header}>
         <div style={styles.headerContainer}>
