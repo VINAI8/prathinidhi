@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation ,useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const translations = {
   en: {
@@ -33,13 +33,13 @@ const translations = {
     address: 'Address',
     about: 'About Platform',
     aboutText: 'This platform is developed under the Digital India initiative to streamline legal application services for all citizens in multiple regional languages.',
-    copyright: () => `© ${new Date().getFullYear()} Government of India. All Rights Reserved. 🇮🇳`
-  }
-,  
+    copyright: () => `© ${new Date().getFullYear()} Government of India. All Rights Reserved. 🇮🇳`,
+    popupTitle: 'Select Language'
+  },
   ta: {
     aadhaar: 'ஆதார்',
-        mobile: 'மொபைல்',
-        otp: 'ஒரு தடவை கடவுச்சொல் (OTP)',
+    mobile: 'மொபைல்',
+    otp: 'ஒரு தடவை கடவுச்சொல் (OTP)',
     welcome: 'வரவேற்கிறோம்',
     fileForms: 'சட்ட படிவங்களை தாக்கல் செய்யவும்',
     newForm: '📄 புதிய சட்ட படிவத்தை தாக்கல் செய்யவும்',
@@ -64,7 +64,8 @@ const translations = {
     address: 'முகவரி',
     about: 'தளத்தைப் பற்றி',
     aboutText: 'இந்த தளம் "டிஜிட்டல் இந்தியா" முயற்சியின் கீழ், பல மண்டல மொழிகளில் உள்ள குடிமக்களுக்கு சட்ட சேவைகளை எளிமைப்படுத்த உருவாக்கப்பட்டுள்ளது.',
-    copyright: () => `© ${new Date().getFullYear()} இந்திய அரசு. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை. 🇮🇳`
+    copyright: () => `© ${new Date().getFullYear()} இந்திய அரசு. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை. 🇮🇳`,
+    popupTitle: 'மொழியை தேர்ந்தெடுக்கவும்'
   },
   hi: {
     aadhaar: 'आधार',
@@ -94,9 +95,9 @@ const translations = {
     address: 'पता',
     about: 'प्लेटफ़ॉर्म के बारे में',
     aboutText: 'यह प्लेटफ़ॉर्म डिजिटल इंडिया पहल के तहत नागरिकों के लिए बहुभाषी कानूनी सेवाओं को सरल बनाने के लिए विकसित किया गया है।',
-    copyright: () => `© ${new Date().getFullYear()} भारत सरकार। सर्वाधिकार सुरक्षित। 🇮🇳`
+    copyright: () => `© ${new Date().getFullYear()} भारत सरकार। सर्वाधिकार सुरक्षित। 🇮🇳`,
+    popupTitle: 'भाषा चुनें'
   },
-    
   te: {
     aadhaar: 'ఆధార్',
     mobile: 'మొబైల్',
@@ -125,8 +126,8 @@ const translations = {
     address: 'చిరునామా',
     about: 'వేదిక గురించి',
     aboutText: 'ఈ వేదిక డిజిటల్ ఇండియా చొరవలో భాగంగా భారత పౌరుల కోసం అనేక ప్రాంతీయ భాషల్లో చట్టపరమైన సేవలను సరళీకృతం చేయడానికి అభివృద్ధి చేయబడింది.',
-    copyright:
-      () => `© ${new Date().getFullYear()} భారత ప్రభుత్వం. అన్ని హక్కులు నిలుపుకోబడ్డాయి. 🇮🇳`
+    copyright: () => `© ${new Date().getFullYear()} భారత ప్రభుత్వం. అన్ని హక్కులు నిలుపుకోబడ్డాయి. 🇮🇳`,
+    popupTitle: 'భాష ఎంచుకోండి'
   },
   bn: {
     aadhaar: 'আধার',
@@ -156,12 +157,10 @@ const translations = {
     address: 'ঠিকানা',
     about: 'প্ল্যাটফর্ম সম্পর্কে',
     aboutText: 'এই প্ল্যাটফর্মটি ডিজিটাল ইন্ডিয়া উদ্যোগের অধীনে বহু ভাষায় নাগরিকদের জন্য আইনি আবেদন পরিষেবাগুলি সহজ করার জন্য তৈরি করা হয়েছে।',
-    copyright: () => `© ${new Date().getFullYear()} ভারত সরকার। সর্বস্বত্ব সংরক্ষিত। 🇮🇳`
+    copyright: () => `© ${new Date().getFullYear()} ভারত সরকার। সর্বস্বত্ব সংরক্ষিত। 🇮🇳`,
+    popupTitle: 'ভাষা নির্বাচন করুন'
   },
-  
 };
-
-
 
 const Dashboard = () => {
   const location = useLocation();
@@ -171,16 +170,22 @@ const Dashboard = () => {
   const [t, setT] = useState(translations.en);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedLanguage, setSelectedLanguage] = useState(langParam);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
-    const selected = translations[langParam] || translations['en'];
+    const selected = translations[selectedLanguage] || translations['en'];
     setT(selected);
-  }, [langParam]);
+    // Update URL with selected language
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set('lang', selectedLanguage);
+    window.history.pushState({}, '', newUrl);
+  }, [selectedLanguage]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate(`/login?lang=${langParam}`);
+      navigate(`/login?lang=${selectedLanguage}`);
       return;
     }
 
@@ -198,14 +203,116 @@ const Dashboard = () => {
       .then((data) => setUser(data.user))
       .catch(() => {
         localStorage.removeItem('token');
-        navigate(`/login?lang=${langParam}`);
+        navigate(`/login?lang=${selectedLanguage}`);
       })
       .finally(() => setLoading(false));
-  }, [langParam, navigate]);
+  }, [selectedLanguage, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate(`/login?lang=${langParam}`);
+    navigate(`/login?lang=${selectedLanguage}`);
+  };
+  
+  const handleLanguageChange = (e) => {
+    setSelectedLanguage(e.target.value);
+  };
+
+  // Styles object
+  const styles = {
+    header: {
+      background: '#4632EA',
+      padding: '1rem',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+      position: 'relative'
+    },
+    headerContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      maxWidth: '1200px',
+      margin: '0 auto'
+    },
+    logoSection: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '1rem'
+    },
+    logo: {
+      width: '60px',
+      height: 'auto'
+    },
+    title: {
+      margin: 0,
+      fontSize: '1.8rem',
+      color: 'white',
+      fontWeight: 'bold'
+    },
+    subtitle: {
+      margin: '0.2rem 0 0 0',
+      fontSize: '0.9rem',
+      color: '#e0e0e0'
+    },
+    rightNav: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '1rem'
+    },
+    languageSelect: {
+      padding: '0.5rem',
+      borderRadius: '4px',
+      border: '1px solid #d1d5db',
+      background: '#f3f4f6',
+      cursor: 'pointer'
+    },
+    logoutBtn: {
+      background: '#ef4444',
+      color: 'white',
+      border: 'none',
+      padding: '0.6rem 1.2rem',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontWeight: '500',
+      transition: 'background 0.2s ease'
+    },
+    languagePopup: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000
+    },
+    popupContent: {
+      background: 'white',
+      padding: '2rem',
+      borderRadius: '8px',
+      maxWidth: '500px',
+      width: '90%',
+      textAlign: 'center'
+    },
+    popupTitle: {
+      margin: '0 0 1.5rem 0',
+      color: '#1e293b'
+    },
+    languageButtons: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      gap: '1rem'
+    },
+    languageButton: {
+      padding: '0.8rem 1.5rem',
+      background: '#f1f5f9',
+      border: '1px solid #e2e8f0',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '1rem',
+      transition: 'all 0.2s ease'
+    }
   };
 
   if (loading) return <p style={{ textAlign: 'center', marginTop: '100px' }}>Loading...</p>;
@@ -213,10 +320,6 @@ const Dashboard = () => {
   return (
     <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(to bottom right, #f3f4f6, #e0f2fe)' }}>
       <style>{`
-        .header { padding: 1rem; background: white; border-bottom: 1px solid #ddd; text-align: center; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .emblem, .justice { position: absolute; top: 1rem; }
-        .emblem { left: 1rem; width: 50px; }
-        .justice { right: 1rem; width: 40px; }
         .nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #4338ca; color: white; }
         .lang-btn { background: white; color: #4338ca; padding: 0.5rem 1rem; margin-right: 0.5rem; border: none; cursor: pointer; }
         .logout-btn { background: #ef4444; color: white; padding: 0.5rem 1rem; border: none; cursor: pointer; }
@@ -242,19 +345,75 @@ const Dashboard = () => {
         .footer a:hover { text-decoration: underline; }
       `}</style>
 
-      <header className="header">
-        <img src="/indian-emblem.png" alt="India Emblem" className="emblem" />
-        <h2 style={{ margin: 0, color: '#4f46e5' }}>Government of India</h2>
-        <p>Ministry of Law and Justice</p>
-        <img src="/justice.jpg" alt="Justice Symbol" className="justice" />
+      {/* New Header with Custom Style */}
+      <header style={styles.header}>
+        <div style={styles.headerContainer}>
+          <div style={styles.logoSection}>
+            <img src="/prathinidhi.png" alt="Emblem" style={styles.logo} />
+            <div>
+              <h1 style={styles.title}>Prathinidhi</h1>
+              <p style={styles.subtitle}>
+                राष्ट्रीय बहुभाषी विधिक फॉर्म पोर्टल | National Legal Form Portal
+              </p>
+            </div>
+          </div>
+          <div style={styles.rightNav}>
+            <select
+              style={styles.languageSelect}
+              value={selectedLanguage}
+              onChange={handleLanguageChange}
+            >
+              <option value="en">English</option>
+              <option value="hi">हिंदी</option>
+              <option value="ta">தமிழ்</option>
+              <option value="te">తెలుగు</option>
+              <option value="bn">বাংলা</option>
+            </select>
+            <button 
+              style={styles.logoutBtn} 
+              onClick={handleLogout}
+            >
+              {t.logout}
+            </button>
+          </div>
+        </div>
       </header>
+
+      {/* Language Selection Pop-Up */}
+      {isPopupOpen && (
+        <div style={styles.languagePopup}>
+          <div style={styles.popupContent}>
+            <h2 style={styles.popupTitle}>
+              {t.popupTitle}
+            </h2>
+            <div style={styles.languageButtons}>
+              {["en", "hi", "ta", "te", "bn"].map((lang) => (
+                <button
+                  key={lang}
+                  style={styles.languageButton}
+                  onClick={() => {
+                    setSelectedLanguage(lang);
+                    setIsPopupOpen(false);
+                  }}
+                >
+                  {lang === "en"
+                    ? "English"
+                    : lang === "hi"
+                    ? "हिंदी"
+                    : lang === "ta"
+                    ? "தமிழ்"
+                    : lang === "te"
+                    ? "తెలుగు"
+                    : "বাংলা"}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <nav className="nav">
         <span>{t.welcome}, {user?.name || 'User'} ({user?.role})</span>
-        <div>
-          <button className="lang-btn">{t.language}</button>
-          <button className="logout-btn" onClick={handleLogout}>{t.logout}</button>
-        </div>
       </nav>
 
       <div className="hero">
@@ -262,6 +421,14 @@ const Dashboard = () => {
       </div>
 
       <main className="main">
+        
+        <div className="card">
+          <h3>{t.userDetails}</h3>
+          <p><strong>{t.aadhaar}:</strong> {user?.aadhaar}</p>
+          <p><strong>{t.mobile}:</strong> {user?.mobile}</p>
+          <p><strong>{t.otp}:</strong> {user?.otp}</p>
+        </div>
+        
         <div className="card">
           <h3>{t.fileForms}</h3>
           <button className="button-primary">{t.newForm}</button>
@@ -283,14 +450,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Displaying additional user details */}
-       <div className="card">
-    <h3>{t.userDetails}</h3>
-    <p><strong>{t.aadhaar}:</strong> {user?.aadhaar}</p>
-    <p><strong>{t.mobile}:</strong> {user?.mobile}</p>
-    <p><strong>{t.otp}:</strong> {user?.otp}</p>
-  </div>
-</main>
+        
+      </main>
 
       <footer className="footer">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
