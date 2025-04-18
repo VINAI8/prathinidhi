@@ -4,6 +4,8 @@ import { useLocation ,useNavigate} from 'react-router-dom';
 const translations = {
   en: {
     welcome: 'Welcome',
+    governmentOfIndia: 'Government of India',
+    ministryOfLaw: 'Ministry of Law and Justice',
     fileForms: 'File Legal Forms',
     newForm: '📄 File New Legal Form',
     continueDraft: '📝 Continue Draft Application',
@@ -15,6 +17,10 @@ const translations = {
     uploaded: 'Uploaded Documents',
     logout: '🚪 Logout',
     language: '🌐 Language',
+    userDetails: 'User Details',
+    aadhaar: 'Aadhaar',
+    mobile: 'Mobile',
+    otp: 'OTP',
     quickLinks: 'Quick Links',
     faqs: 'FAQs',
     userGuide: 'User Guide',
@@ -27,10 +33,13 @@ const translations = {
     address: 'Address',
     about: 'About Platform',
     aboutText: 'This platform is developed under the Digital India initiative to streamline legal application services for all citizens in multiple regional languages.',
-    copyright:
-      () => `© ${new Date().getFullYear()} Government of India. All Rights Reserved. 🇮🇳`
-  },
+    copyright: () => `© ${new Date().getFullYear()} Government of India. All Rights Reserved. 🇮🇳`
+  }
+,  
   ta: {
+    aadhaar: 'ஆதார்',
+        mobile: 'மொபைல்',
+        otp: 'ஒரு தடவை கடவுச்சொல் (OTP)',
     welcome: 'வரவேற்கிறோம்',
     fileForms: 'சட்ட படிவங்களை தாக்கல் செய்யவும்',
     newForm: '📄 புதிய சட்ட படிவத்தை தாக்கல் செய்யவும்',
@@ -58,6 +67,9 @@ const translations = {
     copyright: () => `© ${new Date().getFullYear()} இந்திய அரசு. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை. 🇮🇳`
   },
   hi: {
+    aadhaar: 'आधार',
+    mobile: 'मोबाइल',
+    otp: 'ओटीपी',
     welcome: 'स्वागत है',
     fileForms: 'कानूनी फॉर्म भरें',
     newForm: '📄 नया कानूनी फॉर्म भरें',
@@ -86,6 +98,9 @@ const translations = {
   },
     
   te: {
+    aadhaar: 'ఆధార్',
+    mobile: 'మొబైల్',
+    otp: 'ఓటీపీ',
     welcome: 'స్వాగతం',
     fileForms: 'చట్టపరమైన ఫారాలను దాఖలు చేయండి',
     newForm: '📄 కొత్త ఫారం దాఖలు చేయండి',
@@ -114,6 +129,9 @@ const translations = {
       () => `© ${new Date().getFullYear()} భారత ప్రభుత్వం. అన్ని హక్కులు నిలుపుకోబడ్డాయి. 🇮🇳`
   },
   bn: {
+    aadhaar: 'আধার',
+    mobile: 'মোবাইল',
+    otp: 'ওটিপি',
     welcome: 'স্বাগতম',
     fileForms: 'আইনি ফর্ম জমা দিন',
     newForm: '📄 নতুন আইনি ফর্ম জমা দিন',
@@ -266,13 +284,13 @@ const Dashboard = () => {
         </div>
 
         {/* Displaying additional user details */}
-        <div className="card">
-          <h3>User Details</h3>
-          <p><strong>Aadhaar:</strong> {user?.aadhaar}</p>
-          <p><strong>Mobile:</strong> {user?.mobile}</p>
-          <p><strong>OTP:</strong> {user?.otp}</p>
-        </div>
-      </main>
+       <div className="card">
+    <h3>{t.userDetails}</h3>
+    <p><strong>{t.aadhaar}:</strong> {user?.aadhaar}</p>
+    <p><strong>{t.mobile}:</strong> {user?.mobile}</p>
+    <p><strong>{t.otp}:</strong> {user?.otp}</p>
+  </div>
+</main>
 
       <footer className="footer">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
