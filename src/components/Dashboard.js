@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation ,useNavigate} from 'react-router-dom';
 
 const translations = {
   en: {
@@ -143,195 +143,119 @@ const translations = {
   
 };
 
-const Dashboard = ({ userName = 'John Doe' }) => {
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const langParam = queryParams.get('lang')?.toLowerCase() || 'en';
-  
-    const [t, setT] = useState(translations.en);
-  
-    useEffect(() => {
-        const selected = translations[langParam] || translations['en'];
-      setT(selected);
-    }, [langParam]);
+
+
+const Dashboard = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const langParam = queryParams.get('lang')?.toLowerCase() || 'en';
+  const [t, setT] = useState(translations.en);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const selected = translations[langParam] || translations['en'];
+    setT(selected);
+  }, [langParam]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate(`/login?lang=${langParam}`);
+      return;
+    }
+
+    fetch('https://prathinidhi-backend-r8dj.onrender.com/dashboard', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Invalid token');
+        return res.json();
+      })
+      .then((data) => setUser(data.user))
+      .catch(() => {
+        localStorage.removeItem('token');
+        navigate(`/login?lang=${langParam}`);
+      })
+      .finally(() => setLoading(false));
+  }, [langParam, navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate(`/login?lang=${langParam}`);
+  };
+
+  if (loading) return <p style={{ textAlign: 'center', marginTop: '100px' }}>Loading...</p>;
 
   return (
     <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(to bottom right, #f3f4f6, #e0f2fe)' }}>
       <style>{`
-        .header {
-          padding: 1rem;
-          background: white;
-          border-bottom: 1px solid #ddd;
-          text-align: center;
-          position: relative;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .emblem, .justice {
-          position: absolute;
-          top: 1rem;
-        }
-        .emblem {
-          left: 1rem;
-          width: 50px;
-        }
-        .justice {
-          right: 1rem;
-          width: 40px;
-        }
-        .nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem;
-          background: #4338ca;
-          color: white;
-        }
-        .lang-btn {
-          background: white;
-          color: #4338ca;
-          padding: 0.5rem 1rem;
-          margin-right: 0.5rem;
-          border: none;
-          cursor: pointer;
-        }
-        .logout-btn {
-          background: #ef4444;
-          color: white;
-          padding: 0.5rem 1rem;
-          border: none;
-          cursor: pointer;
-        }
-        .hero {
-          display: flex;
-          justify-content: center;
-          padding: 2rem;
-        }
-        .hero img {
-          width: 100%;
-          max-width: 1000px;
-          border-radius: 1rem;
-          box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-        .main {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 1.5rem;
-          padding: 2rem;
-        }
-        .card {
-          background: white;
-          padding: 1.5rem;
-          border-radius: 1rem;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-          transition: all 0.3s ease;
-        }
-        .card:hover {
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .button-primary {
-          background: #4338ca;
-          color: white;
-          padding: 0.75rem;
-          border: none;
-          border-radius: 0.5rem;
-          margin-bottom: 1rem;
-          cursor: pointer;
-          width: 100%;
-        }
-        .button-secondary {
-          background: #e5e7eb;
-          color: #111827;
-          padding: 0.75rem;
-          border: none;
-          border-radius: 0.5rem;
-          width: 100%;
-          cursor: pointer;
-        }
-        .file-input {
-          display: block;
-          width: 100%;
-          margin: 1rem 0;
-          padding: 0.5rem;
-        }
-        .overview {
-          grid-column: span 2;
-        }
-        .status-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 1rem;
-        }
-        .status-box {
-          padding: 1rem;
-          border-radius: 0.75rem;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .draft {
-          background: #eef2ff;
-          color: #4338ca;
-        }
-        .submitted {
-          background: #dcfce7;
-          color: #15803d;
-        }
-        .uploaded {
-          background: #fef9c3;
-          color: #ca8a04;
-        }
-        .footer {
-          background: #111827;
-          color: #d1d5db;
-          padding: 2rem;
-          margin-top: auto;
-        }
-        .footer h4 {
-          color: white;
-          margin-bottom: 0.5rem;
-        }
-        .footer ul {
-          list-style: none;
-          padding: 0;
-        }
-        .footer li {
-          margin-bottom: 0.3rem;
-        }
-        .footer a {
-          color: #93c5fd;
-          text-decoration: none;
-        }
-        .footer a:hover {
-          text-decoration: underline;
-        }
+        .header { padding: 1rem; background: white; border-bottom: 1px solid #ddd; text-align: center; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .emblem, .justice { position: absolute; top: 1rem; }
+        .emblem { left: 1rem; width: 50px; }
+        .justice { right: 1rem; width: 40px; }
+        .nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #4338ca; color: white; }
+        .lang-btn { background: white; color: #4338ca; padding: 0.5rem 1rem; margin-right: 0.5rem; border: none; cursor: pointer; }
+        .logout-btn { background: #ef4444; color: white; padding: 0.5rem 1rem; border: none; cursor: pointer; }
+        .hero { display: flex; justify-content: center; padding: 2rem; }
+        .hero img { width: 100%; max-width: 1000px; border-radius: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .main { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; padding: 2rem; }
+        .card { background: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .button-primary { background: #4338ca; color: white; padding: 0.75rem; border: none; border-radius: 0.5rem; margin-bottom: 1rem; cursor: pointer; width: 100%; }
+        .button-secondary { background: #e5e7eb; color: #111827; padding: 0.75rem; border: none; border-radius: 0.5rem; width: 100%; cursor: pointer; }
+        .file-input { display: block; width: 100%; margin: 1rem 0; padding: 0.5rem; }
+        .overview { grid-column: span 2; }
+        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .status-box { padding: 1rem; border-radius: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
+        .draft { background: #eef2ff; color: #4338ca; }
+        .submitted { background: #dcfce7; color: #15803d; }
+        .uploaded { background: #fef9c3; color: #ca8a04; }
+        .footer { background: #111827; color: #d1d5db; padding: 2rem; margin-top: auto; }
+        .footer h4 { color: white; margin-bottom: 0.5rem; }
+        .footer ul { list-style: none; padding: 0; }
+        .footer li { margin-bottom: 0.3rem; }
+        .footer a { color: #93c5fd; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
       `}</style>
+
       <header className="header">
-        <img src="/indian-emblem.png" alt="India Emblem" className="emblem" /> 
+        <img src="/indian-emblem.png" alt="India Emblem" className="emblem" />
         <h2 style={{ margin: 0, color: '#4f46e5' }}>Government of India</h2>
         <p>Ministry of Law and Justice</p>
         <img src="/justice.jpg" alt="Justice Symbol" className="justice" />
       </header>
+
       <nav className="nav">
-        <span>{t.welcome}, {userName}</span>
+        <span>{t.welcome}, {user?.name || 'User'} ({user?.role})</span>
         <div>
           <button className="lang-btn">{t.language}</button>
-          <button className="logout-btn">{t.logout}</button>
+          <button className="logout-btn" onClick={handleLogout}>{t.logout}</button>
         </div>
       </nav>
+
       <div className="hero">
         <img src="/images/prathinidhi.svg" alt="Legal Application India" />
       </div>
+
       <main className="main">
         <div className="card">
           <h3>{t.fileForms}</h3>
           <button className="button-primary">{t.newForm}</button>
           <button className="button-secondary">{t.continueDraft}</button>
         </div>
+
         <div className="card">
           <h3>{t.uploadDocs}</h3>
           <input type="file" multiple className="file-input" />
           <p style={{ fontSize: '0.9rem' }}>{t.acceptedFormats}</p>
         </div>
+
         <div className="card overview">
           <h3>{t.statusTitle}</h3>
           <div className="status-grid">
@@ -340,32 +264,33 @@ const Dashboard = ({ userName = 'John Doe' }) => {
             <div className="status-box uploaded">📤 {t.uploaded}: <strong>6</strong></div>
           </div>
         </div>
+
+        {/* Displaying additional user details */}
+        <div className="card">
+          <h3>User Details</h3>
+          <p><strong>Aadhaar:</strong> {user?.aadhaar}</p>
+          <p><strong>Mobile:</strong> {user?.mobile}</p>
+          <p><strong>OTP:</strong> {user?.otp}</p>
+        </div>
       </main>
+
       <footer className="footer">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
           <div>
             <h4>{t.quickLinks}</h4>
             <ul>
-            <li><a href="/faqs">{t.faqs}</a></li>
-            <li><a href="/user-guide">{t.userGuide}</a></li>
-            <li><a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer">{t.govPortal}</a></li>
-            <li><a href="/terms-and-conditions">{t.terms}</a></li>
-
+              <li><a href="/faqs">{t.faqs}</a></li>
+              <li><a href="/user-guide">{t.userGuide}</a></li>
+              <li><a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer">{t.govPortal}</a></li>
+              <li><a href="/terms-and-conditions">{t.terms}</a></li>
             </ul>
           </div>
           <div>
             <h4>{t.contact}</h4>
             <ul>
-              <li>{t.email}: <a href="mailto:support@legalease.in">support@legalease.in</a></li>
-              <li>{t.phone}: +91 98765 43210</li>
-              <li>{t.hours}: Mon–Fri, 10AM–6PM</li>
-              <li>{t.address}: Ministry of Law, New Delhi</li>
+              <li>{t.phone}: +91-1234-567890</li>
+              <li>{t.email}: support@prathinidhi.in</li>
             </ul>
-          </div>
-          <div>
-            <h4>{t.about}</h4>
-            <p>{t.aboutText}</p>
-            <p style={{ fontSize: '0.8rem' }}>{t.copyright()}</p>
           </div>
         </div>
       </footer>

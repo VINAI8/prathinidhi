@@ -1,15 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Extract the language from the URL query parameters
   const queryParams = new URLSearchParams(location.search);
-  const selectedLanguage = queryParams.get('lang') || "en"; // Default to 'en' if not present
+  const selectedLanguage = queryParams.get('lang') || "en";
 
-  // Language data for different languages
   const languageData = {
     en: {
       loginHeading: "Login to Your Account",
@@ -23,99 +21,79 @@ const Login = () => {
       terms: "Terms of Use",
       help: "Help & Support",
     },
-    hi: {
-      loginHeading: "अपने खाते में लॉग इन करें",
-      aadhaar: "आधार संख्या",
-      mobile: "मोबाइल संख्या",
-      otp: "ओटीपी",
-      loginBtn: "लॉग इन करें",
-      footer1: "© 2025 प्रथिनिधि | भारत सरकार की एक पहल",
-      footer2: "🇮🇳 से बनाई गई | हर भारतीय नागरिक के लिए डिज़ाइन की गई",
-      privacy: "गोपनीयता नीति",
-      terms: "उपयोग की शर्तें",
-      help: "सहायता और समर्थन",
-    },
-    te: {
-      loginHeading: "మీ ఖాతా లో లాగిన్ చేయండి",
-      aadhaar: "ఆధార్ నంబర్",
-      mobile: "మొబైల్ నంబర్",
-      otp: "ఓటీపీ",
-      loginBtn: "లాగిన్ చేయండి",
-      footer1: "© 2025 ప్రజాతినిధి | భారత ప్రభుత్వం ప్రేరణ",
-      footer2: "🇮🇳 నుండి తయారు | ప్రతి భారతీయుడికి రూపకల్పన చేయబడింది",
-      privacy: "గోప్యతా విధానం",
-      terms: "వినియోగ నిబంధనలు",
-      help: "సహాయం మరియు మద్దతు",
-    },
-    // Add more languages here...
   };
 
-  // Fallback to English if the selected language is not found
   const langData = languageData[selectedLanguage] || languageData["en"];
 
-  // State to hold form input values
   const [aadhaar, setAadhaar] = useState("");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ✅ Redirect if token already exists
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate(`/dashboard?lang=${selectedLanguage}`);
+    }
+  }, [navigate, selectedLanguage]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);  // Show loading state
-    setErrorMessage(""); // Clear previous error messages
+    setLoading(true);
+    setErrorMessage("");
 
-    const data = new FormData();
-    data.append("aadhaar", aadhaar);
-    data.append("mobile", mobile);
-    data.append("otp", otp);
+    const payload = { aadhaar, mobile, otp };
 
     try {
       const response = await fetch("https://prathinidhi-backend-r8dj.onrender.com/login", {
         method: "POST",
-        body: data,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
+      console.log("🔑 Login result:", result);
 
-      if (response.ok) {
-        alert(result.message); // Show success message
-        
-        // Redirect to dashboard with the selected language in the query params
-        navigate(`/dashboard?lang=${selectedLanguage}`);
+      if (response.ok && result.token) {
+        localStorage.setItem("token", result.token); // ✅ Store token
+        navigate(`/dashboard?lang=${selectedLanguage}`); // ✅ Redirect
       } else {
-        setErrorMessage(result.detail || "Login failed");
+        const errorMsg = result.detail
+          ? typeof result.detail === 'string'
+            ? result.detail
+            : JSON.stringify(result.detail)
+          : "Login failed";
+        setErrorMessage(errorMsg);
       }
     } catch (error) {
+      console.error("❌ Login error:", error);
       setErrorMessage("Something went wrong. Please try again later.");
     } finally {
-      setLoading(false); // Hide loading state
+      setLoading(false);
     }
   };
 
   return (
     <main style={styles.main}>
-      {/* Header */}
       <header style={styles.header}>
         <div style={styles.headerContainer}>
           <div style={styles.logoSection}>
             <img src="/prathinidhi.png" alt="Emblem" style={styles.logo} />
             <div>
               <h1 style={styles.title}>Prathinidhi</h1>
-              <p style={styles.subtitle}>
-                राष्ट्रीय बहुभाषी विधिक फॉर्म पोर्टल | National Legal Form Portal
-              </p>
+              <p style={styles.subtitle}>National Legal Form Portal</p>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Login Form Section */}
       <section style={styles.loginSection}>
         <div style={styles.formContainer}>
-          <h2 style={styles.loginHeading}>
-            {langData.loginHeading}
-          </h2>
+          <h2 style={styles.loginHeading}>{langData.loginHeading}</h2>
           <form style={styles.form} onSubmit={handleLogin}>
             <div style={styles.formGroup}>
               <label>{langData.aadhaar}</label>
@@ -158,29 +136,20 @@ const Login = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer style={styles.footer}>
         <div>{langData.footer1}</div>
         <div>{langData.footer2}</div>
         <div style={{ marginTop: "10px", fontSize: "12px" }}>
-          <a href="/privacy" style={styles.footerLink}>
-            {langData.privacy}
-          </a>{" "}
-          |{" "}
-          <a href="/terms" style={styles.footerLink}>
-            {langData.terms}
-          </a>{" "}
-          |{" "}
-          <a href="/help" style={styles.footerLink}>
-            {langData.help}
-          </a>
+          <a href="/privacy" style={styles.footerLink}>{langData.privacy}</a> | 
+          <a href="/terms" style={styles.footerLink}>{langData.terms}</a> | 
+          <a href="/help" style={styles.footerLink}>{langData.help}</a>
         </div>
       </footer>
     </main>
   );
 };
 
-// Styling for the components
+// Styling remains the same
 const styles = {
   main: {
     fontFamily: "Segoe UI, sans-serif",
