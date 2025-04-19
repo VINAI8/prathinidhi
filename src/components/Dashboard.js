@@ -217,6 +217,15 @@ const Dashboard = () => {
     setSelectedLanguage(e.target.value);
   };
 
+  const handleNewFormClick = () => {
+    // Get the current authentication token from localStorage
+    const token = localStorage.getItem('token');
+    // Navigate to stage1 page with auth token in state and language preference in URL
+    navigate('/stage1', {
+      state: { token }, // Pass token securely in navigation state
+      search: `?lang=${selectedLanguage}` // Maintain language preference
+    });
+  };
   // Styles object
   const styles = {
     header: {
@@ -442,7 +451,7 @@ const Dashboard = () => {
         
         <div className="card">
           <h3>{t.fileForms}</h3>
-          <button className="button-primary">{t.newForm}</button>
+          <button className="button-primary" onClick={handleNewFormClick}>{t.newForm}</button>
           <button className="button-secondary">{t.continueDraft}</button>
         </div>
 
