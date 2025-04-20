@@ -162,7 +162,7 @@ const Stage1 = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
-  const langParam = queryParams.get('lang')?.toLowerCase() || 'en';
+  const langParam = queryParams.get('lang')?.toLowerCase() || localStorage.getItem('preferredLanguage') || 'en';
   const [t, setT] = useState(translations.en);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({

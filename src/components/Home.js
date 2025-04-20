@@ -219,14 +219,22 @@ const Home = () => {
             <p style={styles.heroText}>
               {languageData[selectedLanguage].heroText}
             </p>
+
             <div style={styles.heroButtons}>
-              <button style={styles.primaryBtn}>
-                {languageData[selectedLanguage].startFiling}
-              </button>
-              <button style={styles.secondaryBtn}>
-                {languageData[selectedLanguage].trackApp}
-              </button>
-            </div>
+  <button
+    style={styles.primaryBtn}
+    onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
+  >
+    {languageData[selectedLanguage].startFiling}
+  </button>
+  <button
+    style={styles.secondaryBtn}
+    onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
+  >
+    {languageData[selectedLanguage].trackApp}
+  </button>
+</div>
+
           </div>
           <img src="/justice.jpg" alt="Justice" style={styles.heroImage} />
         </div>
