@@ -32,6 +32,15 @@ const translations = {
     contact: 'Contact',
     phone: 'Phone',
     email: 'Email',
+    nalsa: 'NALSA - National Legal Service Authority',
+    sclsc: 'SCLSC - Supreme Court Legal Service Committee',
+    hclsc: 'HCLSC - High Court Legal Service Committee',
+    slsa: 'SLSA - State Legal Service Authority',
+    dlsa: 'DLSA - District Legal Service Authority',
+    tlsc: 'TLSC - Taluka Legal Service Committee',
+    slf: 'SLF - Self',
+    rep: 'REP - Representative',
+    org: 'ORG - Organization'
   },
   hi: {
     welcome: 'स्वागत है',
@@ -62,6 +71,15 @@ const translations = {
     contact: 'संपर्क करें',
     phone: 'फ़ोन',
     email: 'ईमेल',
+    nalsa: 'नालसा - नेशनल लीगल सर्विस अथॉरिटी',
+    sclsc: 'एससीएलएससी - सुप्रीम कोर्ट लीगल सर्विस कमेटी',
+    hclsc: 'एचसीएलएससी - हाई कोर्ट लीगल सर्विस कमेटी',
+    slsa: 'एसएलएसए - स्टेट लीगल सर्विस अथॉरिटी',
+    dlsa: 'डीएलएसए - डिस्ट्रिक्ट लीगल सर्विस अथॉरिटी',
+    tlsc: 'टीएलएससी - तालुका लीगल सर्विस कमेटी',
+    slf: 'एसएलएफ - स्वयं',
+    rep: 'आरईपी - प्रतिनिधि',
+    org: 'ओआरजी - संगठन'
   },
   te: {
     welcome: 'స్వాగతం',
@@ -92,6 +110,15 @@ const translations = {
   contact: 'సంప్రదించండి',
   phone: 'ఫోన్',
   email: 'ఇమెయిల్',
+  nalsa: 'నల్సా - నేషనల్ లీగల్ సర్వీస్ అథారిటీ',
+  sclsc: 'ఎస్సీఎల్ఎస్సీ - సుప్రీం కోర్ట్ లీగల్ సర్వీస్ కమిటీ',
+  hclsc: 'హెచ్సీఎల్ఎస్సీ - హైకోర్ట్ లీగల్ సర్వీస్ కమిటీ',
+  slsa: 'ఎస్‌ఎల్ఎస్ఎ - స్టేట్ లీగల్ సర్వీస్ అథారిటీ',
+  dlsa: 'డిఎల్ఎస్ఎ - డిస్ట్రిక్ట్ లీగల్ సర్వీస్ అథారిటీ',
+  tlsc: 'టిఎల్ఎస్సీ - తాలూకా లీగల్ సర్వీస్ కమిటీ',
+  slf: 'ఎస్‌ఎల్‌ఎఫ్ - స్వయంగా',
+  rep: 'ఆర్‌ఈపీ - ప్రతినిధి',
+  org: 'ఓఆర్‌జీ - సంస్థ'
   },
   ta: {
     welcome: 'வரவேற்கிறோம்',
@@ -122,7 +149,16 @@ const translations = {
     phone: 'தொலைபேசி',
     email: 'மின்னஞ்சல்',
     faq: 'அடிக்கடி கேட்கப்படும் கேள்விகள்',
-      
+    sclsc: 'எஸ்சி.எல்.எஸ்.சி - உச்சநீதிமன்ற சட்ட சேவை குழு',
+    hclsc: 'எச்.சி.எல்.எஸ்.சி - உயர் நீதிமன்ற சட்ட சேவை குழு',
+    slsa: 'எஸ்.எல்.எஸ்.ஏ - மாநில சட்ட சேவை ஆணையம்',
+    dlsa: 'டி.எல்.எஸ்.ஏ - மாவட்ட சட்ட சேவை ஆணையம்',
+    tlsc: 'டி.எல்.எஸ்.சி - தாலுகா சட்ட சேவை குழு',
+    nalsa: 'நல்சா - தேசிய சட்ட சேவை ஆணையம்',
+    slf: 'எஸ்எல்எஃப் - சுயமாக',
+    rep: 'ஆர்இபி - பிரதிநிதி',
+    org: 'ஓஆர்ஜி - நிறுவனம்'
+       
   },
   bn: {
     welcome: 'স্বাগতম',
@@ -153,6 +189,15 @@ const translations = {
     contact: 'যোগাযোগ করুন',
     phone: 'ফোন',
     email: 'ইমেইল',
+    nalsa: 'নালসা - জাতীয় আইন সহায়তা কর্তৃপক্ষ',
+    sclsc: 'এসসিএলএসসি - সুপ্রিম কোর্ট আইন সহায়তা কমিটি',
+    hclsc: 'এইচসিএলএসসি - হাই কোর্ট আইন সহায়তা কমিটি',
+    slsa: 'এসএলএসএ - রাজ্য আইন সহায়তা কর্তৃপক্ষ',
+    dlsa: 'ডিএলএসএ - জেলা আইন সহায়তা কর্তৃপক্ষ',
+    tlsc: 'টিএলএসসি - তহশিল আইন সহায়তা কমিটি',
+    slf: 'এসএলএফ - স্বয়ং',
+    rep: 'আরইপি - প্রতিনিধি',
+    org: 'ওআরজি - সংস্থা'
   },
       
   // Add other languages as needed
@@ -641,11 +686,13 @@ const Stage1 = () => {
                 required
               >
                 <option value="">{t.chooseItem}</option>
-                <option value="Legal Aid">Legal Aid</option>
-                <option value="Grievance">Grievance</option>
-                <option value="Property Dispute">Property Dispute</option>
-                <option value="Family Matter">Family Matter</option>
-                <option value="Criminal Case">Criminal Case</option>
+                <option value="nalsa">{t.nalsa}</option>
+                <option value="sclsc">{t.sclsc}</option>
+                <option value="hclsc">{t.hclsc}</option>
+                <option value="slsa">{t.slsa}</option>
+                <option value="dlsa">{t.dlsa}</option>
+                <option value="tlsc">{t.tlsc}</option>
+
               </select>
             </div>
             <div style={styles.formColumn}>
@@ -660,75 +707,9 @@ const Stage1 = () => {
                 className="form-select"
                 required
               >
-                <option value="SLF - Self">SLF - Self</option>
-                <option value="REP - Representative">REP - Representative</option>
-                <option value="ORG - Organization">ORG - Organization</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="form-row" style={styles.formRow}>
-            <div style={styles.formColumn}>
-              <label style={styles.formLabel}>
-                {t.state} <span style={styles.requiredField}>*</span>:
-              </label>
-              <select 
-                name="state"
-                value={formData.state}
-                onChange={handleInputChange}
-                style={styles.formSelect}
-                className="form-select"
-                required
-              >
-                <option value="">{t.chooseItem}</option>
-                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                <option value="Karnataka">Karnataka</option>
-                <option value="Kerala">Kerala</option>
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Tamil Nadu">Tamil Nadu</option>
-                <option value="Telangana">Telangana</option>
-                <option value="West Bengal">West Bengal</option>
-                <option value="Gujarat">Gujarat</option>
-                <option value="Rajasthan">Rajasthan</option>
-                <option value="Madhya Pradesh">Madhya Pradesh</option>
-              </select>
-            </div>
-            <div style={styles.formColumn}>
-              <label style={styles.formLabel}>
-                {t.district} <span style={styles.requiredField}>*</span>:
-              </label>
-              <select 
-                name="district"
-                value={formData.district}
-                onChange={handleInputChange}
-                style={styles.formSelect}
-                className="form-select"
-                required
-                disabled={!formData.state}
-              >
-                <option value="">{t.chooseItem}</option>
-                <option value="District 1">District 1</option>
-                <option value="District 2">District 2</option>
-                <option value="District 3">District 3</option>
-              </select>
-            </div>
-            <div style={styles.formColumn}>
-              <label style={styles.formLabel}>
-                {t.taluka} <span style={styles.requiredField}>*</span>:
-              </label>
-              <select 
-                name="taluka"
-                value={formData.taluka}
-                onChange={handleInputChange}
-                style={styles.formSelect}
-                className="form-select"
-                required
-                disabled={!formData.district}
-              >
-                <option value="">{t.chooseItem}</option>
-                <option value="Taluka 1">Taluka 1</option>
-                <option value="Taluka 2">Taluka 2</option>
-                <option value="Taluka 3">Taluka 3</option>
+                <option value="slf">{t.slf}</option>
+                <option value="rep">{t.rep}</option>
+                <option value="org">{t.org}</option>
               </select>
             </div>
           </div>
