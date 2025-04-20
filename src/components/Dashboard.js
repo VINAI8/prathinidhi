@@ -218,12 +218,12 @@ const Dashboard = () => {
   };
 
   const handleNewFormClick = () => {
-    // Get the current authentication token from localStorage
     const token = localStorage.getItem('token');
-    // Navigate to stage1 page with auth token in state and language preference in URL
+    // Also store language preference
+    localStorage.setItem('preferredLanguage', selectedLanguage);
     navigate('/stage1', {
-      state: { token }, // Pass token securely in navigation state
-      search: `?lang=${selectedLanguage}` // Maintain language preference
+      state: { token },
+      search: `?lang=${selectedLanguage}`
     });
   };
   // Styles object
