@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-// Translations object - I'm keeping the same structure as dashboard
+// Reuse translations from Stage1 and add Stage2-specific translations
 const translations = {
   en: {
     welcome: 'Welcome',
@@ -9,11 +9,6 @@ const translations = {
     ministryOfLaw: 'Ministry of Law and Justice',
     applicationForm: 'APPLICATION FORM FOR LEGAL AID / Grievance',
     legalAidApplication: 'Legal Aid / Grievance Application',
-    applicationFor: 'Application For',
-    receivedThrough: 'Received Through',
-    state: 'State',
-    district: 'District',
-    taluka: 'Taluka',
     nextStage: 'Next Stage',
     backToDashboard: 'Back to Dashboard',
     chooseItem: '-- Choose an Item --',
@@ -22,9 +17,8 @@ const translations = {
     logout: '🚪 Logout',
     language: '🌐 Language',
     progress: 'Progress',
-    pleaseSelect: 'Please select an option',
     errorMessage: 'Please fill all required fields',
-    progressStatus: 'Stage 1 of 6: Basic Information',
+    progressStatus: 'Stage 2 of 6: Problem Details',
     faq: 'FAQs',
     userGuide: 'User Guide',
     govPortal: 'Government Portal',
@@ -32,15 +26,31 @@ const translations = {
     contact: 'Contact',
     phone: 'Phone',
     email: 'Email',
-    nalsa: 'NALSA - National Legal Service Authority',
-    sclsc: 'SCLSC - Supreme Court Legal Service Committee',
-    hclsc: 'HCLSC - High Court Legal Service Committee',
-    slsa: 'SLSA - State Legal Service Authority',
-    dlsa: 'DLSA - District Legal Service Authority',
-    tlsc: 'TLSC - Taluka Legal Service Committee',
-    slf: 'SLF - Self',
-    rep: 'REP - Representative',
-    org: 'ORG - Organization'
+    saveDraft: 'Save Draft',
+    quickLinks: 'Quick Links',
+    faqs: 'FAQs',
+    // Stage2 specific translations
+    natureOfLegalAid: 'Nature of Legal Aid / Grievance',
+    problemSummary: 'Summary of problem for which legal aid / Grievance is sought',
+    enterSummaryHere: 'Text Here...',
+    corruption: 'Allegation of corruption/malpractices',
+    harassment: 'Allegation of harrassment/misbehaviour',
+    central_misc: 'Central Govt: Miscellaneous',
+    civic_amenities: 'Civic amenities/Quality of service Compensations/Refunds',
+    counselling: 'Counselling and Conciliation',
+    delay_decision: 'Delay in decision/implementation of decision',
+    law_order: 'Law & Order',
+    legal_advice: 'Legal Advice',
+    legal_redress: 'Legal Redress',
+    panel_defend: 'Panel Lawyer for defending court case',
+    panel_newcase: 'Panel Lawyer for filing new case',
+    requests: 'Requests',
+    retirement_dues: 'Retirement dues',
+    revenue_tax: 'Revenue/Land/Tax',
+    reserved_matter: 'Scheduled castes/STs/Backward Service matters',
+    social_evils: 'Social Evils',
+    state_misc: 'State Govt : Miscellaneous',
+    draft_application: 'To Draft an Application/Representation/Notice/Petition/Reply'
   },
   hi: {
     welcome: 'स्वागत है',
@@ -48,22 +58,15 @@ const translations = {
     ministryOfLaw: 'कानून और न्याय मंत्रालय',
     applicationForm: 'कानूनी सहायता / शिकायत के लिए आवेदन पत्र',
     legalAidApplication: 'कानूनी सहायता / शिकायत आवेदन',
-    applicationFor: 'के लिए आवेदन',
-    receivedThrough: 'के माध्यम से प्राप्त',
-    state: 'राज्य',
-    district: 'जिला',
-    taluka: 'तालुका',
     nextStage: 'अगला चरण',
     backToDashboard: 'डैशबोर्ड पर वापस जाएं',
-    chooseItem: '-- एक आइटम चुनें --',
     stage: 'चरण',
     of: 'का',
     logout: '🚪 लॉगआउट',
     language: '🌐 भाषा',
     progress: 'प्रगति',
-    pleaseSelect: 'कृपया एक विकल्प चुनें',
     errorMessage: 'कृपया सभी आवश्यक फ़ील्ड भरें',
-    progressStatus: 'चरण 1 में से 6: मूलभूत जानकारी',
+    progressStatus: 'चरण 2 में से 6: समस्या विवरण',
     faq: 'अक्सर पूछे जाने वाले प्रश्न',
     userGuide: 'उपयोगकर्ता मार्गदर्शिका',
     govPortal: 'सरकारी पोर्टल',
@@ -71,139 +74,183 @@ const translations = {
     contact: 'संपर्क करें',
     phone: 'फ़ोन',
     email: 'ईमेल',
-    nalsa: 'नालसा - नेशनल लीगल सर्विस अथॉरिटी',
-    sclsc: 'एससीएलएससी - सुप्रीम कोर्ट लीगल सर्विस कमेटी',
-    hclsc: 'एचसीएलएससी - हाई कोर्ट लीगल सर्विस कमेटी',
-    slsa: 'एसएलएसए - स्टेट लीगल सर्विस अथॉरिटी',
-    dlsa: 'डीएलएसए - डिस्ट्रिक्ट लीगल सर्विस अथॉरिटी',
-    tlsc: 'टीएलएससी - तालुका लीगल सर्विस कमेटी',
-    slf: 'एसएलएफ - स्वयं',
-    rep: 'आरईपी - प्रतिनिधि',
-    org: 'ओआरजी - संगठन'
+    saveDraft: 'ड्राफ्ट सहेजें',
+    quickLinks: 'त्वरित लिंक',
+    faqs: 'अक्सर पूछे जाने वाले प्रश्न',
+    // Stage2 specific translations
+    natureOfLegalAid: 'कानूनी सहायता / शिकायत की प्रकृति',
+    problemSummary: 'समस्या का सारांश जिसके लिए कानूनी सहायता / शिकायत की मांग की गई है',
+    enterSummaryHere: 'यहां टेक्स्ट दर्ज करें...',
+    chooseItem: '-- एक विकल्प चुनें --',
+    corruption: 'भ्रष्टाचार/दुरुपयोग का आरोप',
+    harassment: 'उत्पीड़न/दुव्यवहार का आरोप',
+    central_misc: 'केंद्र सरकार: विविध',
+    civic_amenities: 'नागरिक सुविधाएं/सेवा की गुणवत्ता मुआवजा/रिफंड',
+    counselling: 'परामर्श और सुलह',
+    delay_decision: 'निर्णय/कार्यान्वयन में देरी',
+    law_order: 'कानून और व्यवस्था',
+    legal_advice: 'कानूनी सलाह',
+    legal_redress: 'कानूनी समाधान',
+    panel_defend: 'मुकदमे की रक्षा हेतु पैनल वकील',
+    panel_newcase: 'नए मुकदमे हेतु पैनल वकील',
+    requests: 'अनुरोध',
+    retirement_dues: 'सेवानिवृत्ति बकाया',
+    revenue_tax: 'राजस्व/भूमि/कर',
+    reserved_matter: 'अनुसूचित जाति/जनजाति/पिछड़े वर्ग के मामले',
+    social_evils: 'सामाजिक बुराइयाँ',
+    state_misc: 'राज्य सरकार: विविध',
+    draft_application: 'आवेदन/प्रतिनिधित्व/नोटिस/याचिका/जवाब का मसौदा तैयार करना'
   },
   te: {
     welcome: 'స్వాగతం',
     governmentOfIndia: 'భారత ప్రభుత్వం',
     ministryOfLaw: 'చట్ట మరియు న్యాయ మంత్రిత్వ శాఖ',
-    applicationForm: 'న్యాయ సహాయం / ఫిర్యాదు దరఖాస్తు ఫారమ్',
+    applicationForm: 'న్యాయ సహాయం / ఫిర్యాదు కోసం దరఖాస్తు పత్రం',
     legalAidApplication: 'న్యాయ సహాయం / ఫిర్యాదు దరఖాస్తు',
-    applicationFor: 'దేనికోసం దరఖాస్తు',
-    receivedThrough: 'ద్వారా అందింది',
-    state: 'రాష్ట్రం',
-    district: 'జిల్లా',
-    taluka: 'తాలూకా',
-    nextStage: 'తదుపరి దశ',
-    backToDashboard: 'డాష్‌బోర్డ్‌కు వెళ్ళండి',
+    nextStage: 'తర్వాత దశ',
+    backToDashboard: 'డాష్‌బోర్డ్‌కి వెనక్కి',
     chooseItem: '-- అంశాన్ని ఎంచుకోండి --',
     stage: 'దశ',
     of: 'లో',
-    logout: '🚪 లాగ్అవుట్',
+    logout: '🚪 లాగ్ అవుట్',
     language: '🌐 భాష',
     progress: 'ప్రగతి',
-    pleaseSelect: 'దయచేసి ఒక ఎంపికను ఎంచుకోండి',
-    errorMessage: 'దయచేసి అవసరమైన అన్ని ఖాళీలను పూరించండి',
-    progressStatus: 'దశ 1 యొక్క 6: ప్రాథమిక సమాచారం',
+    errorMessage: 'దయచేసి అన్ని అవసరమైన వివరాలు పూరించండి',
+    progressStatus: 'దశ 2 / 6: సమస్య వివరాలు',
     faq: 'తరచుగా అడిగే ప్రశ్నలు',
-  userGuide: 'వినియోగదారుల గైడ్',
-  govPortal: 'సర్కారు పోర్టల్',
-  terms: 'నిబంధనలు మరియు షరతులు',
-  contact: 'సంప్రదించండి',
-  phone: 'ఫోన్',
-  email: 'ఇమెయిల్',
-  nalsa: 'నల్సా - నేషనల్ లీగల్ సర్వీస్ అథారిటీ',
-  sclsc: 'ఎస్సీఎల్ఎస్సీ - సుప్రీం కోర్ట్ లీగల్ సర్వీస్ కమిటీ',
-  hclsc: 'హెచ్సీఎల్ఎస్సీ - హైకోర్ట్ లీగల్ సర్వీస్ కమిటీ',
-  slsa: 'ఎస్‌ఎల్ఎస్ఎ - స్టేట్ లీగల్ సర్వీస్ అథారిటీ',
-  dlsa: 'డిఎల్ఎస్ఎ - డిస్ట్రిక్ట్ లీగల్ సర్వీస్ అథారిటీ',
-  tlsc: 'టిఎల్ఎస్సీ - తాలూకా లీగల్ సర్వీస్ కమిటీ',
-  slf: 'ఎస్‌ఎల్‌ఎఫ్ - స్వయంగా',
-  rep: 'ఆర్‌ఈపీ - ప్రతినిధి',
-  org: 'ఓఆర్‌జీ - సంస్థ'
+    userGuide: 'వినియోగదారు గైడ్',
+    govPortal: 'ప్రభుత్వ పోర్టల్',
+    terms: 'నిబంధనలు మరియు షరతులు',
+    contact: 'సంప్రదించండి',
+    phone: 'ఫోన్',
+    email: 'ఇమెయిల్',
+    saveDraft: 'డ్రాఫ్ట్‌ను సేవ్ చేయండి',
+    quickLinks: 'త్వరిత లింకులు',
+    faqs: 'తరచుగా అడిగే ప్రశ్నలు',
+    natureOfLegalAid: 'న్యాయ సహాయం / ఫిర్యాదు స్వరూపం',
+    problemSummary: 'న్యాయ సహాయం / ఫిర్యాదు కోసం సమస్య సారాంశం',
+    enterSummaryHere: 'ఇక్కడ టెక్స్ట్ నమోదు చేయండి...',
+    corruption: 'అక్రమాలు/దుర్వినియోగాల ఆరోపణ',
+    harassment: 'హింస/తప్పుదిద్దుబాటు ఆరోపణ',
+    central_misc: 'కేంద్ర ప్రభుత్వం: వివిధ',
+    civic_amenities: 'పౌర సౌకర్యాలు/సేవా నాణ్యత నష్టపరిహారాలు/రిఫండ్‌లు',
+    counselling: 'సలహా మరియు మాధ్యస్థం',
+    delay_decision: 'నిర్ణయం/అమలు ఆలస్యం',
+    law_order: 'శాంతి భద్రతలు',
+    legal_advice: 'చట్ట సలహా',
+    legal_redress: 'చట్ట పరిష్కారం',
+    panel_defend: 'కోర్టు కేసు రక్షణ కోసం ప్యానెల్ న్యాయవాది',
+    panel_newcase: 'కొత్త కేసు దాఖలాకు ప్యానెల్ న్యాయవాది',
+    requests: 'అభ్యర్థనలు',
+    retirement_dues: 'రిటైర్‌మెంట్ బకాయిలు',
+    revenue_tax: 'ఆదాయం/భూమి/పన్ను',
+    reserved_matter: 'ప్రతిష్టాత్మక కులాలు/జాతులు/వెనుకబడిన సేవల అంశాలు',
+    social_evils: 'సామాజిక చెడులు',
+    state_misc: 'రాష్ట్ర ప్రభుత్వం: వివిధ',
+    draft_application: 'దరఖాస్తు/ప్రాతినిధ్యం/నోటీసు/అర్జీ/స్పందనను తయారు చేయడం',
   },
+  
   ta: {
-    welcome: 'வரவேற்கிறோம்',
+    welcome: 'வரவேற்பு',
     governmentOfIndia: 'இந்திய அரசு',
-    ministryOfLaw: 'சட்ட மற்றும் நீதிமன்ற அமைச்சகம்',
-    applicationForm: 'சட்ட உதவி / புகார் விண்ணப்பப் படிவம்',
+    ministryOfLaw: 'சட்டம் மற்றும் நீதித்துறை அமைச்சகம்',
+    applicationForm: 'சட்ட உதவி / புகார் விண்ணப்ப படிவம்',
     legalAidApplication: 'சட்ட உதவி / புகார் விண்ணப்பம்',
-    applicationFor: 'எதற்கான விண்ணப்பம்',
-    receivedThrough: 'மூலம் பெறப்பட்டது',
-    state: 'மாநிலம்',
-    district: 'மாவட்டம்',
-    taluka: 'தாலுகா',
     nextStage: 'அடுத்த கட்டம்',
-    backToDashboard: 'டாஷ்போர்டுக்கு திரும்பவும்',
-    chooseItem: '-- உருப்படியைத் தேர்ந்தெடுக்கவும் --',
+    backToDashboard: 'டாஷ்போர்டுக்கு திரும்பு',
+    chooseItem: '-- ஒரு உருப்படியை தேர்வுசெய்க --',
     stage: 'கட்டம்',
-    of: 'இல்',
+    of: 'இன்',
     logout: '🚪 வெளியேறு',
     language: '🌐 மொழி',
     progress: 'முன்னேற்றம்',
-    pleaseSelect: 'தயவுசெய்து ஒரு விருப்பத்தைத் தேர்ந்தெடுக்கவும்',
-    errorMessage: 'தயவுசெய்து தேவையான அனைத்து புலங்களையும் நிரப்பவும்',
-    progressStatus: 'கட்டம் 1 இல் 6: அடிப்படை தகவல்',
+    errorMessage: 'தயவுசெய்து தேவையான அனைத்து பகுதிகளையும் பூர்த்தி செய்யவும்',
+    progressStatus: 'கட்டம் 2 / 6: பிரச்சினை விவரங்கள்',
+    faq: 'அடிக்கடி கேட்கப்படும் கேள்விகள்',
     userGuide: 'பயனர் வழிகாட்டி',
     govPortal: 'அரசு போர்டல்',
     terms: 'விதிமுறைகள் மற்றும் நிபந்தனைகள்',
-    contact: 'தொடர்பு கொள்ள',
+    contact: 'தொடர்பு',
     phone: 'தொலைபேசி',
     email: 'மின்னஞ்சல்',
-    faq: 'அடிக்கடி கேட்கப்படும் கேள்விகள்',
-    sclsc: 'எஸ்சி.எல்.எஸ்.சி - உச்சநீதிமன்ற சட்ட சேவை குழு',
-    hclsc: 'எச்.சி.எல்.எஸ்.சி - உயர் நீதிமன்ற சட்ட சேவை குழு',
-    slsa: 'எஸ்.எல்.எஸ்.ஏ - மாநில சட்ட சேவை ஆணையம்',
-    dlsa: 'டி.எல்.எஸ்.ஏ - மாவட்ட சட்ட சேவை ஆணையம்',
-    tlsc: 'டி.எல்.எஸ்.சி - தாலுகா சட்ட சேவை குழு',
-    nalsa: 'நல்சா - தேசிய சட்ட சேவை ஆணையம்',
-    slf: 'எஸ்எல்எஃப் - சுயமாக',
-    rep: 'ஆர்இபி - பிரதிநிதி',
-    org: 'ஓஆர்ஜி - நிறுவனம்'
-       
+    saveDraft: 'வரைவு சேமிக்கவும்',
+    quickLinks: 'விரைவு இணைப்புகள்',
+    faqs: 'அடிக்கடி கேட்கப்படும் கேள்விகள்',
+    natureOfLegalAid: 'சட்ட உதவி / புகாரின் தன்மை',
+    problemSummary: 'சட்ட உதவி / புகாருக்கான பிரச்சினையின் சுருக்கம்',
+    enterSummaryHere: 'இங்கே உள்ளிடுக...',
+    corruption: 'அழுக்காறு/தவறான நடைமுறைகள் குற்றச்சாட்டு',
+    harassment: 'துன்புறுத்தல்/முறையீடு குற்றச்சாட்டு',
+    central_misc: 'மத்திய அரசு: பலதரப்பட்டவை',
+    civic_amenities: 'நகர்ப்புற வசதிகள்/சேவை தரம் இழப்பீடு/மீளளிப்பு',
+    counselling: 'ஆலோசனை மற்றும் சமரசம்',
+    delay_decision: 'முடிவு/செயலாக்கத்தில் தாமதம்',
+    law_order: 'சட்டம் மற்றும் ஒழுங்கு',
+    legal_advice: 'சட்ட ஆலோசனை',
+    legal_redress: 'சட்ட நிவாரணம்',
+    panel_defend: 'நடப்புள்ள வழக்குக்கு சட்டத்தரணி நியமனம்',
+    panel_newcase: 'புதிய வழக்குக்கு சட்டத்தரணி நியமனம்',
+    requests: 'வேண்டுகோள்கள்',
+    retirement_dues: 'ஓய்வூதியத் தொகைகள்',
+    revenue_tax: 'வருமானம்/நிலம்/வரி',
+    reserved_matter: 'அதிகாரம் பெற்ற/இனத்தினர் தொடர்பான சேவை விவகாரங்கள்',
+    social_evils: 'சமூக தீமைகள்',
+    state_misc: 'மாநில அரசு: பலதரப்பட்டவை',
+    draft_application: 'விண்ணப்பம்/தகவல்/குற்றச்சாட்டு/மனு/பதில் வரைதல்'
   },
+  
   bn: {
     welcome: 'স্বাগতম',
     governmentOfIndia: 'ভারত সরকার',
-    ministryOfLaw: 'আইন ও বিচার মন্ত্রণালয়',
+    ministryOfLaw: 'আইন ও ন্যায় মন্ত্রণালয়',
     applicationForm: 'আইনি সহায়তা / অভিযোগের জন্য আবেদন ফর্ম',
     legalAidApplication: 'আইনি সহায়তা / অভিযোগ আবেদন',
-    applicationFor: 'যার জন্য আবেদন',
-    receivedThrough: 'যার মাধ্যমে প্রাপ্ত',
-    state: 'রাজ্য',
-    district: 'জেলা',
-    taluka: 'তালুক',
     nextStage: 'পরবর্তী ধাপ',
     backToDashboard: 'ড্যাশবোর্ডে ফিরে যান',
     chooseItem: '-- একটি আইটেম নির্বাচন করুন --',
-    stage: 'ধাপ',
+    stage: 'পর্যায়',
     of: 'এর',
-    logout: '🚪 লগ আউট',
+    logout: '🚪 লগআউট',
     language: '🌐 ভাষা',
     progress: 'অগ্রগতি',
-    pleaseSelect: 'অনুগ্রহ করে একটি বিকল্প নির্বাচন করুন',
-    errorMessage: 'দয়া করে সমস্ত প্রয়োজনীয় ঘর পূরণ করুন',
-    progressStatus: 'ধাপ ১ এর ৬: প্রাথমিক তথ্য',
-    faq: 'প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী',
+    errorMessage: 'দয়া করে সব প্রয়োজনীয় ঘর পূরণ করুন',
+    progressStatus: 'পর্যায় ২ / ৬: সমস্যার বিবরণ',
+    faq: 'প্রায়শই জিজ্ঞাসিত প্রশ্নাবলি',
     userGuide: 'ব্যবহারকারী নির্দেশিকা',
     govPortal: 'সরকারি পোর্টাল',
-    terms: 'শর্তাবলী',
-    contact: 'যোগাযোগ করুন',
+    terms: 'শর্তাবলি',
+    contact: 'যোগাযোগ',
     phone: 'ফোন',
-    email: 'ইমেইল',
-    nalsa: 'নালসা - জাতীয় আইন সহায়তা কর্তৃপক্ষ',
-    sclsc: 'এসসিএলএসসি - সুপ্রিম কোর্ট আইন সহায়তা কমিটি',
-    hclsc: 'এইচসিএলএসসি - হাই কোর্ট আইন সহায়তা কমিটি',
-    slsa: 'এসএলএসএ - রাজ্য আইন সহায়তা কর্তৃপক্ষ',
-    dlsa: 'ডিএলএসএ - জেলা আইন সহায়তা কর্তৃপক্ষ',
-    tlsc: 'টিএলএসসি - তহশিল আইন সহায়তা কমিটি',
-    slf: 'এসএলএফ - স্বয়ং',
-    rep: 'আরইপি - প্রতিনিধি',
-    org: 'ওআরজি - সংস্থা'
+    email: 'ইমেল',
+    saveDraft: 'খসড়া সংরক্ষণ করুন',
+    quickLinks: 'দ্রুত লিঙ্কসমূহ',
+    faqs: 'প্রায়শই জিজ্ঞাসিত প্রশ্নাবলি',
+    natureOfLegalAid: 'আইনি সহায়তা / অভিযোগের প্রকৃতি',
+    problemSummary: 'যে সমস্যার জন্য আইনি সহায়তা / অভিযোগ চাওয়া হচ্ছে তার সংক্ষিপ্তসার',
+    enterSummaryHere: 'এখানে লিখুন...',
+    corruption: 'দুর্নীতি/অনিয়মের অভিযোগ',
+    harassment: 'হয়রানি/অভব্য আচরণের অভিযোগ',
+    central_misc: 'কেন্দ্রীয় সরকার: বিবিধ',
+    civic_amenities: 'নাগরিক সুবিধা/পরিষেবার মান ক্ষতিপূরণ/ফেরত',
+    counselling: 'পরামর্শ এবং মীমাংসা',
+    delay_decision: 'সিদ্ধান্ত/বাস্তবায়নে বিলম্ব',
+    law_order: 'আইন ও শৃঙ্খলা',
+    legal_advice: 'আইনি পরামর্শ',
+    legal_redress: 'আইনি প্রতিকার',
+    panel_defend: 'মামলা পরিচালনার জন্য প্যানেল আইনজীবী',
+    panel_newcase: 'নতুন মামলার জন্য প্যানেল আইনজীবী',
+    requests: 'অনুরোধ',
+    retirement_dues: 'অবসর বকেয়া',
+    revenue_tax: 'রাজস্ব/জমি/কর',
+    reserved_matter: 'তালিকাভুক্ত জাতি/উপজাতি/পিছিয়ে পড়া শ্রেণীর বিষয়',
+    social_evils: 'সামাজিক কুপ্রথা',
+    state_misc: 'রাজ্য সরকার: বিবিধ',
+    draft_application: 'আবেদন/প্রতিনিধিত্ব/নোটিশ/পিটিশন/উত্তরের খসড়া তৈরি'
   },
-      
-  // Add other languages as needed
+  
 };
 
-const Stage1 = () => {
+const Stage2 = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
@@ -211,11 +258,8 @@ const Stage1 = () => {
   const [t, setT] = useState(translations.en);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    applicationType: '',
-    receivedThrough: 'SLF - Self', // Default value
-    state: '',
-    district: '',
-    taluka: ''
+    natureOfLegalAid: '',
+    problemSummary: ''
   });
   const [error, setError] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState(langParam);
@@ -223,8 +267,9 @@ const Stage1 = () => {
   const [user, setUser] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
 
-  // Get token from location state or localStorage
+  // Get token and previous form data from location state or localStorage
   const token = location.state?.token || localStorage.getItem('token');
+  const previousFormData = location.state?.formData || {};
 
   useEffect(() => {
     const selected = translations[selectedLanguage] || translations['en'];
@@ -289,10 +334,10 @@ const Stage1 = () => {
   };
 
   const handleNext = () => {
-    if (!formData.applicationType) {
+    if (!formData.natureOfLegalAid || !formData.problemSummary) {
       setError(t.errorMessage);
       // Shake animation for error
-      const formElement = document.querySelector('.stage1-form');
+      const formElement = document.querySelector('.stage2-form');
       formElement.classList.add('shake');
       setTimeout(() => {
         formElement.classList.remove('shake');
@@ -301,13 +346,18 @@ const Stage1 = () => {
     }
 
     // Navigate to next stage with form data and token
-    navigate('/stage2', {
+    navigate('/stage3', {
       state: { 
         token,
-        formData: { ...formData }
+        formData: { ...previousFormData, ...formData }
       },
       search: `?lang=${selectedLanguage}`
     });
+  };
+
+  const handleSaveDraft = () => {
+    // Here you would implement logic to save the form data as a draft
+    alert('Draft saved successfully!');
   };
 
   const handleBackToDashboard = () => {
@@ -407,7 +457,7 @@ const Stage1 = () => {
     },
     progressBarInner: {
       height: '100%',
-      width: '16.67%', // 1/6 = 16.67%
+      width: '33.33%', // 2/6 = 33.33%
       backgroundColor: '#0b5394',
       borderRadius: '6px',
       transition: 'width 1s ease-in-out'
@@ -435,11 +485,19 @@ const Stage1 = () => {
       color: 'white',
       transform: 'scale(1.2)'
     },
+    completedStage: {
+      backgroundColor: '#4caf50',
+      color: 'white'
+    },
     // Buttons at the bottom
     buttonsContainer: {
       display: 'flex',
       justifyContent: 'space-between',
       marginTop: '30px'
+    },
+    buttonGroup: {
+      display: 'flex',
+      gap: '10px'
     },
     buttonSecondary: {
       backgroundColor: '#e2e8f0',
@@ -452,6 +510,15 @@ const Stage1 = () => {
     },
     buttonPrimary: {
       backgroundColor: '#0b5394',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      padding: '10px 20px',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease'
+    },
+    buttonSave: {
+      backgroundColor: '#4caf50',
       color: 'white',
       border: 'none',
       borderRadius: '4px',
@@ -476,13 +543,8 @@ const Stage1 = () => {
     },
     formRow: {
       display: 'flex',
-      flexWrap: 'wrap',
-      margin: '0 -10px 20px',
-      alignItems: 'center'
-    },
-    formColumn: {
-      flex: '1 1 300px',
-      padding: '0 10px'
+      flexDirection: 'column',
+      margin: '0 0 20px',
     },
     formLabel: {
       display: 'block',
@@ -496,6 +558,15 @@ const Stage1 = () => {
       borderRadius: '4px',
       border: '1px solid #d1d5db',
       fontSize: '16px'
+    },
+    formTextarea: {
+      width: '100%',
+      padding: '10px',
+      borderRadius: '4px',
+      border: '1px solid #d1d5db',
+      fontSize: '16px',
+      minHeight: '150px',
+      resize: 'vertical'
     },
     requiredField: {
       color: 'red'
@@ -525,8 +596,8 @@ const Stage1 = () => {
           to { opacity: 1; transform: translateY(0); }
         }
         @keyframes progressAnimation {
-          from { width: 0%; }
-          to { width: 16.67%; }
+          from { width: 16.67%; }
+          to { width: 33.33%; }
         }
         @keyframes pulse {
           0% { box-shadow: 0 0 0 0 rgba(11, 83, 148, 0.7); }
@@ -538,7 +609,7 @@ const Stage1 = () => {
           10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
           20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
-        .stage1-form.shake {
+        .stage2-form.shake {
           animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
         .form-row {
@@ -548,15 +619,14 @@ const Stage1 = () => {
         }
         .form-row:nth-child(1) { animation-delay: 0.2s; }
         .form-row:nth-child(2) { animation-delay: 0.4s; }
-        .form-row:nth-child(3) { animation-delay: 0.6s; }
-        .form-buttons { animation-delay: 0.8s; }
+        .form-buttons { animation-delay: 0.6s; }
         .active-stage {
           animation: pulse 2s infinite;
         }
         .progress-bar-inner {
           animation: progressAnimation 1.5s ease-out forwards;
         }
-        .form-select:focus {
+        .form-select:focus, .form-textarea:focus {
           outline: none;
           border-color: #0b5394;
           box-shadow: 0 0 0 3px rgba(11, 83, 148, 0.3);
@@ -633,7 +703,7 @@ const Stage1 = () => {
       <div style={styles.progressContainer}>
         <div style={styles.progressInner}>
           <div style={styles.progressText}>
-            <span>{t.progress}: {t.stage} 1 {t.of} 6</span>
+            <span>{t.progress}: {t.stage} 2 {t.of} 6</span>
             <span>{t.progressStatus}</span>
           </div>
           <div style={styles.progressBarOuter}>
@@ -645,9 +715,10 @@ const Stage1 = () => {
                 key={stage} 
                 style={{
                   ...styles.progressStage,
-                  ...(stage === 1 ? styles.activeStage : {})
+                  ...(stage === 2 ? styles.activeStage : {}),
+                  ...(stage < 2 ? styles.completedStage : {})
                 }}
-                className={stage === 1 ? 'active-stage' : ''}
+                className={stage === 2 ? 'active-stage' : ''}
               >
                 {stage}
               </div>
@@ -657,11 +728,9 @@ const Stage1 = () => {
       </div>
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', width: '100%' }}>
-        {/* Form Title */}
-        
         {/* Main Form */}
         <div 
-          className="stage1-form"
+          className="stage2-form"
           style={{
             ...styles.formContainer,
             opacity: showAnimation ? 1 : 0,
@@ -673,45 +742,53 @@ const Stage1 = () => {
           {error && <div style={styles.errorText}>{error}</div>}
           
           <div className="form-row" style={styles.formRow}>
-            <div style={styles.formColumn}>
-              <label style={styles.formLabel}>
-                {t.applicationFor} <span style={styles.requiredField}>*</span>:
-              </label>
-              <select 
-                name="applicationType"
-                value={formData.applicationType}
-                onChange={handleInputChange}
-                style={styles.formSelect}
-                className="form-select"
-                required
-              >
-                <option value="">{t.chooseItem}</option>
-                <option value="nalsa">{t.nalsa}</option>
-                <option value="sclsc">{t.sclsc}</option>
-                <option value="hclsc">{t.hclsc}</option>
-                <option value="slsa">{t.slsa}</option>
-                <option value="dlsa">{t.dlsa}</option>
-                <option value="tlsc">{t.tlsc}</option>
+            <label style={styles.formLabel}>
+              {t.natureOfLegalAid} <span style={styles.requiredField}>*</span>:
+            </label>
+            <select 
+              name="natureOfLegalAid"
+              value={formData.natureOfLegalAid}
+              onChange={handleInputChange}
+              style={styles.formSelect}
+              className="form-select"
+              required
+            >
+              <option value="">{t.chooseItem}</option>
+                <option value="corruption">{t.corruption}</option>
+                <option value="harassment">{t.harassment}</option>
+                <option value="central_misc">{t.central_misc}</option>
+                <option value="civic_amenities">{t.civic_amenities}</option>
+                <option value="counselling">{t.counselling}</option>
+                <option value="delay_decision">{t.delay_decision}</option>
+                <option value="law_order">{t.law_order}</option>
+                <option value="legal_advice">{t.legal_advice}</option>
+                <option value="legal_redress">{t.legal_redress}</option>
+                <option value="panel_defend">{t.panel_defend}</option>
+                <option value="panel_newcase">{t.panel_newcase}</option>
+                <option value="requests">{t.requests}</option>
+                <option value="retirement_dues">{t.retirement_dues}</option>
+                <option value="revenue_tax">{t.revenue_tax}</option>
+                <option value="reserved_matter">{t.reserved_matter}</option>
+                <option value="social_evils">{t.social_evils}</option>
+                <option value="state_misc">{t.state_misc}</option>
+                <option value="draft_application">{t.draft_application}</option>
 
-              </select>
-            </div>
-            <div style={styles.formColumn}>
-              <label style={styles.formLabel}>
-                {t.receivedThrough} <span style={styles.requiredField}>*</span>:
-              </label>
-              <select 
-                name="receivedThrough"
-                value={formData.receivedThrough}
-                onChange={handleInputChange}
-                style={styles.formSelect}
-                className="form-select"
-                required
-              >
-                <option value="slf">{t.slf}</option>
-                <option value="rep">{t.rep}</option>
-                <option value="org">{t.org}</option>
-              </select>
-            </div>
+            </select>
+          </div>
+
+          <div className="form-row" style={styles.formRow}>
+            <label style={styles.formLabel}>
+              {t.problemSummary} <span style={styles.requiredField}>*</span>:
+            </label>
+            <textarea 
+              name="problemSummary"
+              value={formData.problemSummary}
+              onChange={handleInputChange}
+              placeholder={t.enterSummaryHere}
+              style={styles.formTextarea}
+              className="form-textarea"
+              required
+            />
           </div>
 
           {/* Buttons */}
@@ -723,13 +800,22 @@ const Stage1 = () => {
             >
               {t.backToDashboard}
             </button>
-            <button 
-              onClick={handleNext} 
-              style={styles.buttonPrimary}
-              className="btn-hover"
-            >
-              {t.nextStage} →
-            </button>
+            <div style={styles.buttonGroup}>
+              <button 
+                onClick={handleSaveDraft} 
+                style={styles.buttonSave}
+                className="btn-hover"
+              >
+                {t.saveDraft}
+              </button>
+              <button 
+                onClick={handleNext} 
+                style={styles.buttonPrimary}
+                className="btn-hover"
+              >
+                {t.nextStage} →
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -758,4 +844,4 @@ const Stage1 = () => {
   );
 };
 
-export default Stage1;
+export default Stage2;
