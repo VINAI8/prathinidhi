@@ -30,6 +30,8 @@ const translations = {
     email: 'Email',
     phone: 'Phone',
     hours: 'Hours',
+    name : "Name",
+    role:"Role",
     address: 'Address',
     about: 'About Platform',
     aboutText: 'This platform is developed under the Digital India initiative to streamline legal application services for all citizens in multiple regional languages.',
@@ -441,13 +443,33 @@ const Dashboard = () => {
       </div>
 
       <main className="main">
-        
-        <div className="card">
-          <h3>{t.userDetails}</h3>
-          <p><strong>{t.aadhaar}:</strong> {user?.aadhaar}</p>
-          <p><strong>{t.mobile}:</strong> {user?.mobile}</p>
-          <p><strong>{t.otp}:</strong> {user?.otp}</p>
-        </div>
+      <div className="card">
+  <h3>{t.userDetails}</h3>
+  <p><strong>{t.aadhaar}:</strong> {user?.aadhaar}</p>
+  <p><strong>{t.mobile}:</strong> {user?.mobile}</p>
+  <p><strong>{t.otp}:</strong> {user?.otp}</p>
+
+  {/* Display complaints if any */}
+  {user?.complaints && user.complaints.length > 0 && (
+    <div>
+      <h4>{t.complaints}</h4>
+      <ul>
+        {user.complaints.map((complaint, index) => (
+          <li key={index}>
+            <p><strong>{t.applicationType}:</strong> {complaint.applicationType}</p>
+            <p><strong>{t.receivedThrough}:</strong> {complaint.receivedThrough}</p>
+            <p><strong>{t.problemSummary}:</strong> {complaint.problemSummary}</p>
+            <p><strong>{t.religion}:</strong> {complaint.religion}</p>
+            <p><strong>{t.caste}:</strong> {complaint.caste}</p>
+            <p><strong>{t.occupation}:</strong> {complaint.occupation}</p>
+            <p><strong>{t.timestamp}:</strong> {complaint.timestamp}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
         
         <div className="card">
           <h3>{t.fileForms}</h3>
