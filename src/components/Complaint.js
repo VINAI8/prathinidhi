@@ -4,51 +4,75 @@ import { useLocation, useNavigate } from 'react-router-dom';
 // Translations object - I'm keeping the same structure as dashboard
 const translations = {
   en: {
-    welcome: 'Welcome',
-    governmentOfIndia: 'Government of India',
-    ministryOfLaw: 'Ministry of Law and Justice',
-    applicationForm: 'APPLICATION FORM FOR LEGAL AID / Grievance',
-    legalAidApplication: 'Legal Aid / Grievance Application',
-    applicationFor: 'Application For',
-    receivedThrough: 'Received Through',
-    state: 'State',
-    district: 'District',
-    taluka: 'Taluka',
-    nextStage: 'Next Stage',
-    backToDashboard: 'Back to Dashboard',
-    chooseItem: '-- Choose an Item --',
-    stage: 'Stage',
-    of: 'of',
-    logout: '🚪 Logout',
-    language: '🌐 Language',
-    progress: 'Progress',
-    pleaseSelect: 'Please select an option',
-    errorMessage: 'Please fill all required fields',
-    progressStatus: 'Stage 1 of 6: Basic Information',
-    faq: 'FAQs',
-    userGuide: 'User Guide',
-    govPortal: 'Government Portal',
-    terms: 'Terms and Conditions',
-    contact: 'Contact',
-    phone: 'Phone',
-    email: 'Email',
-    nalsa: 'NALSA - National Legal Service Authority',
-    sclsc: 'SCLSC - Supreme Court Legal Service Committee',
-    hclsc: 'HCLSC - High Court Legal Service Committee',
-    slsa: 'SLSA - State Legal Service Authority',
-    dlsa: 'DLSA - District Legal Service Authority',
-    tlsc: 'TLSC - Taluka Legal Service Committee',
-    slf: 'SLF - Self',
-    rep: 'REP - Representative',
-    org: 'ORG - Organization',
-    quickLinks: 'Quick Links',
-    faqs: 'FAQs'
+    legalAidApplication: "Legal Aid / Grievance",
+    stage: "Stage",
+    of: "of",
+    progress: "Progress",
+    progressStatus: "Basic Information",
+    logout: "Logout",
+    backToDashboard: "Back to Dashboard",
+    nextStage: "Next Stage",
+    quickLinks: "Quick Links",
+    faq: "FAQs",
+    userGuide: "User Guide",
+    govPortal: "Government Portal",
+    terms: "Terms & Conditions",
+    contact: "Contact Us",
+    phone: "Phone",
+    email: "Email",
+    
+    // Application Type options
+    applicationFor: "Nature of Legal Aid / Grievance",
+    nalsa: "NALSA",
+    sclsc: "SCLSC",
+    hclsc: "HCLSC",
+    slsa: "SLSA",
+    dlsa: "DLSA",
+    tlsc: "TLSC",
+    
+    // Received Through options
+    receivedThrough: "Received Through",
+    slf: "Self",
+    rep: "Representative",
+    org: "Organization",
+    
+    // Problem Summary
+    problemSummary: "Summary of problem for which legal aid / Grievance is sought",
+    
+    // Religion options
+    religion: "Religion",
+    hindu: "Hindu",
+    muslim: "Muslim",
+    christian: "Christian",
+    sikh: "Sikh",
+    buddhist: "Buddhist",
+    jain: "Jain",
+    parsi: "Parsi",
+    other: "Other",
+    
+    // Caste options
+    caste: "Caste",
+    general: "General",
+    obc: "OBC",
+    sc: "SC",
+    st: "ST",
+    
+    // Occupation options
+    occupation: "Occupation",
+    government: "Government Employee",
+    private: "Private Sector",
+    business: "Business",
+    agriculture: "Agriculture",
+    student: "Student",
+    homemaker: "Homemaker",
+    retired: "Retired",
+    unemployed: "Unemployed",
+    
+    errorMessage: "Please complete all required fields before proceeding"
   }
 };
 
-// Button selection component
-
-const Stage1 = () => {
+const Complaint = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
@@ -57,19 +81,26 @@ const Stage1 = () => {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     applicationType: '',
-    receivedThrough: '', // Remove default value to enforce sequence
-    state: '',
-    district: '',
-    taluka: ''
+    receivedThrough: '',
+    problemSummary: '',
+    religion: '',
+    caste: '',
+    occupation: ''
   });
   const [error, setError] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState(langParam);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [nextButtonEnabled, setNextButtonEnabled] = useState(false);
+  
+  // Form field visibility states
   const [showApplicationType, setShowApplicationType] = useState(true);
   const [showReceivedThrough, setShowReceivedThrough] = useState(false);
-  const [nextButtonEnabled, setNextButtonEnabled] = useState(false);
+  const [showProblemSummary, setShowProblemSummary] = useState(false);
+  const [showReligion, setShowReligion] = useState(false);
+  const [showCaste, setShowCaste] = useState(false);
+  const [showOccupation, setShowOccupation] = useState(false);
 
   // Get token from location state or localStorage
   const token = location.state?.token || localStorage.getItem('token');
@@ -119,16 +150,30 @@ const Stage1 = () => {
     }, 300);
   }, []);
 
+  // Check form completion to enable/disable Next button
+  useEffect(() => {
+    if (
+      formData.applicationType && 
+      formData.receivedThrough && 
+      formData.problemSummary && 
+      formData.religion && 
+      formData.caste &&
+      formData.occupation
+    ) {
+      setNextButtonEnabled(true);
+    } else {
+      setNextButtonEnabled(false);
+    }
+  }, [formData]);
+
   const handleApplicationTypeSelect = (value) => {
     setFormData({
       ...formData,
-      applicationType: value,
-      receivedThrough: '' // Reset when changing application type
+      applicationType: value
     });
-    // Hide application type and show received through
+    // Move to next field
     setShowApplicationType(false);
     setShowReceivedThrough(true);
-    setNextButtonEnabled(false); // Disable next until received through is selected
   };
 
   const handleReceivedThroughSelect = (value) => {
@@ -136,7 +181,52 @@ const Stage1 = () => {
       ...formData,
       receivedThrough: value
     });
-    setNextButtonEnabled(true); // Enable next button after selection
+    // Move to next field
+    setShowReceivedThrough(false);
+    setShowProblemSummary(true);
+  };
+
+  const handleProblemSummaryChange = (e) => {
+    setFormData({
+      ...formData,
+      problemSummary: e.target.value
+    });
+    
+    // Auto-advance if there's content
+    if (e.target.value.trim().length > 0 && !showReligion) {
+      setTimeout(() => {
+        setShowProblemSummary(false);
+        setShowReligion(true);
+      }, 500);
+    }
+  };
+
+  const handleReligionSelect = (value) => {
+    setFormData({
+      ...formData,
+      religion: value
+    });
+    // Move to next field
+    setShowReligion(false);
+    setShowCaste(true);
+  };
+
+  const handleCasteSelect = (value) => {
+    setFormData({
+      ...formData,
+      caste: value
+    });
+    // Move to next field
+    setShowCaste(false);
+    setShowOccupation(true);
+  };
+
+  const handleOccupationSelect = (value) => {
+    setFormData({
+      ...formData,
+      occupation: value
+    });
+    // This is the last field, so no need to show next field
   };
 
   const handleLanguageChange = (e) => {
@@ -149,10 +239,15 @@ const Stage1 = () => {
   };
 
   const handleNext = () => {
-    if (!formData.applicationType || !formData.receivedThrough) {
+    if (!formData.applicationType || 
+        !formData.receivedThrough || 
+        !formData.problemSummary || 
+        !formData.religion || 
+        !formData.caste || 
+        !formData.occupation) {
       setError(t.errorMessage);
       // Shake animation for error
-      const formElement = document.querySelector('.stage1-form');
+      const formElement = document.querySelector('.complaint-form');
       formElement.classList.add('shake');
       setTimeout(() => {
         formElement.classList.remove('shake');
@@ -364,6 +459,15 @@ const Stage1 = () => {
       border: '1px solid #d1d5db',
       fontSize: '16px'
     },
+    formTextarea: {
+      width: '100%',
+      padding: '10px',
+      borderRadius: '4px',
+      border: '1px solid #d1d5db',
+      fontSize: '16px',
+      minHeight: '120px',
+      resize: 'vertical'
+    },
     requiredField: {
       color: 'red'
     },
@@ -465,7 +569,7 @@ const Stage1 = () => {
           0% { transform: translateY(0); }
           100% { transform: translateY(-3px); }
         }
-        .stage1-form.shake {
+        .complaint-form.shake {
           animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
         .form-row {
@@ -528,6 +632,15 @@ const Stage1 = () => {
         }
         .next-enabled {
           animation: bounce 1s infinite alternate;
+        }
+        .textarea-container {
+          position: relative;
+          width: 100%;
+        }
+        .textarea-container textarea:focus {
+          outline: none;
+          border-color: #0b5394;
+          box-shadow: 0 0 0 3px rgba(11, 83, 148, 0.3);
         }
       `}</style>
       
@@ -598,7 +711,7 @@ const Stage1 = () => {
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', width: '100%' }}>
         {/* Main Form */}
         <div 
-          className="stage1-form"
+          className="complaint-form"
           style={{
             ...styles.formContainer,
             opacity: showAnimation ? 1 : 0,
@@ -609,7 +722,7 @@ const Stage1 = () => {
 
           {error && <div style={styles.errorText}>{error}</div>}
           
-          {/* Application Type Selection - Disappears after selection */}
+          {/* Application Type Selection */}
           {showApplicationType && (
             <div className={`form-row ${showApplicationType ? 'animation-slide-in' : 'fade-out'}`} style={{
               ...styles.formRow,
@@ -637,7 +750,7 @@ const Stage1 = () => {
             </div>
           )}
 
-          {/* Received Through Selection - Only shows after application type is selected */}
+          {/* Received Through Selection */}
           {showReceivedThrough && (
             <div className="form-row slide-up" style={{
               ...styles.formRow,
@@ -661,8 +774,116 @@ const Stage1 = () => {
             </div>
           )}
 
-          {/* Buttons */}
-          <div className="form-row form-buttons" style={styles.buttonsContainer}>
+          {/* Problem Summary */}
+          {showProblemSummary && (
+            <div className="form-row slide-up" style={{
+              ...styles.formRow,
+              opacity: 1,
+              transform: 'translateY(0)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease',
+            }}>
+              <div style={styles.formColumn}>
+                <label style={styles.formLabel}>
+                  {t.problemSummary} <span style={styles.requiredField}>*</span>:
+                </label>
+                <div className="textarea-container">
+                  <textarea
+                    style={styles.formTextarea}
+                    value={formData.problemSummary}
+                    onChange={handleProblemSummaryChange}
+                    placeholder="Text Here..."
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Religion Selection */}
+          {showReligion && (
+            <div className="form-row slide-up" style={{
+              ...styles.formRow,
+              opacity: 1,
+              transform: 'translateY(0)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease',
+            }}>
+              <div style={styles.formColumn}>
+                <ButtonSelectionGroup
+                  options={[
+                    { value: 'hindu', label: t.hindu },
+                    { value: 'muslim', label: t.muslim },
+                    { value: 'christian', label: t.christian },
+                    { value: 'sikh', label: t.sikh },
+                    { value: 'buddhist', label: t.buddhist },
+                    { value: 'jain', label: t.jain },
+                    { value: 'parsi', label: t.parsi },
+                    { value: 'other', label: t.other }
+                  ]}
+                  selectedValue={formData.religion}
+                  onSelect={handleReligionSelect}
+                  title={t.religion}
+                  required={true}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Caste Selection */}
+          {showCaste && (
+            <div className="form-row slide-up" style={{
+              ...styles.formRow,
+              opacity: 1,
+              transform: 'translateY(0)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease',
+            }}>
+              <div style={styles.formColumn}>
+                <ButtonSelectionGroup
+                  options={[
+                    { value: 'general', label: t.general },
+                    { value: 'obc', label: t.obc },
+                    { value: 'sc', label: t.sc },
+                    { value: 'st', label: t.st }
+                  ]}
+                  selectedValue={formData.caste}
+                  onSelect={handleCasteSelect}
+                  title={t.caste}
+                  required={true}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Occupation Selection */}
+          {showOccupation && (
+  <div className="form-row slide-up" style={{
+    ...styles.formRow,
+    opacity: 1,
+    transform: 'translateY(0)',
+    transition: 'opacity 0.5s ease, transform 0.5s ease',
+  }}>
+    <div style={styles.formColumn}>
+      <ButtonSelectionGroup
+        options={[
+          { value: 'government', label: t.government },
+          { value: 'private', label: t.private },
+          { value: 'business', label: t.business },
+          { value: 'agriculture', label: t.agriculture },
+          { value: 'student', label: t.student },
+          { value: 'homemaker', label: t.homemaker },
+          { value: 'retired', label: t.retired },
+          { value: 'unemployed', label: t.unemployed }
+        ]}
+        selectedValue={formData.occupation}
+        onSelect={handleOccupationSelect}
+        title={t.occupation}
+        required={true}
+      />
+    </div>
+  </div>
+)}
+
+     {/* Buttons */}
+     <div className="form-row form-buttons" style={styles.buttonsContainer}>
             <button 
               onClick={handleBackToDashboard} 
               style={styles.buttonSecondary}
@@ -710,4 +931,4 @@ const Stage1 = () => {
   );
 };
 
-export default Stage1;
+export default Complaint;
