@@ -40,168 +40,13 @@ const translations = {
     tlsc: 'TLSC - Taluka Legal Service Committee',
     slf: 'SLF - Self',
     rep: 'REP - Representative',
-    org: 'ORG - Organization'
-  },
-  hi: {
-    welcome: 'स्वागत है',
-    governmentOfIndia: 'भारत सरकार',
-    ministryOfLaw: 'कानून और न्याय मंत्रालय',
-    applicationForm: 'कानूनी सहायता / शिकायत के लिए आवेदन पत्र',
-    legalAidApplication: 'कानूनी सहायता / शिकायत आवेदन',
-    applicationFor: 'के लिए आवेदन',
-    receivedThrough: 'के माध्यम से प्राप्त',
-    state: 'राज्य',
-    district: 'जिला',
-    taluka: 'तालुका',
-    nextStage: 'अगला चरण',
-    backToDashboard: 'डैशबोर्ड पर वापस जाएं',
-    chooseItem: '-- एक आइटम चुनें --',
-    stage: 'चरण',
-    of: 'का',
-    logout: '🚪 लॉगआउट',
-    language: '🌐 भाषा',
-    progress: 'प्रगति',
-    pleaseSelect: 'कृपया एक विकल्प चुनें',
-    errorMessage: 'कृपया सभी आवश्यक फ़ील्ड भरें',
-    progressStatus: 'चरण 1 में से 6: मूलभूत जानकारी',
-    faq: 'अक्सर पूछे जाने वाले प्रश्न',
-    userGuide: 'उपयोगकर्ता मार्गदर्शिका',
-    govPortal: 'सरकारी पोर्टल',
-    terms: 'नियम और शर्तें',
-    contact: 'संपर्क करें',
-    phone: 'फ़ोन',
-    email: 'ईमेल',
-    nalsa: 'नालसा - नेशनल लीगल सर्विस अथॉरिटी',
-    sclsc: 'एससीएलएससी - सुप्रीम कोर्ट लीगल सर्विस कमेटी',
-    hclsc: 'एचसीएलएससी - हाई कोर्ट लीगल सर्विस कमेटी',
-    slsa: 'एसएलएसए - स्टेट लीगल सर्विस अथॉरिटी',
-    dlsa: 'डीएलएसए - डिस्ट्रिक्ट लीगल सर्विस अथॉरिटी',
-    tlsc: 'टीएलएससी - तालुका लीगल सर्विस कमेटी',
-    slf: 'एसएलएफ - स्वयं',
-    rep: 'आरईपी - प्रतिनिधि',
-    org: 'ओआरजी - संगठन'
-  },
-  te: {
-    welcome: 'స్వాగతం',
-    governmentOfIndia: 'భారత ప్రభుత్వం',
-    ministryOfLaw: 'చట్ట మరియు న్యాయ మంత్రిత్వ శాఖ',
-    applicationForm: 'న్యాయ సహాయం / ఫిర్యాదు దరఖాస్తు ఫారమ్',
-    legalAidApplication: 'న్యాయ సహాయం / ఫిర్యాదు దరఖాస్తు',
-    applicationFor: 'దేనికోసం దరఖాస్తు',
-    receivedThrough: 'ద్వారా అందింది',
-    state: 'రాష్ట్రం',
-    district: 'జిల్లా',
-    taluka: 'తాలూకా',
-    nextStage: 'తదుపరి దశ',
-    backToDashboard: 'డాష్‌బోర్డ్‌కు వెళ్ళండి',
-    chooseItem: '-- అంశాన్ని ఎంచుకోండి --',
-    stage: 'దశ',
-    of: 'లో',
-    logout: '🚪 లాగ్అవుట్',
-    language: '🌐 భాష',
-    progress: 'ప్రగతి',
-    pleaseSelect: 'దయచేసి ఒక ఎంపికను ఎంచుకోండి',
-    errorMessage: 'దయచేసి అవసరమైన అన్ని ఖాళీలను పూరించండి',
-    progressStatus: 'దశ 1 యొక్క 6: ప్రాథమిక సమాచారం',
-    faq: 'తరచుగా అడిగే ప్రశ్నలు',
-  userGuide: 'వినియోగదారుల గైడ్',
-  govPortal: 'సర్కారు పోర్టల్',
-  terms: 'నిబంధనలు మరియు షరతులు',
-  contact: 'సంప్రదించండి',
-  phone: 'ఫోన్',
-  email: 'ఇమెయిల్',
-  nalsa: 'నల్సా - నేషనల్ లీగల్ సర్వీస్ అథారిటీ',
-  sclsc: 'ఎస్సీఎల్ఎస్సీ - సుప్రీం కోర్ట్ లీగల్ సర్వీస్ కమిటీ',
-  hclsc: 'హెచ్సీఎల్ఎస్సీ - హైకోర్ట్ లీగల్ సర్వీస్ కమిటీ',
-  slsa: 'ఎస్‌ఎల్ఎస్ఎ - స్టేట్ లీగల్ సర్వీస్ అథారిటీ',
-  dlsa: 'డిఎల్ఎస్ఎ - డిస్ట్రిక్ట్ లీగల్ సర్వీస్ అథారిటీ',
-  tlsc: 'టిఎల్ఎస్సీ - తాలూకా లీగల్ సర్వీస్ కమిటీ',
-  slf: 'ఎస్‌ఎల్‌ఎఫ్ - స్వయంగా',
-  rep: 'ఆర్‌ఈపీ - ప్రతినిధి',
-  org: 'ఓఆర్‌జీ - సంస్థ'
-  },
-  ta: {
-    welcome: 'வரவேற்கிறோம்',
-    governmentOfIndia: 'இந்திய அரசு',
-    ministryOfLaw: 'சட்ட மற்றும் நீதிமன்ற அமைச்சகம்',
-    applicationForm: 'சட்ட உதவி / புகார் விண்ணப்பப் படிவம்',
-    legalAidApplication: 'சட்ட உதவி / புகார் விண்ணப்பம்',
-    applicationFor: 'எதற்கான விண்ணப்பம்',
-    receivedThrough: 'மூலம் பெறப்பட்டது',
-    state: 'மாநிலம்',
-    district: 'மாவட்டம்',
-    taluka: 'தாலுகா',
-    nextStage: 'அடுத்த கட்டம்',
-    backToDashboard: 'டாஷ்போர்டுக்கு திரும்பவும்',
-    chooseItem: '-- உருப்படியைத் தேர்ந்தெடுக்கவும் --',
-    stage: 'கட்டம்',
-    of: 'இல்',
-    logout: '🚪 வெளியேறு',
-    language: '🌐 மொழி',
-    progress: 'முன்னேற்றம்',
-    pleaseSelect: 'தயவுசெய்து ஒரு விருப்பத்தைத் தேர்ந்தெடுக்கவும்',
-    errorMessage: 'தயவுசெய்து தேவையான அனைத்து புலங்களையும் நிரப்பவும்',
-    progressStatus: 'கட்டம் 1 இல் 6: அடிப்படை தகவல்',
-    userGuide: 'பயனர் வழிகாட்டி',
-    govPortal: 'அரசு போர்டல்',
-    terms: 'விதிமுறைகள் மற்றும் நிபந்தனைகள்',
-    contact: 'தொடர்பு கொள்ள',
-    phone: 'தொலைபேசி',
-    email: 'மின்னஞ்சல்',
-    faq: 'அடிக்கடி கேட்கப்படும் கேள்விகள்',
-    sclsc: 'எஸ்சி.எல்.எஸ்.சி - உச்சநீதிமன்ற சட்ட சேவை குழு',
-    hclsc: 'எச்.சி.எல்.எஸ்.சி - உயர் நீதிமன்ற சட்ட சேவை குழு',
-    slsa: 'எஸ்.எல்.எஸ்.ஏ - மாநில சட்ட சேவை ஆணையம்',
-    dlsa: 'டி.எல்.எஸ்.ஏ - மாவட்ட சட்ட சேவை ஆணையம்',
-    tlsc: 'டி.எல்.எஸ்.சி - தாலுகா சட்ட சேவை குழு',
-    nalsa: 'நல்சா - தேசிய சட்ட சேவை ஆணையம்',
-    slf: 'எஸ்எல்எஃப் - சுயமாக',
-    rep: 'ஆர்இபி - பிரதிநிதி',
-    org: 'ஓஆர்ஜி - நிறுவனம்'
-       
-  },
-  bn: {
-    welcome: 'স্বাগতম',
-    governmentOfIndia: 'ভারত সরকার',
-    ministryOfLaw: 'আইন ও বিচার মন্ত্রণালয়',
-    applicationForm: 'আইনি সহায়তা / অভিযোগের জন্য আবেদন ফর্ম',
-    legalAidApplication: 'আইনি সহায়তা / অভিযোগ আবেদন',
-    applicationFor: 'যার জন্য আবেদন',
-    receivedThrough: 'যার মাধ্যমে প্রাপ্ত',
-    state: 'রাজ্য',
-    district: 'জেলা',
-    taluka: 'তালুক',
-    nextStage: 'পরবর্তী ধাপ',
-    backToDashboard: 'ড্যাশবোর্ডে ফিরে যান',
-    chooseItem: '-- একটি আইটেম নির্বাচন করুন --',
-    stage: 'ধাপ',
-    of: 'এর',
-    logout: '🚪 লগ আউট',
-    language: '🌐 ভাষা',
-    progress: 'অগ্রগতি',
-    pleaseSelect: 'অনুগ্রহ করে একটি বিকল্প নির্বাচন করুন',
-    errorMessage: 'দয়া করে সমস্ত প্রয়োজনীয় ঘর পূরণ করুন',
-    progressStatus: 'ধাপ ১ এর ৬: প্রাথমিক তথ্য',
-    faq: 'প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী',
-    userGuide: 'ব্যবহারকারী নির্দেশিকা',
-    govPortal: 'সরকারি পোর্টাল',
-    terms: 'শর্তাবলী',
-    contact: 'যোগাযোগ করুন',
-    phone: 'ফোন',
-    email: 'ইমেইল',
-    nalsa: 'নালসা - জাতীয় আইন সহায়তা কর্তৃপক্ষ',
-    sclsc: 'এসসিএলএসসি - সুপ্রিম কোর্ট আইন সহায়তা কমিটি',
-    hclsc: 'এইচসিএলএসসি - হাই কোর্ট আইন সহায়তা কমিটি',
-    slsa: 'এসএলএসএ - রাজ্য আইন সহায়তা কর্তৃপক্ষ',
-    dlsa: 'ডিএলএসএ - জেলা আইন সহায়তা কর্তৃপক্ষ',
-    tlsc: 'টিএলএসসি - তহশিল আইন সহায়তা কমিটি',
-    slf: 'এসএলএফ - স্বয়ং',
-    rep: 'আরইপি - প্রতিনিধি',
-    org: 'ওআরজি - সংস্থা'
-  },
-      
-  // Add other languages as needed
+    org: 'ORG - Organization',
+    quickLinks: 'Quick Links',
+    faqs: 'FAQs'
+  }
 };
+
+// Button selection component
 
 const Stage1 = () => {
   const location = useLocation();
@@ -212,7 +57,7 @@ const Stage1 = () => {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     applicationType: '',
-    receivedThrough: 'SLF - Self', // Default value
+    receivedThrough: '', // Remove default value to enforce sequence
     state: '',
     district: '',
     taluka: ''
@@ -222,6 +67,9 @@ const Stage1 = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [showApplicationType, setShowApplicationType] = useState(true);
+  const [showReceivedThrough, setShowReceivedThrough] = useState(false);
+  const [nextButtonEnabled, setNextButtonEnabled] = useState(false);
 
   // Get token from location state or localStorage
   const token = location.state?.token || localStorage.getItem('token');
@@ -271,12 +119,24 @@ const Stage1 = () => {
     }, 300);
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleApplicationTypeSelect = (value) => {
     setFormData({
       ...formData,
-      [name]: value
+      applicationType: value,
+      receivedThrough: '' // Reset when changing application type
     });
+    // Hide application type and show received through
+    setShowApplicationType(false);
+    setShowReceivedThrough(true);
+    setNextButtonEnabled(false); // Disable next until received through is selected
+  };
+
+  const handleReceivedThroughSelect = (value) => {
+    setFormData({
+      ...formData,
+      receivedThrough: value
+    });
+    setNextButtonEnabled(true); // Enable next button after selection
   };
 
   const handleLanguageChange = (e) => {
@@ -289,7 +149,7 @@ const Stage1 = () => {
   };
 
   const handleNext = () => {
-    if (!formData.applicationType) {
+    if (!formData.applicationType || !formData.receivedThrough) {
       setError(t.errorMessage);
       // Shake animation for error
       const formElement = document.querySelector('.stage1-form');
@@ -300,6 +160,9 @@ const Stage1 = () => {
       return;
     }
 
+    // Reset error if any
+    setError('');
+    
     // Navigate to next stage with form data and token
     navigate('/stage2', {
       state: { 
@@ -472,23 +335,27 @@ const Stage1 = () => {
       color: '#0b5394',
       borderBottom: '2px solid #0b5394',
       paddingBottom: '10px',
-      marginBottom: '20px'
+      marginBottom: '20px',
+      textAlign: 'center'
     },
     formRow: {
       display: 'flex',
       flexWrap: 'wrap',
       margin: '0 -10px 20px',
+      justifyContent: 'center',
       alignItems: 'center'
     },
     formColumn: {
       flex: '1 1 300px',
-      padding: '0 10px'
+      padding: '0 10px',
+      maxWidth: '600px'
     },
     formLabel: {
       display: 'block',
       marginBottom: '8px',
       color: '#333',
-      fontWeight: '500'
+      fontWeight: '500',
+      textAlign: 'center'
     },
     formSelect: {
       width: '100%',
@@ -505,8 +372,52 @@ const Stage1 = () => {
       marginTop: '10px',
       fontWeight: 'bold',
       textAlign: 'center'
+    },
+    buttonGroup: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '10px',
+      marginTop: '10px',
+      justifyContent: 'center'
     }
   };
+
+  const ButtonSelectionGroup = ({ options, selectedValue, onSelect, title, required = false }) => {
+    return (
+      <div style={{ marginBottom: '20px' }}>
+        <label style={styles.formLabel}>
+          {title} {required && <span style={styles.requiredField}>*</span>}:
+        </label>
+        <div style={styles.buttonGroup}>
+          {options.map(option => (
+            <button
+              key={option.value}
+              type="button"
+              className={`selection-button ${selectedValue === option.value ? 'selected' : ''}`}
+              onClick={() => onSelect(option.value)}
+              style={{
+                padding: '10px 15px',
+                borderRadius: '25px',
+                border: selectedValue === option.value 
+                  ? '2px solid #0b5394' 
+                  : '1px solid #d1d5db',
+                backgroundColor: selectedValue === option.value ? '#e1f0ff' : '#fff',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontWeight: selectedValue === option.value ? 'bold' : 'normal',
+                boxShadow: selectedValue === option.value 
+                  ? '0 0 8px rgba(11, 83, 148, 0.4)' 
+                  : 'none',
+              }}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+  
 
   if (loading) return <p style={{ textAlign: 'center', marginTop: '100px' }}>Loading...</p>;
 
@@ -538,6 +449,22 @@ const Stage1 = () => {
           10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
           20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+          from { opacity: 1; transform: translateY(0); }
+          to { opacity: 0; transform: translateY(-20px); display: none; }
+        }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-3px); }
+        }
         .stage1-form.shake {
           animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
@@ -546,10 +473,12 @@ const Stage1 = () => {
           transform: translateY(20px);
           animation: fadeIn 0.5s forwards;
         }
-        .form-row:nth-child(1) { animation-delay: 0.2s; }
-        .form-row:nth-child(2) { animation-delay: 0.4s; }
-        .form-row:nth-child(3) { animation-delay: 0.6s; }
-        .form-buttons { animation-delay: 0.8s; }
+        .form-row.fade-out {
+          animation: fadeOut 0.5s forwards;
+        }
+        .form-row.slide-up {
+          animation: slideUp 0.5s forwards;
+        }
         .active-stage {
           animation: pulse 2s infinite;
         }
@@ -590,6 +519,16 @@ const Stage1 = () => {
         .footer li { margin-bottom: 0.3rem; }
         .footer a { color: #93c5fd; text-decoration: none; }
         .footer a:hover { text-decoration: underline; }
+        .selection-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .selection-button.selected {
+          animation: pulse 1.5s infinite;
+        }
+        .next-enabled {
+          animation: bounce 1s infinite alternate;
+        }
       `}</style>
       
       {/* Header - Same as Dashboard */}
@@ -657,8 +596,6 @@ const Stage1 = () => {
       </div>
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', width: '100%' }}>
-        {/* Form Title */}
-        
         {/* Main Form */}
         <div 
           className="stage1-form"
@@ -672,47 +609,57 @@ const Stage1 = () => {
 
           {error && <div style={styles.errorText}>{error}</div>}
           
-          <div className="form-row" style={styles.formRow}>
-            <div style={styles.formColumn}>
-              <label style={styles.formLabel}>
-                {t.applicationFor} <span style={styles.requiredField}>*</span>:
-              </label>
-              <select 
-                name="applicationType"
-                value={formData.applicationType}
-                onChange={handleInputChange}
-                style={styles.formSelect}
-                className="form-select"
-                required
-              >
-                <option value="">{t.chooseItem}</option>
-                <option value="nalsa">{t.nalsa}</option>
-                <option value="sclsc">{t.sclsc}</option>
-                <option value="hclsc">{t.hclsc}</option>
-                <option value="slsa">{t.slsa}</option>
-                <option value="dlsa">{t.dlsa}</option>
-                <option value="tlsc">{t.tlsc}</option>
+          {/* Application Type Selection - Disappears after selection */}
+          {showApplicationType && (
+            <div className={`form-row ${showApplicationType ? 'animation-slide-in' : 'fade-out'}`} style={{
+              ...styles.formRow,
+              opacity: showAnimation ? 1 : 0,
+              transform: showAnimation ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease',
+              transitionDelay: '0.2s'
+            }}>
+              <div style={styles.formColumn}>
+                <ButtonSelectionGroup
+                  options={[
+                    { value: 'nalsa', label: t.nalsa },
+                    { value: 'sclsc', label: t.sclsc },
+                    { value: 'hclsc', label: t.hclsc },
+                    { value: 'slsa', label: t.slsa },
+                    { value: 'dlsa', label: t.dlsa },
+                    { value: 'tlsc', label: t.tlsc }
+                  ]}
+                  selectedValue={formData.applicationType}
+                  onSelect={handleApplicationTypeSelect}
+                  title={t.applicationFor}
+                  required={true}
+                />
+              </div>
+            </div>
+          )}
 
-              </select>
+          {/* Received Through Selection - Only shows after application type is selected */}
+          {showReceivedThrough && (
+            <div className="form-row slide-up" style={{
+              ...styles.formRow,
+              opacity: 1,
+              transform: 'translateY(0)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease',
+            }}>
+              <div style={styles.formColumn}>
+                <ButtonSelectionGroup
+                  options={[
+                    { value: 'slf', label: t.slf },
+                    { value: 'rep', label: t.rep },
+                    { value: 'org', label: t.org }
+                  ]}
+                  selectedValue={formData.receivedThrough}
+                  onSelect={handleReceivedThroughSelect}
+                  title={t.receivedThrough}
+                  required={true}
+                />
+              </div>
             </div>
-            <div style={styles.formColumn}>
-              <label style={styles.formLabel}>
-                {t.receivedThrough} <span style={styles.requiredField}>*</span>:
-              </label>
-              <select 
-                name="receivedThrough"
-                value={formData.receivedThrough}
-                onChange={handleInputChange}
-                style={styles.formSelect}
-                className="form-select"
-                required
-              >
-                <option value="slf">{t.slf}</option>
-                <option value="rep">{t.rep}</option>
-                <option value="org">{t.org}</option>
-              </select>
-            </div>
-          </div>
+          )}
 
           {/* Buttons */}
           <div className="form-row form-buttons" style={styles.buttonsContainer}>
@@ -725,8 +672,13 @@ const Stage1 = () => {
             </button>
             <button 
               onClick={handleNext} 
-              style={styles.buttonPrimary}
-              className="btn-hover"
+              style={{
+                ...styles.buttonPrimary,
+                opacity: nextButtonEnabled ? 1 : 0.5,
+                cursor: nextButtonEnabled ? 'pointer' : 'not-allowed',
+              }}
+              className={`btn-hover ${nextButtonEnabled ? 'next-enabled' : ''}`}
+              disabled={!nextButtonEnabled}
             >
               {t.nextStage} →
             </button>
@@ -739,7 +691,7 @@ const Stage1 = () => {
           <div>
             <h4>{t.quickLinks}</h4>
             <ul>
-              <li><a href="/faqs">{t.faqs}</a></li>
+              <li><a href="/faqs">{t.faq}</a></li>
               <li><a href="/user-guide">{t.userGuide}</a></li>
               <li><a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer">{t.govPortal}</a></li>
               <li><a href="/terms-and-conditions">{t.terms}</a></li>
