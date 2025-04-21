@@ -221,7 +221,7 @@ const Dashboard = () => {
     const token = localStorage.getItem('token');
     // Also store language preference
     localStorage.setItem('preferredLanguage', selectedLanguage);
-    navigate('/stage1', {
+    navigate('/Complaint', {
       state: { token },
       search: `?lang=${selectedLanguage}`
     });

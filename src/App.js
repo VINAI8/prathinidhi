@@ -5,8 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login"; 
 import Dashboard  from "./components/Dashboard";// Import the Login page
-import Stage1 from "./components/stage1";
-import Stage2 from "./components/stage2";
+import Complaint from "./components/Complaint";
 function App() {
   return (
     <Router>
@@ -14,8 +13,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} /> {/* Add the login route */}
         <Route path ="/dashboard" element={<Dashboard/>}/>
-        <Route path ="/stage1" element={<Stage1 />}/>
-        <Route path ="/stage2" element={<Stage2 />}/>
+        <Route path ="/Complaint" element={<Complaint />}/>
       </Routes>
     </Router>
   );
