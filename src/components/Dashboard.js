@@ -175,6 +175,7 @@ const Dashboard = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(langParam);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  
   useEffect(() => {
     const selected = translations[selectedLanguage] || translations['en'];
     setT(selected);
@@ -210,6 +211,8 @@ const Dashboard = () => {
       .finally(() => setLoading(false));
   }, [selectedLanguage, navigate]);
 
+
+  
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate(`/login?lang=${selectedLanguage}`);
@@ -449,25 +452,7 @@ const Dashboard = () => {
   <p><strong>{t.mobile}:</strong> {user?.mobile}</p>
   <p><strong>{t.otp}:</strong> {user?.otp}</p>
 
-  {/* Display complaints if any */}
-  {user?.complaints && user.complaints.length > 0 && (
-    <div>
-      <h4>{t.complaints}</h4>
-      <ul>
-        {user.complaints.map((complaint, index) => (
-          <li key={index}>
-            <p><strong>{t.applicationType}:</strong> {complaint.applicationType}</p>
-            <p><strong>{t.receivedThrough}:</strong> {complaint.receivedThrough}</p>
-            <p><strong>{t.problemSummary}:</strong> {complaint.problemSummary}</p>
-            <p><strong>{t.religion}:</strong> {complaint.religion}</p>
-            <p><strong>{t.caste}:</strong> {complaint.caste}</p>
-            <p><strong>{t.occupation}:</strong> {complaint.occupation}</p>
-            <p><strong>{t.timestamp}:</strong> {complaint.timestamp}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
+
 </div>
 
         
@@ -490,6 +475,25 @@ const Dashboard = () => {
             <div className="status-box submitted">✅ {t.submitted}: <strong>10</strong></div>
             <div className="status-box uploaded">📤 {t.uploaded}: <strong>6</strong></div>
           </div>
+            {/* Display complaints if any */}
+  {user?.complaints && user.complaints.length > 0 && (
+    <div>
+      <h4>{t.complaints}</h4>
+      <ul>
+        {user.complaints.map((complaint, index) => (
+          <li key={index}>
+            <p><strong>{t.applicationType}:</strong> {complaint.applicationType}</p>
+            <p><strong>{t.receivedThrough}:</strong> {complaint.receivedThrough}</p>
+            <p><strong>{t.problemSummary}:</strong> {complaint.problemSummary}</p>
+            <p><strong>{t.religion}:</strong> {complaint.religion}</p>
+            <p><strong>{t.caste}:</strong> {complaint.caste}</p>
+            <p><strong>{t.occupation}:</strong> {complaint.occupation}</p>
+            <p><strong>{t.timestamp}:</strong> {complaint.timestamp}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
         </div>
 
         
