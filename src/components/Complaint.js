@@ -69,252 +69,7 @@ const translations = {
     unemployed: "Unemployed",
     
     errorMessage: "Please complete all required fields before proceeding"
-  },
-  hi: {
-    legalAidApplication: "कानूनी सहायता / शिकायत",
-    stage: "चरण",
-    of: "का",
-    progress: "प्रगति",
-    progressStatus: "मूल जानकारी",
-    logout: "लॉगआउट",
-    backToDashboard: "डैशबोर्ड पर वापस जाएं",
-    nextStage: "अगला चरण",
-    quickLinks: "त्वरित लिंक",
-    faq: "सामान्य प्रश्न",
-    userGuide: "उपयोगकर्ता मार्गदर्शिका",
-    govPortal: "सरकारी पोर्टल",
-    terms: "नियम और शर्तें",
-    contact: "संपर्क करें",
-    phone: "फोन",
-    email: "ईमेल",
-  
-    applicationFor: "कानूनी सहायता / शिकायत का प्रकार",
-    nalsa: "NALSA",
-    sclsc: "SCLSC",
-    hclsc: "HCLSC",
-    slsa: "SLSA",
-    dlsa: "DLSA",
-    tlsc: "TLSC",
-  
-    receivedThrough: "प्राप्त माध्यम",
-    slf: "स्वयं",
-    rep: "प्रतिनिधि",
-    org: "संगठन",
-  
-    problemSummary: "जिस समस्या के लिए कानूनी सहायता / शिकायत मांगी गई है उसका सारांश",
-  
-    religion: "धर्म",
-    hindu: "हिंदू",
-    muslim: "मुस्लिम",
-    christian: "ईसाई",
-    sikh: "सिख",
-    buddhist: "बौद्ध",
-    jain: "जैन",
-    parsi: "पारसी",
-    other: "अन्य",
-  
-    caste: "जाति",
-    general: "सामान्य",
-    obc: "ओबीसी",
-    sc: "एससी",
-    st: "एसटी",
-  
-    occupation: "व्यवसाय",
-    government: "सरकारी कर्मचारी",
-    private: "निजी क्षेत्र",
-    business: "व्यवसाय",
-    agriculture: "कृषि",
-    student: "छात्र",
-    homemaker: "गृहिणी",
-    retired: "सेवानिवृत्त",
-    unemployed: "बेरोजगार",
-  
-    errorMessage: "कृपया आगे बढ़ने से पहले सभी आवश्यक फ़ील्ड भरें"
   }
-,te: {
-  legalAidApplication: "న్యాయ సహాయం / ఫిర్యాదు",
-  stage: "దశ",
-  of: "లో",
-  progress: "పురోగతి",
-  progressStatus: "ప్రాథమిక సమాచారం",
-  logout: "లాగ్అవుట్",
-  backToDashboard: "డాష్‌బోర్డ్‌కు తిరిగి వెళ్ళండి",
-  nextStage: "తదుపరి దశ",
-  quickLinks: "త్వరిత లింకులు",
-  faq: "తరచుగా అడిగే ప్రశ్నలు",
-  userGuide: "వినియోగదారు గైడ్",
-  govPortal: "ప్రభుత్వ పోర్టల్",
-  terms: "నిబంధనలు మరియు షరతులు",
-  contact: "మమ్మల్ని సంప్రదించండి",
-  phone: "ఫోన్",
-  email: "ఇమెయిల్",
-
-  applicationFor: "న్యాయ సహాయం / ఫిర్యాదు స్వభావం",
-  nalsa: "NALSA",
-  sclsc: "SCLSC",
-  hclsc: "HCLSC",
-  slsa: "SLSA",
-  dlsa: "DLSA",
-  tlsc: "TLSC",
-
-  receivedThrough: "ద్వారా స్వీకరించబడింది",
-  slf: "స్వయం",
-  rep: "ప్రతినిధి",
-  org: "సంస్థ",
-
-  problemSummary: "న్యాయ సహాయం / ఫిర్యాదు కోరిన సమస్య యొక్క సంగ్రహం",
-
-  religion: "మతం",
-  hindu: "హిందూ",
-  muslim: "ముస్లిం",
-  christian: "క్రైస్తవుడు",
-  sikh: "సిక్",
-  buddhist: "బౌద్ధుడు",
-  jain: "జైనుడు",
-  parsi: "పార్సీ",
-  other: "ఇతర",
-
-  caste: "కులం",
-  general: "జనరల్",
-  obc: "ఓబీసీ",
-  sc: "ఎస్సీ",
-  st: "ఎస్టీ",
-
-  occupation: "వృత్తి",
-  government: "ప్రభుత్వ ఉద్యోగి",
-  private: "ప్రైవేట్ ఉద్యోగి",
-  business: "వ్యవసాయం",
-  agriculture: "వ్యవసాయం",
-  student: "విద్యార్థి",
-  homemaker: "గృహిణి",
-  retired: "రిటైర్డ్",
-  unemployed: "ఉద్యోగవిహీనుడు",
-
-  errorMessage: "దయచేసి కొనసాగించే ముందు అన్ని అవసరమైన ఫీల్డ్‌లను పూర్తి చేయండి"
-}
-,ta: {
-  legalAidApplication: "சட்ட உதவி / புகார்",
-  stage: "நிலை",
-  of: "இன்",
-  progress: "முன்னேற்றம்",
-  progressStatus: "அடிப்படை தகவல்",
-  logout: "வெளியேறு",
-  backToDashboard: "டாஷ்போர்டுக்கு திரும்பு",
-  nextStage: "அடுத்த நிலை",
-  quickLinks: "விரைவு இணைப்புகள்",
-  faq: "அடிக்கடி கேட்கப்படும் கேள்விகள்",
-  userGuide: "பயனர் வழிகாட்டி",
-  govPortal: "அரசுத் தளம்",
-  terms: "விதிமுறைகள் மற்றும் நிபந்தனைகள்",
-  contact: "தொடர்பு கொள்ள",
-  phone: "தொலைபேசி",
-  email: "மின்னஞ்சல்",
-
-  applicationFor: "சட்ட உதவி / புகாரின் தன்மை",
-  nalsa: "NALSA",
-  sclsc: "SCLSC",
-  hclsc: "HCLSC",
-  slsa: "SLSA",
-  dlsa: "DLSA",
-  tlsc: "TLSC",
-
-  receivedThrough: "மூலம் பெறப்பட்டது",
-  slf: "தனிநபர்",
-  rep: "நிபந்தனை",
-  org: "அமைப்பு",
-
-  problemSummary: "சட்ட உதவி / புகார் தேவைப்படும் பிரச்சனையின் சுருக்கம்",
-
-  religion: "மதம்",
-  hindu: "இந்து",
-  muslim: "முஸ்லிம்",
-  christian: "கிறிஸ்துவர்",
-  sikh: "சீக்கியர்",
-  buddhist: "பௌத்தர்",
-  jain: "ஜைனர்",
-  parsi: "பார்சி",
-  other: "மற்றவை",
-
-  caste: "சாதி",
-  general: "பொது",
-  obc: "ஓபிசி",
-  sc: "எஸ்சி",
-  st: "எஸ்டி",
-
-  occupation: "தொழில்",
-  government: "அரசு ஊழியர்",
-  private: "தனியார் துறை",
-  business: "வணிகம்",
-  agriculture: "விவசாயம்",
-  student: "மாணவர்",
-  homemaker: "வீட்டுத்தொழிலாளர்",
-  retired: "ஓய்வுபெற்றவர்",
-  unemployed: "வேலை இல்லாதவர்",
-
-  errorMessage: "தயவுசெய்து தொடருமுன் அனைத்து தேவையான புலங்களையும் பூர்த்தி செய்யவும்"
-}
-,  be: {
-  legalAidApplication: "আইনি সহায়তা / অভিযোগ",
-  stage: "পর্যায়",
-  of: "এর",
-  progress: "অগ্রগতি",
-  progressStatus: "মৌলিক তথ্য",
-  logout: "লগআউট",
-  backToDashboard: "ড্যাশবোর্ডে ফিরে যান",
-  nextStage: "পরবর্তী পর্যায়",
-  quickLinks: "দ্রুত লিঙ্ক",
-  faq: "প্রায়শই জিজ্ঞাসিত প্রশ্ন",
-  userGuide: "ব্যবহারকারী গাইড",
-  govPortal: "সরকারি পোর্টাল",
-  terms: "শর্তাবলী",
-  contact: "যোগাযোগ করুন",
-  phone: "ফোন",
-  email: "ইমেল",
-
-  applicationFor: "আইনি সহায়তা / অভিযোগের প্রকৃতি",
-  nalsa: "NALSA",
-  sclsc: "SCLSC",
-  hclsc: "HCLSC",
-  slsa: "SLSA",
-  dlsa: "DLSA",
-  tlsc: "TLSC",
-
-  receivedThrough: "এর মাধ্যমে প্রাপ্ত",
-  slf: "নিজে",
-  rep: "প্রতিনিধি",
-  org: "সংস্থা",
-
-  problemSummary: "যে সমস্যার জন্য আইনি সহায়তা / অভিযোগ চাওয়া হয়েছে তার সংক্ষিপ্তসার",
-
-  religion: "ধর্ম",
-  hindu: "হিন্দু",
-  muslim: "মুসলিম",
-  christian: "খ্রিস্টান",
-  sikh: "শিখ",
-  buddhist: "বৌদ্ধ",
-  jain: "জৈন",
-  parsi: "পারসি",
-  other: "অন্যান্য",
-
-  caste: "জাত",
-  general: "সাধারণ",
-  obc: "ওবিসি",
-  sc: "এসসি",
-  st: "এসটি",
-
-  occupation: "পেশা",
-  government: "সরকারি কর্মচারী",
-  private: "বেসরকারি খাত",
-  business: "ব্যবসা",
-  agriculture: "কৃষি",
-  student: "ছাত্র",
-  homemaker: "গৃহিণী",
-  retired: "অবসরপ্রাপ্ত",
-  unemployed: "বেকার",
-
-  errorMessage: "অনুগ্রহ করে এগিয়ে যাওয়ার আগে সমস্ত প্রয়োজনীয় ক্ষেত্র পূরণ করুন"
-}
-
 };
 
 const Complaint = () => {
@@ -416,6 +171,7 @@ const Complaint = () => {
       ...formData,
       applicationType: value
     });
+    console.log(token)
     // Move to next field
     setShowApplicationType(false);
     setShowReceivedThrough(true);
@@ -481,6 +237,39 @@ const Complaint = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate(`/login?lang=${selectedLanguage}`);
+  };
+
+  const handleSaveDraft = () => {
+    setLoading(true);
+    
+    fetch('https://prathinidhi-backend-r8dj.onrender.com/complaint', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`  // Include the auth token
+      },
+      body: JSON.stringify({
+        ...formData,
+        status: 'draft'  // Indicate this is a draft submission
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to save draft');
+        }
+        return response.json();
+      })
+      .then(() => {
+        // Show success message to user
+        alert(t.draftSaved || 'Draft saved successfully!');
+      })
+      .catch(error => {
+        // Show error message
+        setError(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleNext = () => {
@@ -1127,28 +916,41 @@ const Complaint = () => {
   </div>
 )}
 
-     {/* Buttons */}
-     <div className="form-row form-buttons" style={styles.buttonsContainer}>
-            <button 
-              onClick={handleBackToDashboard} 
-              style={styles.buttonSecondary}
-              className="btn-hover"
-            >
-              {t.backToDashboard}
-            </button>
-            <button 
-              onClick={handleNext} 
-              style={{
-                ...styles.buttonPrimary,
-                opacity: nextButtonEnabled ? 1 : 0.5,
-                cursor: nextButtonEnabled ? 'pointer' : 'not-allowed',
-              }}
-              className={`btn-hover ${nextButtonEnabled ? 'next-enabled' : ''}`}
-              disabled={!nextButtonEnabled}
-            >
-              {t.nextStage} →
-            </button>
-          </div>
+{/* Buttons */}
+<div className="form-row form-buttons" style={styles.buttonsContainer}>
+  <button 
+    onClick={handleBackToDashboard} 
+    style={styles.buttonSecondary}
+    className="btn-hover"
+  >
+    {t.backToDashboard}
+  </button>
+  <button 
+    onClick={handleSaveDraft}
+    style={{
+      ...styles.buttonSecondary,
+      backgroundColor: '#f0f7ff',
+      borderColor: '#0b5394',
+      color: '#0b5394',
+    }}
+    className="btn-hover"
+    disabled={loading}
+  >
+    {loading ? '...' : (t.saveDraft || 'Save Draft')}
+  </button>
+  <button 
+    onClick={handleNext} 
+    style={{
+      ...styles.buttonPrimary,
+      opacity: nextButtonEnabled ? 1 : 0.5,
+      cursor: nextButtonEnabled ? 'pointer' : 'not-allowed',
+    }}
+    className={`btn-hover ${nextButtonEnabled ? 'next-enabled' : ''}`}
+    disabled={!nextButtonEnabled || loading}
+  >
+    {t.nextStage} →
+  </button>
+</div>
         </div>
       </div>
 
