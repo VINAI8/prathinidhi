@@ -1139,16 +1139,19 @@ const [selectedCategory, setSelectedCategory] = useState('');
       <label style={{...styles.formLabel, marginBottom: '20px', fontSize: '18px', fontWeight: 'bold'}}>
         {t.natureOfApplication} <span style={styles.requiredField}>*</span>
       </label>
-      
-      {/* Category Container - Display categories in a vertical stack */}
+
+      {/* Category Container - Display categories horizontally */}
       <div style={{
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         gap: '20px',
         width: '100%',
+        overflowX: 'auto',
+        paddingBottom: '10px',
       }}>
         {/* Category 1: Grievance Redressal & Complaints */}
         <div style={{
+          minWidth: '250px',
           padding: '20px',
           border: '1px solid #e5e7eb',
           borderRadius: '8px',
@@ -1204,9 +1207,10 @@ const [selectedCategory, setSelectedCategory] = useState('');
             ))}
           </div>
         </div>
-        
+
         {/* Category 2: Legal Aid & Representation */}
         <div style={{
+          minWidth: '250px',
           padding: '20px',
           border: '1px solid #e5e7eb',
           borderRadius: '8px',
@@ -1262,9 +1266,10 @@ const [selectedCategory, setSelectedCategory] = useState('');
             ))}
           </div>
         </div>
-        
+
         {/* Category 3: Administrative & Policy-Related Matters */}
         <div style={{
+          minWidth: '250px',
           padding: '20px',
           border: '1px solid #e5e7eb',
           borderRadius: '8px',
@@ -1324,7 +1329,6 @@ const [selectedCategory, setSelectedCategory] = useState('');
     </div>
   </div>
 )}
-
           {/* Problem Summary */}
           {showProblemSummary && (
             <div className="form-row slide-up" style={{
