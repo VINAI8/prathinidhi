@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-// Translations object - I'm keeping the same structure as dashboard
+// Translations object
 const translations = {
   en: {
     legalAidApplication: "Legal Aid / Grievance",
@@ -11,7 +11,7 @@ const translations = {
     progressStatus: "Basic Information",
     logout: "Logout",
     backToDashboard: "Back to Dashboard",
-    nextStage: "Next Stage",
+    saveDraft: "Save Draft",
     quickLinks: "Quick Links",
     faq: "FAQs",
     userGuide: "User Guide",
@@ -20,6 +20,8 @@ const translations = {
     contact: "Contact Us",
     phone: "Phone",
     email: "Email",
+    submitForm: "Submit Form",
+    formSubmitted: "Form submitted successfully!",
     
     // Application Type options
     applicationFor: "Nature of Legal Aid / Grievance",
@@ -36,8 +38,43 @@ const translations = {
     rep: "Representative",
     org: "Organization",
     
+    // Around line 36-73 (within the translations.en object)
+natureOfApplication: "Nature of Legal Application",
+categoryGrievance: "Grievance Redressal & Complaints",
+categoryLegalAid: "Legal Aid & Representation",
+categoryAdministrative: "Administrative & Policy-Related Matters",
+
+// For grievance category
+corruption: "Allegation of corruption/malpractices",
+harassment: "Allegation of harassment/misbehaviour",
+delay: "Delay in decision/implementation of decision",
+civic: "Civic amenities/Quality of service",
+compensation: "Compensations/Refunds",
+lawOrder: "Law & Order",
+socialEvils: "Social Evils",
+retirement: "Retirement dues",
+requests: "Requests",
+
+// For legal aid category
+legalAdvice: "Legal Advice",
+legalRedress: "Legal Redress",
+panelDefending: "Panel Lawyer for defending court case",
+panelFiling: "Panel Lawyer for filing new case",
+counselling: "Counselling and Conciliation",
+draftApplication: "To Draft an Application/Representation/Notice/Petition/Reply",
+
+// For administrative category
+centralGovt: "Central Govt: Miscellaneous",
+stateGovt: "State Govt: Miscellaneous",
+revenue: "Revenue/Land/Tax",
+scheduledCastes: "Scheduled castes/STs/Backward Service matters",
+
     // Problem Summary
     problemSummary: "Summary of problem for which legal aid / Grievance is sought",
+    recordVoice: "Record Voice",
+    stopRecording: "Stop Recording",
+    submitSummary: "Submit Summary",
+    recordingMessage: "Recording... Speak now",
     
     // Religion options
     religion: "Religion",
@@ -68,256 +105,17 @@ const translations = {
     retired: "Retired",
     unemployed: "Unemployed",
     
-    errorMessage: "Please complete all required fields before proceeding"
+    // Case filed question
+    caseFiledQuestion: "Has any case been filed related to this matter?",
+    yes: "Yes",
+    no: "No",
+    caseFileUpload: "Upload Case File",
+    
+    errorMessage: "Please complete all required fields before proceeding",
+    savingDraft: "Saving draft...",
+    draftSaved: "Draft saved successfully!"
   },
-  hi: {
-    legalAidApplication: "कानूनी सहायता / शिकायत",
-    stage: "चरण",
-    of: "का",
-    progress: "प्रगति",
-    progressStatus: "मूलभूत जानकारी",
-    logout: "लॉग आउट",
-    backToDashboard: "डैशबोर्ड पर वापस जाएं",
-    nextStage: "अगला चरण",
-    quickLinks: "त्वरित लिंक",
-    faq: "प्रश्नोत्तर",
-    userGuide: "उपयोगकर्ता गाइड",
-    govPortal: "सरकारी पोर्टल",
-    terms: "नियम और शर्तें",
-    contact: "संपर्क करें",
-    phone: "फ़ोन",
-    email: "ईमेल",
-  
-    applicationFor: "कानूनी सहायता / शिकायत का प्रकार",
-    nalsa: "NALSA",
-    sclsc: "SCLSC",
-    hclsc: "HCLSC",
-    slsa: "SLSA",
-    dlsa: "DLSA",
-    tlsc: "TLSC",
-  
-    receivedThrough: "प्राप्त माध्यम",
-    slf: "स्वयं",
-    rep: "प्रतिनिधि",
-    org: "संगठन",
-  
-    problemSummary: "कानूनी सहायता / शिकायत के लिए समस्या का सारांश",
-  
-    religion: "धर्म",
-    hindu: "हिंदू",
-    muslim: "मुस्लिम",
-    christian: "ईसाई",
-    sikh: "सिख",
-    buddhist: "बौद्ध",
-    jain: "जैन",
-    parsi: "पारसी",
-    other: "अन्य",
-  
-    caste: "जाति",
-    general: "सामान्य",
-    obc: "ओबीसी",
-    sc: "एससी",
-    st: "एसटी",
-  
-    occupation: "व्यवसाय",
-    government: "सरकारी कर्मचारी",
-    private: "निजी क्षेत्र",
-    business: "व्यवसाय",
-    agriculture: "कृषि",
-    student: "छात्र",
-    homemaker: "गृहिणी",
-    retired: "सेवानिवृत्त",
-    unemployed: "बेरोज़गार",
-  
-    errorMessage: "कृपया आगे बढ़ने से पहले सभी आवश्यक फ़ील्ड भरें"
-  },
-  te: {
-    legalAidApplication: "చట్ట సహాయం / ఫిర్యాదు",
-    stage: "దశ",
-    of: "లో",
-    progress: "పురోగతి",
-    progressStatus: "ప్రాథమిక సమాచారం",
-    logout: "లాగ్ అవుట్",
-    backToDashboard: "డాష్‌బోర్డుకు వెళ్ళండి",
-    nextStage: "తదుపరి దశ",
-    quickLinks: "త్వరిత లింకులు",
-    faq: "తరచుగా అడిగే ప్రశ్నలు",
-    userGuide: "వినియోగదారు గైడ్",
-    govPortal: "ప్రభుత్వ పోర్టల్",
-    terms: "నియమాలు & షరతులు",
-    contact: "మమ్మల్ని సంప్రదించండి",
-    phone: "ఫోన్",
-    email: "ఈమెయిల్",
-  
-    applicationFor: "చట్ట సహాయం / ఫిర్యాదు స్వభావం",
-    nalsa: "NALSA",
-    sclsc: "SCLSC",
-    hclsc: "HCLSC",
-    slsa: "SLSA",
-    dlsa: "DLSA",
-    tlsc: "TLSC",
-  
-    receivedThrough: "ద్వారా అందుకుంది",
-    slf: "స్వయం",
-    rep: "ప్రతినిధి",
-    org: "సంస్థ",
-  
-    problemSummary: "చట్ట సహాయం / ఫిర్యాదు కోసం సమస్య సంగ్రహం",
-  
-    religion: "మతం",
-    hindu: "హిందూ",
-    muslim: "ముస్లిం",
-    christian: "క్రైస్తవ",
-    sikh: "సిక్",
-    buddhist: "బౌద్ధ",
-    jain: "జైన",
-    parsi: "పార్సీ",
-    other: "ఇతర",
-  
-    caste: "కులం",
-    general: "సాధారణ",
-    obc: "ఓబీసీ",
-    sc: "ఎస్సీ",
-    st: "ఎస్టీ",
-  
-    occupation: "వృత్తి",
-    government: "ప్రభుత్వ ఉద్యోగి",
-    private: "ప్రైవేట్ రంగం",
-    business: "వ్యాపారం",
-    agriculture: "వ్యవసాయం",
-    student: "విద్యార్థి",
-    homemaker: "ఇలావాసి",
-    retired: "రిటైర్డ్",
-    unemployed: "ఉద్యోగ రహితుడు",
-  
-    errorMessage: "దయచేసి కొనసాగించడానికి ముందు అన్ని అవసరమైన వివరాలు పూర్తి చేయండి"
-  },
-  ta: {
-    legalAidApplication: "சட்ட உதவி / புகார்",
-    stage: "தடம்",
-    of: "இன்",
-    progress: "முன்னேற்றம்",
-    progressStatus: "அடிப்படை தகவல்",
-    logout: "வெளியேறு",
-    backToDashboard: "டாஷ்போர்டுக்கு திரும்பு",
-    nextStage: "அடுத்த கட்டம்",
-    quickLinks: "விரைவு இணைப்புகள்",
-    faq: "அடிக்கடி கேட்கப்படும் கேள்விகள்",
-    userGuide: "பயனர் வழிகாட்டி",
-    govPortal: "அரசு தளம்",
-    terms: "விதிமுறைகள் மற்றும் நிபந்தனைகள்",
-    contact: "தொடர்பு கொள்ள",
-    phone: "தொலைபேசி",
-    email: "மின்னஞ்சல்",
-  
-    applicationFor: "சட்ட உதவி / புகாரின் தன்மை",
-    nalsa: "NALSA",
-    sclsc: "SCLSC",
-    hclsc: "HCLSC",
-    slsa: "SLSA",
-    dlsa: "DLSA",
-    tlsc: "TLSC",
-  
-    receivedThrough: "மூலம் பெற்றது",
-    slf: "தான்",
-    rep: "பிரதிநிதி",
-    org: "அமைப்பு",
-  
-    problemSummary: "சட்ட உதவி / புகார் கோரப்படும் பிரச்சனையின் சுருக்கம்",
-  
-    religion: "மதம்",
-    hindu: "இந்து",
-    muslim: "முஸ்லீம்",
-    christian: "கிறிஸ்துவர்",
-    sikh: "சீக்",
-    buddhist: "புத்தமதம்",
-    jain: "ஜெயின்",
-    parsi: "பார்சி",
-    other: "மற்றவை",
-  
-    caste: "சாதி",
-    general: "பொது",
-    obc: "ஓபிசி",
-    sc: "எஸ்சி",
-    st: "எஸ்டி",
-  
-    occupation: "தொழில்",
-    government: "அரசு ملازم",
-    private: "தனியார் துறை",
-    business: "வணிகம்",
-    agriculture: "விவசாயம்",
-    student: "மாணவர்",
-    homemaker: "வீட்டுப்பணியாளர்",
-    retired: "ஓய்வு பெற்றவர்",
-    unemployed: "வேலைஇல்லாதவர்",
-  
-    errorMessage: "தயவுசெய்து தொடரும் முன் தேவையான அனைத்து விவரங்களையும் நிரப்பவும்"
-  },
-  bn: {
-    legalAidApplication: "আইনি সহায়তা / অভিযোগ",
-    stage: "পর্যায়",
-    of: "এর",
-    progress: "অগ্রগতি",
-    progressStatus: "মৌলিক তথ্য",
-    logout: "লগ আউট",
-    backToDashboard: "ড্যাশবোর্ডে ফিরে যান",
-    nextStage: "পরবর্তী ধাপ",
-    quickLinks: "দ্রুত লিংক",
-    faq: "প্রায়শই জিজ্ঞাসিত প্রশ্ন",
-    userGuide: "ব্যবহারকারী নির্দেশিকা",
-    govPortal: "সরকারি পোর্টাল",
-    terms: "শর্তাবলী",
-    contact: "যোগাযোগ করুন",
-    phone: "ফোন",
-    email: "ইমেল",
-  
-    applicationFor: "আইনি সহায়তা / অভিযোগের ধরন",
-    nalsa: "NALSA",
-    sclsc: "SCLSC",
-    hclsc: "HCLSC",
-    slsa: "SLSA",
-    dlsa: "DLSA",
-    tlsc: "TLSC",
-  
-    receivedThrough: "মাধ্যমে প্রাপ্ত",
-    slf: "নিজে",
-    rep: "প্রতিনিধি",
-    org: "সংগঠন",
-  
-    problemSummary: "আইনি সহায়তা / অভিযোগের জন্য সমস্যার সারাংশ",
-  
-    religion: "ধর্ম",
-    hindu: "হিন্দু",
-    muslim: "মুসলিম",
-    christian: "খ্রিস্টান",
-    sikh: "শিখ",
-    buddhist: "বৌদ্ধ",
-    jain: "জৈন",
-    parsi: "পার্সি",
-    other: "অন্যান্য",
-  
-    caste: "জাত",
-    general: "সাধারণ",
-    obc: "ওবিসি",
-    sc: "এসসি",
-    st: "এসটি",
-  
-    occupation: "পেশা",
-    government: "সরকারি কর্মচারী",
-    private: "বেসরকারি খাত",
-    business: "ব্যবসা",
-    agriculture: "কৃষি",
-    student: "ছাত্র",
-    homemaker: "গৃহিণী",
-    retired: "অবসরপ্রাপ্ত",
-    unemployed: "বেকার",
-  
-    errorMessage: "অনুগ্রহ করে এগিয়ে যাওয়ার আগে সমস্ত প্রয়োজনীয় তথ্য পূরণ করুন"
-  }
-  
-  
-  
-  
+  // Other languages would be defined here
 };
 
 const Complaint = () => {
@@ -330,17 +128,20 @@ const Complaint = () => {
   const [formData, setFormData] = useState({
     applicationType: '',
     receivedThrough: '',
+    natureOfApplication: '',
     problemSummary: '',
     religion: '',
     caste: '',
-    occupation: ''
+    occupation: '',
+    caseFiledStatus: '',
+    caseFile: null
   });
   const [error, setError] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState(langParam);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
-  const [nextButtonEnabled, setNextButtonEnabled] = useState(false);
+  const [progressPercentage, setProgressPercentage] = useState(0);
   
   // Form field visibility states
   const [showApplicationType, setShowApplicationType] = useState(true);
@@ -349,9 +150,37 @@ const Complaint = () => {
   const [showReligion, setShowReligion] = useState(false);
   const [showCaste, setShowCaste] = useState(false);
   const [showOccupation, setShowOccupation] = useState(false);
-
+  const [showCaseFiledQuestion, setShowCaseFiledQuestion] = useState(false);
+  const [showCaseFileUpload, setShowCaseFileUpload] = useState(false);
+  // Add around line 85-100 where other state variables are defined
+const [showNatureOfApplication, setShowNatureOfApplication] = useState(false);
+const [selectedCategory, setSelectedCategory] = useState('');
+  // Audio recording states
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState(null);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+  
   // Get token from location state or localStorage
   const token = location.state?.token || localStorage.getItem('token');
+
+  // Update progress percentage when form fields are completed
+  useEffect(() => {
+    const fieldCount = 7; // Total number of fields including case filed question
+    let completedFields = 0;
+    
+    if (formData.applicationType) completedFields++;
+    if (formData.receivedThrough) completedFields++;
+    if (formData.natureOfApplication) completedFields++;
+    if (formData.problemSummary) completedFields++;
+    if (formData.religion) completedFields++;
+    if (formData.caste) completedFields++;
+    if (formData.occupation) completedFields++;
+    if (formData.caseFiledStatus) completedFields++;
+    
+    const percentage = (completedFields / fieldCount) * 100;
+    setProgressPercentage(percentage);
+  }, [formData]);
 
   useEffect(() => {
     const selected = translations[selectedLanguage] || translations['en'];
@@ -398,28 +227,30 @@ const Complaint = () => {
     }, 300);
   }, []);
 
-  // Check form completion to enable/disable Next button
   useEffect(() => {
-    if (
+    // Check if all required fields are complete
+    const isFormComplete = 
       formData.applicationType && 
       formData.receivedThrough && 
       formData.problemSummary && 
       formData.religion && 
-      formData.caste &&
-      formData.occupation
-    ) {
-      setNextButtonEnabled(true);
-    } else {
-      setNextButtonEnabled(false);
+      formData.caste && 
+      formData.occupation &&
+      formData.caseFiledStatus &&
+      (formData.caseFiledStatus !== 'yes' || formData.caseFile);
+      
+    // If form is complete and at 100%, show a celebration animation
+    if (isFormComplete && progressPercentage === 100) {
+      // You could add confetti or another visual indicator here
+      console.log("Form complete!");
     }
-  }, [formData]);
+  }, [progressPercentage, formData]);
 
   const handleApplicationTypeSelect = (value) => {
     setFormData({
       ...formData,
       applicationType: value
     });
-    console.log(token)
     // Move to next field
     setShowApplicationType(false);
     setShowReceivedThrough(true);
@@ -430,8 +261,18 @@ const Complaint = () => {
       ...formData,
       receivedThrough: value
     });
-    // Move to next field
+    // Move to nature of application field instead of problem summary
     setShowReceivedThrough(false);
+    setShowNatureOfApplication(true);
+  };
+
+  const handleNatureOfApplicationSelect = (value) => {
+    setFormData({
+      ...formData,
+      natureOfApplication: value
+    });
+    // Move to problem summary field
+    setShowNatureOfApplication(false);
     setShowProblemSummary(true);
   };
 
@@ -440,13 +281,15 @@ const Complaint = () => {
       ...formData,
       problemSummary: e.target.value
     });
-    
-    // Auto-advance if there's content
-    if (e.target.value.trim().length > 0 && !showReligion) {
-      setTimeout(() => {
-        setShowProblemSummary(false);
-        setShowReligion(true);
-      }, 500);
+  };
+  
+  const handleProblemSummarySubmit = () => {
+    if (formData.problemSummary.trim().length > 0) {
+      setShowProblemSummary(false);
+      setShowReligion(true);
+    } else {
+      setError("Please provide a summary before proceeding");
+      setTimeout(() => setError(""), 3000);
     }
   };
 
@@ -475,7 +318,31 @@ const Complaint = () => {
       ...formData,
       occupation: value
     });
-    // This is the last field, so no need to show next field
+    // Move to next field - show case filed question
+    setShowOccupation(false);
+    setShowCaseFiledQuestion(true);
+  };
+  
+  const handleCaseFiledStatus = (value) => {
+    setFormData({
+      ...formData,
+      caseFiledStatus: value
+    });
+    
+    if (value === 'yes') {
+      setShowCaseFiledQuestion(false);
+      setShowCaseFileUpload(true);
+    } else {
+      // Complete the form if no case filed
+      setShowCaseFiledQuestion(false);
+    }
+  };
+  
+  const handleCaseFileUpload = (e) => {
+    setFormData({
+      ...formData,
+      caseFile: e.target.files[0]
+    });
   };
 
   const handleLanguageChange = (e) => {
@@ -486,19 +353,91 @@ const Complaint = () => {
     localStorage.removeItem('token');
     navigate(`/login?lang=${selectedLanguage}`);
   };
+  
+  // Audio recording functions
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      chunksRef.current = [];
+      
+      mediaRecorderRef.current.addEventListener('dataavailable', (e) => {
+        if (e.data.size > 0) {
+          chunksRef.current.push(e.data);
+        }
+      });
+      
+      mediaRecorderRef.current.addEventListener('stop', () => {
+        const audioBlob = new Blob(chunksRef.current, { type: 'audio/wav' });
+        setAudioBlob(audioBlob);
+        sendAudioToServer(audioBlob);
+        
+        // Stop all tracks of the stream
+        stream.getTracks().forEach(track => track.stop());
+      });
+      
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error('Error accessing microphone:', err);
+      setError('Microphone access denied. Please check your browser permissions.');
+    }
+  };
+  
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+  
+  const sendAudioToServer = (audioBlob) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('audio', audioBlob);
+    formData.append('language', selectedLanguage);
+    
+    fetch('https://prathinidhi-backend-r8dj.onrender.com/tts', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to process audio');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Update the problem summary with the transcribed text
+      setFormData(prevData => ({
+        ...prevData,
+        problemSummary: data.text || prevData.problemSummary
+      }));
+    })
+    .catch(error => {
+      console.error('Error processing audio:', error);
+      setError('Error processing audio. Please try again or type manually.');
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  };
 
-  const handleSaveDraft = () => {
+  const saveDraft = () => {
     setLoading(true);
     
     fetch('https://prathinidhi-backend-r8dj.onrender.com/complaint', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`  // Include the auth token
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
         ...formData,
-        status: 'draft'  // Indicate this is a draft submission
+        status: 'draft'
       })
     })
       .then(response => {
@@ -508,11 +447,47 @@ const Complaint = () => {
         return response.json();
       })
       .then(() => {
-        // Show success message to user
-        alert(t.draftSaved || 'Draft saved successfully!');
+        // Show success message
+        setError(t.draftSaved);
+        setTimeout(() => setError(""), 3000);
       })
       .catch(error => {
-        // Show error message
+        setError(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleSubmit = () => {
+    setLoading(true);
+    
+    fetch('https://prathinidhi-backend-r8dj.onrender.com/complaint', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        ...formData,
+        status: 'submitted' // Change status to submitted instead of draft
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to submit form');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Show success message
+        setError(t.formSubmitted || "Form submitted successfully!");
+        setTimeout(() => {
+          // Navigate to a success page or dashboard
+          navigate(`/dashboard?lang=${selectedLanguage}`);
+        }, 2000);
+      })
+      .catch(error => {
         setError(error.message);
       })
       .finally(() => {
@@ -521,12 +496,38 @@ const Complaint = () => {
   };
 
   const handleNext = () => {
-    if (!formData.applicationType || 
-        !formData.receivedThrough || 
-        !formData.problemSummary || 
-        !formData.religion || 
-        !formData.caste || 
-        !formData.occupation) {
+    // First save the draft
+    saveDraft();
+    
+    // Then check if all fields are complete for navigation
+    if (
+      formData.applicationType && 
+      formData.receivedThrough &&
+      formData.natureOfApplication &&  
+      formData.problemSummary && 
+      formData.religion && 
+      formData.caste && 
+      formData.occupation &&
+      formData.caseFiledStatus
+    ) {
+      // If case file needed but not provided
+      if (formData.caseFiledStatus === 'yes' && !formData.caseFile && showCaseFileUpload) {
+        setError(t.errorMessage);
+        return;
+      }
+      
+      // Reset error if any
+      setError('');
+      
+      // Navigate to next stage with form data and token
+      navigate('/stage2', {
+        state: { 
+          token,
+          formData: { ...formData }
+        },
+        search: `?lang=${selectedLanguage}`
+      });
+    } else {
       setError(t.errorMessage);
       // Shake animation for error
       const formElement = document.querySelector('.complaint-form');
@@ -534,27 +535,13 @@ const Complaint = () => {
       setTimeout(() => {
         formElement.classList.remove('shake');
       }, 500);
-      return;
     }
-
-    // Reset error if any
-    setError('');
-    
-    // Navigate to next stage with form data and token
-    navigate('/stage2', {
-      state: { 
-        token,
-        formData: { ...formData }
-      },
-      search: `?lang=${selectedLanguage}`
-    });
   };
 
   const handleBackToDashboard = () => {
     navigate(`/dashboard?lang=${selectedLanguage}`);
   };
 
-  // Styles object
   const styles = {
     header: {
       backgroundColor: "#0b5394",
@@ -647,10 +634,10 @@ const Complaint = () => {
     },
     progressBarInner: {
       height: '100%',
-      width: '16.67%', // 1/6 = 16.67%
-      backgroundColor: '#0b5394',
+      background: 'linear-gradient(90deg, #0b5394, #4285f4)',
       borderRadius: '6px',
-      transition: 'width 1s ease-in-out'
+      transition: 'width 1s ease-in-out',
+      boxShadow: '0 0 5px rgba(11, 83, 148, 0.5)'
     },
     progressStages: {
       display: 'flex',
@@ -674,30 +661,6 @@ const Complaint = () => {
       backgroundColor: '#0b5394',
       color: 'white',
       transform: 'scale(1.2)'
-    },
-    // Buttons at the bottom
-    buttonsContainer: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      marginTop: '30px'
-    },
-    buttonSecondary: {
-      backgroundColor: '#e2e8f0',
-      color: '#333',
-      border: 'none',
-      borderRadius: '4px',
-      padding: '10px 20px',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease'
-    },
-    buttonPrimary: {
-      backgroundColor: '#0b5394',
-      color: 'white',
-      border: 'none',
-      borderRadius: '4px',
-      padding: '10px 20px',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease'
     },
     // Form styles
     formContainer: {
@@ -759,51 +722,153 @@ const Complaint = () => {
       fontWeight: 'bold',
       textAlign: 'center'
     },
-    buttonGroup: {
+    // Button styles
+    buttonSecondary: {
+      backgroundColor: '#e2e8f0',
+      color: '#333',
+      border: 'none',
+      borderRadius: '4px',
+      padding: '10px 20px',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      fontWeight: '500'
+    },
+    buttonPrimary: {
+      backgroundColor: '#0b5394',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      padding: '10px 20px',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      fontWeight: '500'
+    },
+    // Voice recording and microphone styles
+    voiceRecordingSection: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      marginTop: '15px'
+    },
+    micButton: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '10px',
+      padding: '10px 20px',
+      borderRadius: '20px',
+      border: 'none',
+      color: 'white',
+      fontWeight: '500',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+    },
+    micIcon: {
+      fontSize: '20px'
+    },
+    recordingMessage: {
+      marginTop: '10px',
+      color: '#ef4444',
+      fontWeight: '500',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '5px'
+    },
+    submitButton: {
+      backgroundColor: '#0b5394',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      padding: '10px 25px',
+      fontSize: '16px',
+      fontWeight: '500',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+    },
+    // File upload styles
+    fileUploadContainer: {
+      border: '2px dashed #d1d5db',
+      borderRadius: '4px',
+      padding: '20px',
+      textAlign: 'center',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      backgroundColor: '#f9fafb'
+    },
+    fileInput: {
+      width: '100%'
+    },
+    // Quick links styles
+    quickLinksContainer: {
+      backgroundColor: 'white',
+      borderRadius: '8px',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+      padding: '20px',
+      margin: '20px 0 40px'
+    },
+    quickLinksTitle: {
+      color: '#0b5394',
+      borderBottom: '1px solid #e5e7eb',
+      paddingBottom: '10px',
+      marginBottom: '15px'
+    },
+    quickLinks: {
       display: 'flex',
       flexWrap: 'wrap',
-      gap: '10px',
-      marginTop: '10px',
-      justifyContent: 'center'
+      gap: '15px'
+    },
+    quickLink: {
+      color: '#0b5394',
+      textDecoration: 'none',
+      padding: '8px 15px',
+      borderRadius: '4px',
+      backgroundColor: '#f0f4f8',
+      transition: 'all 0.3s ease'
+    },
+    // Footer styles
+    footer: {
+      backgroundColor: '#0b5394',
+      color: 'white',
+      padding: '30px 0',
+      marginTop: 'auto'
+    },
+    footerInner: {
+      maxWidth: '1200px',
+      margin: '0 auto',
+      padding: '0 20px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap',
+      gap: '20px'
+    },
+    footerLeft: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '15px'
+    },
+    footerLogo: {
+      height: '40px'
+    },
+    footerText: {
+      margin: 0,
+      fontSize: '14px'
+    },
+    footerRight: {
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    contactInfo: {
+      fontSize: '14px'
+    },
+    contactTitle: {
+      fontSize: '16px',
+      fontWeight: 'bold',
+      marginBottom: '10px',
+      marginTop: 0
     }
   };
-
-  const ButtonSelectionGroup = ({ options, selectedValue, onSelect, title, required = false }) => {
-    return (
-      <div style={{ marginBottom: '20px' }}>
-        <label style={styles.formLabel}>
-          {title} {required && <span style={styles.requiredField}>*</span>}:
-        </label>
-        <div style={styles.buttonGroup}>
-          {options.map(option => (
-            <button
-              key={option.value}
-              type="button"
-              className={`selection-button ${selectedValue === option.value ? 'selected' : ''}`}
-              onClick={() => onSelect(option.value)}
-              style={{
-                padding: '10px 15px',
-                borderRadius: '25px',
-                border: selectedValue === option.value 
-                  ? '2px solid #0b5394' 
-                  : '1px solid #d1d5db',
-                backgroundColor: selectedValue === option.value ? '#e1f0ff' : '#fff',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontWeight: selectedValue === option.value ? 'bold' : 'normal',
-                boxShadow: selectedValue === option.value 
-                  ? '0 0 8px rgba(11, 83, 148, 0.4)' 
-                  : 'none',
-              }}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  };
-  
 
   if (loading) return <p style={{ textAlign: 'center', marginTop: '100px' }}>Loading...</p>;
 
@@ -823,7 +888,7 @@ const Complaint = () => {
         }
         @keyframes progressAnimation {
           from { width: 0%; }
-          to { width: 16.67%; }
+          to { width: ${progressPercentage}%; }
         }
         @keyframes pulse {
           0% { box-shadow: 0 0 0 0 rgba(11, 83, 148, 0.7); }
@@ -851,6 +916,16 @@ const Complaint = () => {
           0% { transform: translateY(0); }
           100% { transform: translateY(-3px); }
         }
+        @keyframes micAnimation {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+        }
+        @keyframes recordingPulse {
+          0% { background-color: rgba(239, 68, 68, 0.7); }
+          50% { background-color: rgba(239, 68, 68, 1); }
+          100% { background-color: rgba(239, 68, 68, 0.7); }
+        }
         .complaint-form.shake {
           animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
@@ -871,59 +946,29 @@ const Complaint = () => {
         .progress-bar-inner {
           animation: progressAnimation 1.5s ease-out forwards;
         }
-        .form-select:focus {
-          outline: none;
-          border-color: #0b5394;
-          box-shadow: 0 0 0 3px rgba(11, 83, 148, 0.3);
+        .mic-button {
+          animation: micAnimation 2s infinite;
         }
-        .btn-hover:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        .recording-indicator {
+          animation: recordingPulse 1.5s infinite;
         }
-        .language-selector {
-          position: relative;
-        }
-        .language-selector select {
-          appearance: none;
-          padding-right: 25px;
-        }
-        .language-selector::after {
-          content: '▼';
-          font-size: 12px;
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-          pointer-events: none;
-        }
-        .form-container:hover {
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .footer { background: #111827; color: #d1d5db; padding: 2rem; margin-top: auto; }
-        .footer h4 { color: white; margin-bottom: 0.5rem; }
-        .footer ul { list-style: none; padding: 0; }
-        .footer li { margin-bottom: 0.3rem; }
-        .footer a { color: #93c5fd; text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
-        .selection-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .selection-button.selected {
-          animation: pulse 1.5s infinite;
-        }
-        .next-enabled {
-          animation: bounce 1s infinite alternate;
-        }
-        .textarea-container {
-          position: relative;
-          width: 100%;
-        }
-        .textarea-container textarea:focus {
-          outline: none;
-          border-color: #0b5394;
-          box-shadow: 0 0 0 3px rgba(11, 83, 148, 0.3);
-        }
+        .submit-button {
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+  @keyframes pulseSelected {
+  0% { box-shadow: 0 0 0 0 rgba(11, 83, 148, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(11, 83, 148, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(11, 83, 148, 0); }
+}
+
+.option-selected {
+  animation: pulseSelected 2s infinite;
+}
       `}</style>
       
       {/* Header - Same as Dashboard */}
@@ -971,22 +1016,48 @@ const Complaint = () => {
             <span>{t.progressStatus}</span>
           </div>
           <div style={styles.progressBarOuter}>
-            <div style={styles.progressBarInner} className="progress-bar-inner"></div>
+            <div 
+              style={{
+                ...styles.progressBarInner,
+                width: `${progressPercentage}%`
+              }} 
+              className="progress-bar-inner"
+            ></div>
           </div>
           <div style={styles.progressStages}>
-            {[1, 2, 3, 4, 5, 6].map((stage) => (
-              <div 
-                key={stage} 
-                style={{
-                  ...styles.progressStage,
-                  ...(stage === 1 ? styles.activeStage : {})
-                }}
-                className={stage === 1 ? 'active-stage' : ''}
-              >
-                {stage}
-              </div>
-            ))}
-          </div>
+  {[1, 2, 3, 4, 5, 6].map((stage) => (
+    <div key={stage} className="stage-container" style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      flex: 1
+    }}>
+      <div 
+        style={{
+          ...styles.progressStage,
+          ...(stage === 1 ? styles.activeStage : {}),
+          transition: 'all 0.5s ease'
+        }}
+        className={stage === 1 ? 'active-stage' : ''}
+      >
+        {stage}
+      </div>
+      <span style={{
+        fontSize: '12px', 
+        marginTop: '5px',
+        color: stage === 1 ? '#0b5394' : '#666',
+        fontWeight: stage === 1 ? 'bold' : 'normal'
+      }}>
+        {/* Add stage labels */}
+        {stage === 1 ? '' : 
+         stage === 2 ? '' : 
+         stage === 3 ? '' : 
+         stage === 4 ? '' : 
+         stage === 5 ? '' : 'Submit'}
+      </span>
+    </div>
+  ))}
+</div>
         </div>
       </div>
 
@@ -1056,6 +1127,204 @@ const Complaint = () => {
             </div>
           )}
 
+{/* Nature of Legal Application Selection */}
+{showNatureOfApplication && (
+  <div className="form-row slide-up" style={{
+    ...styles.formRow,
+    opacity: 1,
+    transform: 'translateY(0)',
+    transition: 'opacity 0.5s ease, transform 0.5s ease',
+  }}>
+    <div style={{width: '100%', maxWidth: '800px', margin: '0 auto'}}>
+      <label style={{...styles.formLabel, marginBottom: '20px', fontSize: '18px', fontWeight: 'bold'}}>
+        {t.natureOfApplication} <span style={styles.requiredField}>*</span>
+      </label>
+      
+      {/* Category Container - Display categories in a vertical stack */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px',
+        width: '100%',
+      }}>
+        {/* Category 1: Grievance Redressal & Complaints */}
+        <div style={{
+          padding: '20px',
+          border: '1px solid #e5e7eb',
+          borderRadius: '8px',
+          backgroundColor: selectedCategory === 'grievance' ? '#f0f7ff' : 'white',
+          boxShadow: selectedCategory === 'grievance' ? '0 4px 12px rgba(11, 83, 148, 0.15)' : 'none',
+          transition: 'all 0.3s ease',
+        }}>
+          <h4 style={{
+            textAlign: 'center',
+            color: '#0b5394',
+            margin: '0 0 20px 0',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            borderBottom: '2px solid #e5e7eb',
+            paddingBottom: '10px'
+          }}>{t.categoryGrievance}</h4>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: '12px',
+            justifyContent: 'center'
+          }}>
+            {['corruption', 'harassment', 'delay', 'civic', 'compensation', 'lawOrder', 'socialEvils', 'retirement', 'requests'].map(option => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('grievance');
+                  handleNatureOfApplicationSelect(option);
+                }}
+                style={{
+                  padding: '10px',
+                  border: '1px solid #ccc',
+                  borderRadius: '6px',
+                  backgroundColor: formData.natureOfApplication === option ? '#0b5394' : '#f9fafb',
+                  color: formData.natureOfApplication === option ? '#fff' : '#333',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: formData.natureOfApplication === option ? '0 2px 5px rgba(0,0,0,0.2)' : 'none',
+                  transform: formData.natureOfApplication === option ? 'translateY(-2px)' : 'none',
+                }}
+                className={formData.natureOfApplication === option ? 'option-selected' : ''}
+              >
+                {t[option]}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        {/* Category 2: Legal Aid & Representation */}
+        <div style={{
+          padding: '20px',
+          border: '1px solid #e5e7eb',
+          borderRadius: '8px',
+          backgroundColor: selectedCategory === 'legalAid' ? '#f0f7ff' : 'white',
+          boxShadow: selectedCategory === 'legalAid' ? '0 4px 12px rgba(11, 83, 148, 0.15)' : 'none',
+          transition: 'all 0.3s ease',
+        }}>
+          <h4 style={{
+            textAlign: 'center',
+            color: '#0b5394',
+            margin: '0 0 20px 0',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            borderBottom: '2px solid #e5e7eb',
+            paddingBottom: '10px'
+          }}>{t.categoryLegalAid}</h4>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: '12px',
+            justifyContent: 'center'
+          }}>
+            {['legalAdvice', 'legalRedress', 'panelDefending', 'panelFiling', 'counselling', 'draftApplication'].map(option => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('legalAid');
+                  handleNatureOfApplicationSelect(option);
+                }}
+                style={{
+                  padding: '10px',
+                  border: '1px solid #ccc',
+                  borderRadius: '6px',
+                  backgroundColor: formData.natureOfApplication === option ? '#0b5394' : '#f9fafb',
+                  color: formData.natureOfApplication === option ? '#fff' : '#333',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: formData.natureOfApplication === option ? '0 2px 5px rgba(0,0,0,0.2)' : 'none',
+                  transform: formData.natureOfApplication === option ? 'translateY(-2px)' : 'none',
+                }}
+                className={formData.natureOfApplication === option ? 'option-selected' : ''}
+              >
+                {t[option]}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        {/* Category 3: Administrative & Policy-Related Matters */}
+        <div style={{
+          padding: '20px',
+          border: '1px solid #e5e7eb',
+          borderRadius: '8px',
+          backgroundColor: selectedCategory === 'administrative' ? '#f0f7ff' : 'white',
+          boxShadow: selectedCategory === 'administrative' ? '0 4px 12px rgba(11, 83, 148, 0.15)' : 'none',
+          transition: 'all 0.3s ease',
+        }}>
+          <h4 style={{
+            textAlign: 'center',
+            color: '#0b5394',
+            margin: '0 0 20px 0',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            borderBottom: '2px solid #e5e7eb',
+            paddingBottom: '10px'
+          }}>{t.categoryAdministrative}</h4>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: '12px',
+            justifyContent: 'center'
+          }}>
+            {['centralGovt', 'stateGovt', 'revenue', 'scheduledCastes'].map(option => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('administrative');
+                  handleNatureOfApplicationSelect(option);
+                }}
+                style={{
+                  padding: '10px',
+                  border: '1px solid #ccc',
+                  borderRadius: '6px',
+                  backgroundColor: formData.natureOfApplication === option ? '#0b5394' : '#f9fafb',
+                  color: formData.natureOfApplication === option ? '#fff' : '#333',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: formData.natureOfApplication === option ? '0 2px 5px rgba(0,0,0,0.2)' : 'none',
+                  transform: formData.natureOfApplication === option ? 'translateY(-2px)' : 'none',
+                }}
+                className={formData.natureOfApplication === option ? 'option-selected' : ''}
+              >
+                {t[option]}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
           {/* Problem Summary */}
           {showProblemSummary && (
             <div className="form-row slide-up" style={{
@@ -1068,7 +1337,7 @@ const Complaint = () => {
                 <label style={styles.formLabel}>
                   {t.problemSummary} <span style={styles.requiredField}>*</span>:
                 </label>
-                <div className="textarea-container">
+                <div style={{position: 'relative'}}>
                   <textarea
                     style={styles.formTextarea}
                     value={formData.problemSummary}
@@ -1076,6 +1345,44 @@ const Complaint = () => {
                     placeholder="Text Here..."
                     required
                   />
+                  
+                  {/* Voice Recording Button */}
+                  <div style={styles.voiceRecordingSection}>
+                    <button 
+                      type="button"
+                      onClick={isRecording ? stopRecording : startRecording} 
+                      style={{
+                        ...styles.micButton,
+                        backgroundColor: isRecording ? '#ef4444' : '#0b5394',
+                      }}
+                      className={isRecording ? 'recording-indicator' : 'mic-button'}
+                    >
+                      {isRecording ? t.stopRecording : t.recordVoice}
+                      <span style={styles.micIcon}>🎤</span>
+                    </button>
+                    
+                    {isRecording && (
+                      <div style={styles.recordingMessage}>
+                        {t.recordingMessage}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Submit button for summary */}
+                  <div style={{marginTop: '15px', textAlign: 'center'}}>
+                    <button
+                      type="button"
+                      onClick={handleProblemSummarySubmit}
+                      style={{
+                        ...styles.submitButton,
+                        opacity: formData.problemSummary ? 1 : 0.5,
+                        cursor: formData.problemSummary ? 'pointer' : 'not-allowed',
+                      }}
+                      disabled={!formData.problemSummary}
+                    >
+                      {t.submitSummary}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1137,91 +1444,210 @@ const Complaint = () => {
 
           {/* Occupation Selection */}
           {showOccupation && (
-  <div className="form-row slide-up" style={{
-    ...styles.formRow,
-    opacity: 1,
-    transform: 'translateY(0)',
-    transition: 'opacity 0.5s ease, transform 0.5s ease',
-  }}>
-    <div style={styles.formColumn}>
-      <ButtonSelectionGroup
-        options={[
-          { value: 'government', label: t.government },
-          { value: 'private', label: t.private },
-          { value: 'business', label: t.business },
-          { value: 'agriculture', label: t.agriculture },
-          { value: 'student', label: t.student },
-          { value: 'homemaker', label: t.homemaker },
-          { value: 'retired', label: t.retired },
-          { value: 'unemployed', label: t.unemployed }
-        ]}
-        selectedValue={formData.occupation}
-        onSelect={handleOccupationSelect}
-        title={t.occupation}
-        required={true}
-      />
-    </div>
-  </div>
-)}
+            <div className="form-row slide-up" style={{
+              ...styles.formRow,
+              opacity: 1,
+              transform: 'translateY(0)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease',
+            }}>
+              <div style={styles.formColumn}>
+                <ButtonSelectionGroup
+                  options={[
+                    { value: 'government', label: t.government },
+                    { value: 'private', label: t.private },
+                    { value: 'business', label: t.business },
+                    { value: 'agriculture', label: t.agriculture },
+                    { value: 'student', label: t.student },
+                    { value: 'homemaker', label: t.homemaker },
+                    { value: 'retired', label: t.retired },
+                    { value: 'unemployed', label: t.unemployed }
+                  ]}
+                  selectedValue={formData.occupation}
+                  onSelect={handleOccupationSelect}
+                  title={t.occupation}
+                  required={true}
+                />
+              </div>
+            </div>
+          )}
+          
+          {/* Case Filed Question */}
+          {showCaseFiledQuestion && (
+            <div className="form-row slide-up" style={{
+              ...styles.formRow,
+              opacity: 1,
+              transform: 'translateY(0)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease',
+            }}>
+              <div style={styles.formColumn}>
+                <ButtonSelectionGroup
+                  options={[
+                    { value: 'yes', label: t.yes },
+                    { value: 'no', label: t.no }
+                  ]}
+                  selectedValue={formData.caseFiledStatus}
+                  onSelect={handleCaseFiledStatus}
+                  title={t.caseFiledQuestion}
+                  required={true}
+                />
+              </div>
+            </div>
+          )}
+          
+          {/* Case File Upload */}
+          {showCaseFileUpload && (
+            <div className="form-row slide-up" style={{
+              ...styles.formRow,
+              opacity: 1,
+              transform: 'translateY(0)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease',
+            }}>
+              <div style={styles.formColumn}>
+                <label style={styles.formLabel}>
+                  {t.caseFileUpload} <span style={styles.requiredField}>*</span>:
+                </label>
+                <div style={styles.fileUploadContainer}>
+                  <input
+                    type="file"
+                    onChange={handleCaseFileUpload}
+                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                    style={styles.fileInput}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
+          {/* Buttons */}
 {/* Buttons */}
-<div className="form-row form-buttons" style={styles.buttonsContainer}>
+<div className="form-row form-buttons" style={{
+  ...styles.formRow,
+  display: 'flex',
+  justifyContent: 'space-between',
+  marginTop: '30px',
+  opacity: showAnimation ? 1 : 0,
+  transform: showAnimation ? 'translateY(0)' : 'translateY(20px)',
+  transition: 'opacity 0.5s ease, transform 0.5s ease',
+  transitionDelay: '0.4s'
+}}>
   <button 
-    onClick={handleBackToDashboard} 
+    type="button" 
+    onClick={handleBackToDashboard}
     style={styles.buttonSecondary}
     className="btn-hover"
   >
     {t.backToDashboard}
   </button>
-  <button 
-    onClick={handleSaveDraft}
-    style={{
-      ...styles.buttonSecondary,
-      backgroundColor: '#f0f7ff',
-      borderColor: '#0b5394',
-      color: '#0b5394',
-    }}
-    className="btn-hover"
-    disabled={loading}
-  >
-    {loading ? '...' : (t.saveDraft || 'Save Draft')}
-  </button>
-  <button 
-    onClick={handleNext} 
-    style={{
-      ...styles.buttonPrimary,
-      opacity: nextButtonEnabled ? 1 : 0.5,
-      cursor: nextButtonEnabled ? 'pointer' : 'not-allowed',
-    }}
-    className={`btn-hover ${nextButtonEnabled ? 'next-enabled' : ''}`}
-    disabled={!nextButtonEnabled || loading}
-  >
-    {t.nextStage} →
-  </button>
+  
+  {/* Show Submit button when all required fields are filled */}
+  {progressPercentage === 100 ? (
+    <button 
+      type="button" 
+      onClick={handleSubmit}
+      style={{
+        ...styles.buttonPrimary,
+        backgroundColor: '#4caf50', // Green color for submit
+        padding: '12px 30px',
+        fontSize: '16px',
+        fontWeight: 'bold'
+      }}
+      className="btn-hover submit-button"
+    >
+      {t.submitForm || "Submit Form"}
+    </button>
+  ) : (
+    <button 
+      type="button" 
+      onClick={handleNext}
+      style={styles.buttonPrimary}
+      className="btn-hover"
+    >
+      {t.saveDraft}
+    </button>
+  )}
 </div>
+        </div>
+
+        {/* Quick Links */}
+        <div style={styles.quickLinksContainer}>
+          <h3 style={styles.quickLinksTitle}>{t.quickLinks}</h3>
+          <div style={styles.quickLinks}>
+            <a href="#" style={styles.quickLink}>{t.faq}</a>
+            <a href="#" style={styles.quickLink}>{t.userGuide}</a>
+            <a href="#" style={styles.quickLink}>{t.govPortal}</a>
+            <a href="#" style={styles.quickLink}>{t.terms}</a>
+          </div>
         </div>
       </div>
 
-      <footer className="footer">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
-          <div>
-            <h4>{t.quickLinks}</h4>
-            <ul>
-              <li><a href="/faqs">{t.faq}</a></li>
-              <li><a href="/user-guide">{t.userGuide}</a></li>
-              <li><a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer">{t.govPortal}</a></li>
-              <li><a href="/terms-and-conditions">{t.terms}</a></li>
-            </ul>
+      {/* Footer */}
+      <footer style={styles.footer}>
+        <div style={styles.footerInner}>
+          <div style={styles.footerLeft}>
+            <img src="/prathinidhi.png" alt="Emblem" style={styles.footerLogo} />
+            <p style={styles.footerText}>
+              Prathinidhi - National Legal Form Portal <br />
+              © 2025 Government of India
+            </p>
           </div>
-          <div>
-            <h4>{t.contact}</h4>
-            <ul>
-              <li>{t.phone}: +91-1234-567890</li>
-              <li>{t.email}: support@prathinidhi.in</li>
-            </ul>
+          <div style={styles.footerRight}>
+            <div style={styles.contactInfo}>
+              <h4 style={styles.contactTitle}>{t.contact}</h4>
+              <p>{t.phone}: 1800-123-4567</p>
+              <p>{t.email}: support@prathinidhi.gov.in</p>
+            </div>
           </div>
         </div>
       </footer>
+    </div>
+  );
+};
+
+// Button Selection Group Component
+const ButtonSelectionGroup = ({ options, selectedValue, onSelect, title, required }) => {
+  return (
+    <div style={{ marginBottom: '20px' }}>
+      <label style={{
+        display: 'block',
+        marginBottom: '10px',
+        fontSize: '16px',
+        fontWeight: '500',
+        color: '#333',
+        textAlign: 'center'
+      }}>
+        {title} {required && <span style={{ color: 'red' }}>*</span>}:
+      </label>
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '10px',
+        marginTop: '5px',
+        justifyContent: 'center'
+      }}>
+        {options.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            onClick={() => onSelect(option.value)}
+            style={{
+              padding: '10px 20px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              backgroundColor: selectedValue === option.value ? '#0b5394' : '#fff',
+              color: selectedValue === option.value ? '#fff' : '#333',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              fontWeight: selectedValue === option.value ? '600' : '400',
+              boxShadow: selectedValue === option.value ? '0 2px 5px rgba(0,0,0,0.2)' : 'none',
+              flex: '1 0 auto',
+              minWidth: '120px',
+              textAlign: 'center'
+            }}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
