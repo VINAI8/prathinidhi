@@ -335,9 +335,9 @@ const [selectedCategory, setSelectedCategory] = useState('');
     } else {
       // Complete the form if no case filed
       setShowCaseFiledQuestion(false);
+      // Form is now complete, no need to go to stage 2
     }
   };
-  
   const handleCaseFileUpload = (e) => {
     setFormData({
       ...formData,
@@ -479,13 +479,13 @@ const [selectedCategory, setSelectedCategory] = useState('');
         }
         return response.json();
       })
-      .then((data) => {
+      .then(() => {
         // Show success message
         setError(t.formSubmitted || "Form submitted successfully!");
+        // Redirect to dashboard after short delay
         setTimeout(() => {
-          // Navigate to a success page or dashboard
           navigate(`/dashboard?lang=${selectedLanguage}`);
-        }, 2000);
+        }, 1500);
       })
       .catch(error => {
         setError(error.message);
@@ -495,48 +495,7 @@ const [selectedCategory, setSelectedCategory] = useState('');
       });
   };
 
-  const handleNext = () => {
-    // First save the draft
-    saveDraft();
-    
-    // Then check if all fields are complete for navigation
-    if (
-      formData.applicationType && 
-      formData.receivedThrough &&
-      formData.natureOfApplication &&  
-      formData.problemSummary && 
-      formData.religion && 
-      formData.caste && 
-      formData.occupation &&
-      formData.caseFiledStatus
-    ) {
-      // If case file needed but not provided
-      if (formData.caseFiledStatus === 'yes' && !formData.caseFile && showCaseFileUpload) {
-        setError(t.errorMessage);
-        return;
-      }
-      
-      // Reset error if any
-      setError('');
-      
-      // Navigate to next stage with form data and token
-      navigate('/stage2', {
-        state: { 
-          token,
-          formData: { ...formData }
-        },
-        search: `?lang=${selectedLanguage}`
-      });
-    } else {
-      setError(t.errorMessage);
-      // Shake animation for error
-      const formElement = document.querySelector('.complaint-form');
-      formElement.classList.add('shake');
-      setTimeout(() => {
-        formElement.classList.remove('shake');
-      }, 500);
-    }
-  };
+  
 
   const handleBackToDashboard = () => {
     navigate(`/dashboard?lang=${selectedLanguage}`);
@@ -609,7 +568,7 @@ const [selectedCategory, setSelectedCategory] = useState('');
       left: 0,
       width: '100%',
       backgroundColor: '#f0f4f8',
-      padding: '15px 0',
+      padding: '8px 0',  // Reduced padding from 15px to 8px
       zIndex: 998,
       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
       transition: 'all 0.3s ease'
@@ -638,29 +597,6 @@ const [selectedCategory, setSelectedCategory] = useState('');
       borderRadius: '6px',
       transition: 'width 1s ease-in-out',
       boxShadow: '0 0 5px rgba(11, 83, 148, 0.5)'
-    },
-    progressStages: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      marginTop: '5px'
-    },
-    progressStage: {
-      width: '30px',
-      height: '30px',
-      borderRadius: '50%',
-      backgroundColor: '#e2e8f0',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      fontSize: '14px',
-      fontWeight: 'bold',
-      color: '#666',
-      transition: 'all 0.3s ease'
-    },
-    activeStage: {
-      backgroundColor: '#0b5394',
-      color: 'white',
-      transform: 'scale(1.2)'
     },
     // Form styles
     formContainer: {
@@ -879,7 +815,7 @@ const [selectedCategory, setSelectedCategory] = useState('');
       display: 'flex', 
       flexDirection: 'column', 
       background: 'linear-gradient(to bottom right, #f3f4f6, #e0f2fe)',
-      paddingTop: "150px" // Increased to account for fixed header and progress bar
+      paddingTop: "120px" // Increased to account for fixed header and progress bar
     }}>
       <style>{`
         @keyframes fadeIn {
@@ -1009,57 +945,24 @@ const [selectedCategory, setSelectedCategory] = useState('');
       </header>
 
       {/* Progress Bar - Fixed Position */}
-      <div style={styles.progressContainer}>
-        <div style={styles.progressInner}>
-          <div style={styles.progressText}>
-            <span>{t.progress}: {t.stage} 1 {t.of} 6</span>
-            <span>{t.progressStatus}</span>
-          </div>
-          <div style={styles.progressBarOuter}>
-            <div 
-              style={{
-                ...styles.progressBarInner,
-                width: `${progressPercentage}%`
-              }} 
-              className="progress-bar-inner"
-            ></div>
-          </div>
-          <div style={styles.progressStages}>
-  {[1, 2, 3, 4, 5, 6].map((stage) => (
-    <div key={stage} className="stage-container" style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      flex: 1
-    }}>
+{/* Progress Bar - Fixed Position */}
+<div style={styles.progressContainer}>
+  <div style={styles.progressInner}>
+    <div style={styles.progressText}>
+      <span>{t.progress}</span>
+      <span>{t.progressStatus}</span>
+    </div>
+    <div style={styles.progressBarOuter}>
       <div 
         style={{
-          ...styles.progressStage,
-          ...(stage === 1 ? styles.activeStage : {}),
-          transition: 'all 0.5s ease'
-        }}
-        className={stage === 1 ? 'active-stage' : ''}
-      >
-        {stage}
-      </div>
-      <span style={{
-        fontSize: '12px', 
-        marginTop: '5px',
-        color: stage === 1 ? '#0b5394' : '#666',
-        fontWeight: stage === 1 ? 'bold' : 'normal'
-      }}>
-        {/* Add stage labels */}
-        {stage === 1 ? '' : 
-         stage === 2 ? '' : 
-         stage === 3 ? '' : 
-         stage === 4 ? '' : 
-         stage === 5 ? '' : 'Submit'}
-      </span>
+          ...styles.progressBarInner,
+          width: `${progressPercentage}%`
+        }} 
+        className="progress-bar-inner"
+      ></div>
     </div>
-  ))}
+  </div>
 </div>
-        </div>
-      </div>
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', width: '100%' }}>
         {/* Main Form */}
@@ -1543,8 +1446,8 @@ const [selectedCategory, setSelectedCategory] = useState('');
     {t.backToDashboard}
   </button>
   
-  {/* Show Submit button when all required fields are filled */}
-  {progressPercentage === 100 ? (
+  {/* Show Submit button when case filed question is answered */}
+  {formData.caseFiledStatus || (formData.caseFiledStatus === 'yes' && formData.caseFile) ? (
     <button 
       type="button" 
       onClick={handleSubmit}
@@ -1562,7 +1465,7 @@ const [selectedCategory, setSelectedCategory] = useState('');
   ) : (
     <button 
       type="button" 
-      onClick={handleNext}
+      onClick={saveDraft}
       style={styles.buttonPrimary}
       className="btn-hover"
     >
