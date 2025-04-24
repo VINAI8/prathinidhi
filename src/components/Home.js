@@ -170,6 +170,7 @@ const Home = () => {
       <header style={styles.header}>
         <div style={styles.headerContainer}>
           <div style={styles.logoSection}>
+          <img src = "./indian-emblem.png" alt = "Indian Emblem" style = {styles.logo}/>
             <img src="/prathinidhi.png" alt="Emblem" style={styles.logo} />
             <div>
               <h1 style={styles.title}>Prathinidhi</h1>
@@ -366,7 +367,7 @@ const styles = {
     alignItems: "center",
     gap: "15px",
   },
-  logo: { height: "90px" },
+  logo: { height: "60px" },
   title: { fontSize: "26px", fontWeight: "bold", margin: 0 },
   subtitle: { fontSize: "13px", margin: 0 },
   rightNav: {

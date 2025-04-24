@@ -131,6 +131,7 @@ const Login = () => {
       <header style={styles.header}>
         <div style={styles.headerContainer}>
           <div style={styles.logoSection}>
+          <img src = "./indian-emblem.png" alt = "Indian Emblem" style = {styles.logo}/>
             <img src="/prathinidhi.png" alt="Emblem" style={styles.logo} />
             <div>
               <h1 style={styles.title}>Prathinidhi</h1>
