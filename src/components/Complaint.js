@@ -717,8 +717,19 @@ const [selectedCategory, setSelectedCategory] = useState('');
   // Audio recording functions
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
+      // Request higher quality audio for better transcription
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          sampleRate: 16000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true
+        }
+      });
+      
+      mediaRecorderRef.current = new MediaRecorder(stream, {
+        mimeType: 'audio/webm', // Using webm format for better compatibility
+      });
       chunksRef.current = [];
       
       mediaRecorderRef.current.addEventListener('dataavailable', (e) => {
@@ -728,9 +739,11 @@ const [selectedCategory, setSelectedCategory] = useState('');
       });
       
       mediaRecorderRef.current.addEventListener('stop', () => {
-        const audioBlob = new Blob(chunksRef.current, { type: 'audio/wav' });
+        const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
         setAudioBlob(audioBlob);
-        sendAudioToServer(audioBlob);
+        
+        // Convert the audio blob to base64 and send it
+        convertToBase64AndSend(audioBlob);
         
         // Stop all tracks of the stream
         stream.getTracks().forEach(track => track.stop());
@@ -751,39 +764,147 @@ const [selectedCategory, setSelectedCategory] = useState('');
     }
   };
   
-  const sendAudioToServer = (audioBlob) => {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('audio', audioBlob);
-    formData.append('language', selectedLanguage);
+  const convertToBase64AndSend = (audioBlob) => {
+    const reader = new FileReader();
     
-    fetch('https://prathinidhi-backend-r8dj.onrender.com/tts', {
+    reader.onloadend = () => {
+      // Get the base64 string by removing the data URL prefix
+      const base64Audio = reader.result.split(',')[1];
+      sendAudioToServer(base64Audio);
+    };
+    
+    reader.onerror = () => {
+      console.error('Error converting audio to base64');
+      setError('Error processing audio. Please try again.');
+    };
+    
+    // Read the blob as a data URL (base64)
+    reader.readAsDataURL(audioBlob);
+  };
+  
+  const sendAudioToServer = (base64Audio) => {
+    setLoading(true);
+    
+    // Get language code based on selectedLanguage
+    const languageCode = getLanguageCode(selectedLanguage);
+    const serviceId = getServiceId(languageCode);
+    
+    // Log request details for debugging
+    console.log("Sending audio request with:", {
+      languageCode,
+      serviceId,
+      audioLength: base64Audio.length
+    });
+    
+    const requestBody = {
+      "pipelineTasks": [
+        {
+          "taskType": "asr",
+          "config": {
+            "language": {
+              "sourceLanguage": languageCode
+            },
+            "serviceId": serviceId,
+            "audioFormat": "webm", // Changed to match the blob format
+            "samplingRate": 16000,
+            "postprocessors": [
+              "itn"
+            ]
+          }
+        }
+      ],
+      "inputData": {
+        "audio": [
+          {
+            "audioContent": base64Audio
+          }
+        ]
+      }
+    };
+    
+    // Add a timeout to make sure the request doesn't hang indefinitely
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
+    fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Content-Type': 'application/json',
+        'Authorization': 'X4I4l0ijv2j_OV2lELJ2NF5QNvJetBgZGA2gUwfhRF-sCHxcGmZHQehi84nfJKdb',
+        'Accept': 'application/json'
       },
-      body: formData
+      body: JSON.stringify(requestBody),
+      signal: controller.signal
     })
     .then(response => {
+      clearTimeout(timeoutId);
+      console.log("API Response Status:", response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to process audio');
+        return response.text().then(text => {
+          console.error("API Error Response:", text);
+          throw new Error(`Failed to process audio: ${response.status} ${text || ''}`);
+        });
       }
       return response.json();
     })
     .then(data => {
+      console.log("API Success Response:", data);
+      // Extract the text from the response
+      let transcribedText = '';
+    
+      if (data && 
+          data.pipelineResponse && 
+          Array.isArray(data.pipelineResponse) && 
+          data.pipelineResponse[0] && 
+          data.pipelineResponse[0].output && 
+          Array.isArray(data.pipelineResponse[0].output) && 
+          data.pipelineResponse[0].output[0] && 
+          data.pipelineResponse[0].output[0].source) {
+        
+        transcribedText = data.pipelineResponse[0].output[0].source;
+      }
+      
       // Update the problem summary with the transcribed text
       setFormData(prevData => ({
         ...prevData,
-        problemSummary: data.text || prevData.problemSummary
+        problemSummary: transcribedText || prevData.problemSummary
       }));
     })
     .catch(error => {
+      clearTimeout(timeoutId);
       console.error('Error processing audio:', error);
-      setError('Error processing audio. Please try again or type manually.');
+      setError(`Error processing audio: ${error.message}. Please try again or type manually.`);
     })
     .finally(() => {
       setLoading(false);
     });
+  };
+  
+  // Helper function to get language code
+  const getLanguageCode = (language) => {
+    const languageCodes = {
+      'Telugu': 'te',
+      'Hindi': 'hi',
+      'English': 'en',
+      'Tamil': 'ta',
+      'Bengali': 'bn'
+    };
+    
+    return languageCodes[language] || 'en'; // Default to English if not found
+  };
+  
+  // Helper function to get service ID based on language code
+  const getServiceId = (languageCode) => {
+    const serviceIdMap = {
+      'te': 'bhashini/iitm/asr-dravidian--gpu--t4',
+      'hi': 'ai4bharat/conformer-hi-gpu--t4',
+      'ta': 'bhashini/iitm/asr-dravidian--gpu--t4',
+      'en': 'ai4bharat/whisper-medium-en--gpu--t4',
+      'bn': 'bhashini/iitm/asr-indoaryan--gpu--t4'
+    };
+    
+    return serviceIdMap[languageCode] || serviceIdMap['en'];
   };
 
   const saveDraft = () => {
