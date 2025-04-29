@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import '../App.css'; 
 const Home = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState("en");
@@ -450,22 +450,23 @@ const Home = () => {
       </section>
 
       {/* Updates Section with Scrolling Animation */}
-      <section style={styles.updates}>
-        <h3 style={styles.sectionHeading}>
-          {languageData[selectedLanguage].sectionHeading}
-        </h3>
-        <div style={styles.updateScrollContainer}>
-          <ul style={styles.updateListAnimated}>
-            {languageData[selectedLanguage].updates.map((item, index) => (
-              <li key={index} style={styles.updateItem}>{item}</li>
-            ))}
-            {/* Duplicate items for seamless scrolling */}
-            {languageData[selectedLanguage].updates.map((item, index) => (
-              <li key={`duplicate-${index}`} style={styles.updateItem}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
+<section className="updates">
+  <h3 className="section-heading">
+    {languageData[selectedLanguage].sectionHeading}
+  </h3>
+  <div className="update-scroll-container">
+    <ul className="update-list-animated">
+      {languageData[selectedLanguage].updates.map((item, index) => (
+        <li key={index} className="update-item">{item}</li>
+      ))}
+      {/* Duplicate items for seamless scrolling */}
+      {languageData[selectedLanguage].updates.map((item, index) => (
+        <li key={`duplicate-${index}`} className="update-item">{item}</li>
+      ))}
+    </ul>
+  </div>
+</section>
+
 
       {/* About Section - NEW */}
       <section id="about-section" style={{...styles.about, ...styles.fadeInSection, opacity: isVisible.about ? 1 : 0}}>
@@ -953,38 +954,6 @@ const styles = {
     fontSize: "16px",
     color: "#666",
     lineHeight: "1.6",
-  },
-  updates: {
-    padding: "40px 20px",
-    backgroundColor: "#0b5394",
-    color: "#fff",
-  },
-  sectionHeading: {
-    fontSize: "24px",
-    fontWeight: "600",
-    textAlign: "center",
-    marginBottom: "20px",
-  },
-  updateScrollContainer: {
-    width: "100%",
-    overflow: "hidden",
-    position: "relative",
-    padding: "10px 0",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-  updateListAnimated: {
-    display: "flex",
-    listStyle: "none",
-    padding: 0,
-    margin: 0,
-    animation: "scroll 30s linear infinite",
-    width: "max-content",
-  },
-  updateItem: {
-    whiteSpace: "nowrap",
-    padding: "8px 30px",
-    fontSize: "16px",
   },
   useCases: {
     padding: "80px 0",
