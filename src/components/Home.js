@@ -608,7 +608,7 @@ const Home = () => {
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
           <div style={styles.footerLogo}>
-            <img src="/prathinidhi-light.png" alt="Prathinidhi" style={styles.footerLogoImg} />
+            <img src="/prathinidhi.svg" alt="Prathinidhi" style={styles.footerLogoImg} />
             <p>{languageData[selectedLanguage].footer1}</p>
             <p>{languageData[selectedLanguage].footer2}</p>
           </div>
@@ -660,6 +660,7 @@ const styles = {
   },
   header: {
     backgroundColor: "#0b5394",
+   marginBottom:"0%" ,
     color: "#fff",
     padding: "1px 0",
     position: "fixed",
@@ -777,7 +778,8 @@ const styles = {
   },
   hero: {
     backgroundColor: "#e6f0fa",
-    padding: "80px 20px",
+    marginTop :"0px",
+    padding: "0px 20px",
     transition: "opacity 1s ease, transform 1s ease",
   },
   heroContent: {
