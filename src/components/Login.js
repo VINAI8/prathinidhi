@@ -81,12 +81,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   // ✅ Redirect if token already exists
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate(`/dashboard?lang=${selectedLanguage}`);
-    }
-  }, [navigate, selectedLanguage]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
