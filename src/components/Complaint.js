@@ -558,7 +558,7 @@ const [selectedCategory, setSelectedCategory] = useState('');
       return;
     }
 
-    fetch('https://prathinidhi-backend-r8dj.onrender.com/dashboard', {
+    fetch('https://prathinidhi-backend-b6cg.onrender.com/dashboard', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

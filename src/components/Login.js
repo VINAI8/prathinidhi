@@ -96,7 +96,7 @@ const Login = () => {
     const payload = { aadhaar, mobile, otp };
 
     try {
-      const response = await fetch("https://prathinidhi-backend-r8dj.onrender.com/login", {
+      const response = await fetch("https://prathinidhi-backend-b6cg.onrender.com/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
