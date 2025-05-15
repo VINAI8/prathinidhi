@@ -341,41 +341,44 @@ const Home = () => {
   };
 
   return (
+
     <main style={styles.main}>
-      {/* Header */}
-      <header style={styles.header}>
-        <div style={styles.headerContainer}>
-          <div style={styles.logoSection}>
-            <img src="/indian-emblem.png" alt="Indian Emblem" style={styles.logo} />
-            <img src="/prathinidhi.png" alt="Emblem" style={styles.logo} />
-            <div>
-              <h1 style={styles.title}>Prathinidhi</h1>
-              <p style={styles.subtitle}>
-                राष्ट्रीय बहुभाषी विधिक फॉर्म पोर्टल | National Legal Form Portal
-              </p>
-            </div>
-          </div>
-          <div style={styles.rightNav}>
-            <select
-              style={styles.languageSelect}
-              value={selectedLanguage}
-              onChange={handleLanguageChange}
-            >
-              <option value="en">English</option>
-              <option value="hi">हिंदी</option>
-              <option value="ta">தமிழ்</option>
-              <option value="te">తెలుగు</option>
-              <option value="bn">বাংলা</option>
-            </select>
-            <button 
-              style={styles.loginBtn} 
-              onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
-            >
-              {languageData[selectedLanguage].login}
-            </button>
-          </div>
+  <header style={styles.header}>
+    <div style={styles.headerContainer}>
+      <div style={styles.logoSection}>
+        <img src="/indian-emblem.png" alt="Indian Emblem" style={styles.logo} />
+        <div>
+          <h1 style={styles.title}>Prathinidhi</h1>
+          <p style={styles.subtitle}>
+            राष्ट्रीय बहुभाषी विधिक फॉर्म पोर्टल<br />
+            <span style={styles.englishSubtitle}>National Legal Form Portal</span>
+          </p>
         </div>
-      </header>
+      </div>
+
+      <div style={styles.rightNav}>
+        <select
+          style={styles.languageSelect}
+          value={selectedLanguage}
+          onChange={handleLanguageChange}
+        >
+          <option value="en">English</option>
+          <option value="hi">हिंदी</option>
+          <option value="ta">தமிழ்</option>
+          <option value="te">తెలుగు</option>
+          <option value="bn">বাংলা</option>
+        </select>
+        <button 
+          style={styles.loginBtn}
+          onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
+        >
+          {languageData[selectedLanguage].login}
+        </button>
+      </div>
+    </div>
+  </header>
+
+
 
       {/* Language Selection Pop-Up */}
       {isPopupOpen && (
@@ -655,26 +658,26 @@ const FeatureCard = ({ icon, title, description }) => (
 
 // Enhanced styles with animations
 const styles = {
-  main: {
-    fontFamily: "Segoe UI, sans-serif",
+ main: {
+    fontFamily: "Noto Sans, Segoe UI, sans-serif",
     backgroundColor: "#ffffff",
     color: "#333",
-    paddingTop: "80px",
-    overflowX: "hidden"
+    paddingTop: "100px",
+    overflowX: "hidden",
   },
   header: {
-    backgroundColor: "#0b5394",
-   marginBottom:"0%" ,
+    background: "linear-gradient(to right, #003366, #004080)",
     color: "#fff",
-    padding: "1px 0",
+    padding: "10px 0",
     position: "fixed",
     top: 0,
     width: "100%",
     zIndex: 999,
-    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+    borderBottom: "4px solid #ffcc00", // NIC-style gold strip
+    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
   },
   headerContainer: {
-    maxWidth: "1200px",
+    maxWidth: "1280px",
     margin: "0 auto",
     padding: "0 20px",
     display: "flex",
@@ -686,34 +689,48 @@ const styles = {
     alignItems: "center",
     gap: "15px",
   },
-  logo: { height: "60px" },
-  title: { fontSize: "26px", fontWeight: "bold", margin: 0 },
-  subtitle: { fontSize: "13px", margin: 0 },
+  logo: {
+    height: "60px",
+    filter: "grayscale(100%)",
+  },
+  title: {
+    fontSize: "28px",
+    fontWeight: 800,
+    margin: 0,
+    color: "#ffffff",
+    letterSpacing: "0.5px",
+  },
+  subtitle: {
+    fontSize: "14px",
+    margin: 0,
+    lineHeight: "18px",
+  },
+  englishSubtitle: {
+    fontSize: "13px",
+    opacity: 0.8,
+  },
   rightNav: {
     display: "flex",
     alignItems: "center",
     gap: "15px",
   },
   languageSelect: {
-    padding: "6px",
+    padding: "6px 10px",
     fontSize: "14px",
     borderRadius: "4px",
+    border: "1px solid #ccc",
   },
   loginBtn: {
     backgroundColor: "#ffb300",
     border: "none",
-    padding: "6px 16px",
+    padding: "8px 18px",
     fontSize: "14px",
     color: "#000",
     borderRadius: "6px",
     cursor: "pointer",
     fontWeight: "bold",
     transition: "background-color 0.3s ease, transform 0.2s ease",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    "&:hover": {
-      backgroundColor: "#ffa000",
-      transform: "translateY(-2px)",
-    }
+    boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
   },
   // Pop-Up Styles
   languagePopup: {
