@@ -450,22 +450,26 @@ const Home = () => {
       </section>
 
       {/* Updates Section with Scrolling Animation */}
-<section className="updates">
+<section className="updates" role="region" aria-label="Latest Updates">
   <h3 className="section-heading">
     {languageData[selectedLanguage].sectionHeading}
   </h3>
   <div className="update-scroll-container">
     <ul className="update-list-animated">
       {languageData[selectedLanguage].updates.map((item, index) => (
-        <li key={index} className="update-item">{item}</li>
+        <li key={index} className="update-item">
+          <span className="bullet">🟢</span> {item}
+        </li>
       ))}
-      {/* Duplicate items for seamless scrolling */}
       {languageData[selectedLanguage].updates.map((item, index) => (
-        <li key={`duplicate-${index}`} className="update-item">{item}</li>
+        <li key={`duplicate-${index}`} className="update-item">
+          <span className="bullet">🟢</span> {item}
+        </li>
       ))}
     </ul>
   </div>
 </section>
+
 
 
       {/* About Section - NEW */}
