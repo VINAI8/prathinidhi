@@ -339,6 +339,22 @@ const Home = () => {
   const getAnimationClass = (sectionName) => {
     return isVisible[sectionName] ? styles.fadeInVisible : styles.fadeInHidden;
   };
+  const sliderImages = [
+  "/justice.jpg",
+  "/court.jpg",
+  "/digital-india.png",
+  "/h3.jpeg",
+];
+
+const [currentSlide, setCurrentSlide] = useState(0);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+  }, 4000);
+  return () => clearInterval(interval);
+}, []);
+
 
   return (
 
@@ -421,36 +437,40 @@ const Home = () => {
           </div>
         </div>
       )}
+<section style={{ ...styles.hero, ...styles.fadeInSection, opacity: isVisible.hero ? 1 : 0 }}>
+  <div style={styles.heroContent}>
+    <div style={styles.heroTextBox}>
+      <h2 style={styles.heroTitle}>
+        {languageData[selectedLanguage].heroTitle}
+      </h2>
+      <p style={styles.heroText}>
+        {languageData[selectedLanguage].heroText}
+      </p>
+      <div style={styles.heroButtons}>
+        <button
+          style={styles.primaryBtn}
+          onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
+        >
+          {languageData[selectedLanguage].startFiling}
+        </button>
+        <button
+          style={styles.secondaryBtn}
+          onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
+        >
+          {languageData[selectedLanguage].trackApp}
+        </button>
+      </div>
+    </div>
 
-      {/* Hero Section with Animation */}
-      <section style={{...styles.hero, ...styles.fadeInSection, opacity: isVisible.hero ? 1 : 0}}>
-        <div style={styles.heroContent}>
-          <div style={styles.heroTextBox}>
-            <h2 style={styles.heroTitle}>
-              {languageData[selectedLanguage].heroTitle}
-            </h2>
-            <p style={styles.heroText}>
-              {languageData[selectedLanguage].heroText}
-            </p>
-
-            <div style={styles.heroButtons}>
-              <button
-                style={styles.primaryBtn}
-                onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
-              >
-                {languageData[selectedLanguage].startFiling}
-              </button>
-              <button
-                style={styles.secondaryBtn}
-                onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
-              >
-                {languageData[selectedLanguage].trackApp}
-              </button>
-            </div>
-          </div>
-          <img src="/justice.jpg" alt="Justice" style={styles.heroImage} />
-        </div>
-      </section>
+    <div style={styles.sliderContainer}>
+      <img
+        src={sliderImages[currentSlide]} // currentSlide changes via useEffect every 4s
+        alt="Justice Visual"
+        style={styles.heroImage}
+      />
+    </div>
+  </div>
+</section>
 
       {/* Updates Section with Scrolling Animation */}
 <section className="updates" role="region" aria-label="Latest Updates">
@@ -797,88 +817,82 @@ const styles = {
     opacity: 0,
     transform: "translateY(20px)",
   },
-  hero: {
-    backgroundColor: "#e6f0fa",
-    marginTop :"0px",
-    padding: "0px 20px",
+   hero: {
+    background: "linear-gradient(to bottom right, #f2f7ff, #e6f0fa)",
+    marginTop: "0px",
+    padding: "60px 20px 40px",
     transition: "opacity 1s ease, transform 1s ease",
   },
   heroContent: {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
     maxWidth: "1200px",
     margin: "0 auto",
     flexWrap: "wrap",
-    alignItems: "center",
+    gap: "30px",
   },
-  heroTextBox: { 
+  heroTextBox: {
     maxWidth: "600px",
     animation: "slideInLeft 1s ease-out",
   },
-  heroTitle: { fontSize: "36px", color: "#0b5394", marginBottom: "20px", fontWeight: "700" },
-  heroText: { fontSize: "18px", marginBottom: "30px", lineHeight: "1.6" },
-  heroButtons: { display: "flex", gap: "15px", flexWrap: "wrap" },
+  heroTitle: {
+    fontSize: "40px",
+    color: "#0b5394",
+    marginBottom: "20px",
+    fontWeight: "800",
+  },
+  heroText: {
+    fontSize: "18px",
+    marginBottom: "30px",
+    lineHeight: "1.6",
+    color: "#333",
+  },
+  heroButtons: {
+    display: "flex",
+    gap: "15px",
+    flexWrap: "wrap",
+  },
   primaryBtn: {
     backgroundColor: "#0b5394",
     color: "#fff",
     border: "none",
-    padding: "12px 24px",
+    padding: "12px 28px",
     fontSize: "16px",
     borderRadius: "999px",
     cursor: "pointer",
     fontWeight: "600",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+    boxShadow: "0 4px 6px rgba(0,0,0,0.15)",
     transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    "&:hover": {
-      transform: "translateY(-3px)",
-      boxShadow: "0 6px 10px rgba(0,0,0,0.15)",
-    }
   },
   secondaryBtn: {
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
     color: "#0b5394",
     border: "2px solid #0b5394",
-    padding: "12px 24px",
+    padding: "12px 28px",
     fontSize: "16px",
     borderRadius: "999px",
     cursor: "pointer",
     fontWeight: "600",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-    "&:hover": {
-      backgroundColor: "#f5f9ff",
-      transform: "translateY(-2px)",
-    }
+    transition: "transform 0.3s ease, background-color 0.3s ease",
   },
-  heroImage: { 
-    maxWidth: "450px", 
-    width: "100%", 
-    marginTop: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-    animation: "slideInRight 1s ease-out",
-  },
-  contentContainer: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    padding: "0 20px",
-  },
-  sectionTitle: {
-    fontSize: "32px",
-    color: "#0b5394",
-    textAlign: "center",
-    marginBottom: "40px",
+  sliderContainer: {
+    width: "450px",
+    maxWidth: "100%",
     position: "relative",
-    paddingBottom: "15px",
-    "&:after": {
-      content: '""',
-      position: "absolute",
-      bottom: 0,
-      left: "50%",
-      transform: "translateX(-50%)",
-      width: "80px",
-      height: "3px",
-      backgroundColor: "#ffb300",
-    }
+    overflow: "hidden",
+    borderRadius: "12px",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+  },
+  heroImage: {
+    width: "100%",
+    height: "auto",
+    borderRadius: "12px",
+    objectFit: "cover",
+    transition: "opacity 1s ease-in-out",
+  },
+  fadeInSection: {
+    transition: "opacity 1s ease-in-out, transform 1s ease-in-out",
   },
   about: {
     padding: "80px 0",
