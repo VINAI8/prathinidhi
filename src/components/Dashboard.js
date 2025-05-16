@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell 
+} from 'recharts';
+import { Calendar, ChevronDown, Bell, Search, FileText, Upload, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 const translations = {
-  en: {
-    welcome: 'Welcome',
+  en: { welcome: 'Welcome',
     governmentOfIndia: 'Government of India',
     ministryOfLaw: 'Ministry of Law and Justice',
     fileForms: 'File Legal Forms',
@@ -43,7 +46,24 @@ const translations = {
     religion: "Religion",
     caste: "Caste",
     occupation: "Occupation",
-    timestamp: "Timestamp"
+    timestamp: "Timestamp",
+
+    // 🔽 New labels for dashboard (Charts, Activity, Footer, etc.)
+    formStatus: 'Form Status Distribution',
+    monthlySubmissions: 'Monthly Submissions',
+    recentActivity: 'Recent Activity',
+    viewAllActivity: 'View All Activity',
+    quickActions: 'Quick Actions',
+    checkStatus: 'Check Status',
+    notifications: 'Notifications',
+    complaints: 'Your Complaints',
+    status: 'Status',
+    inProgress: 'In Progress',
+
+    // Footer enhancements
+    followUs: 'Follow Us',
+    termsAndConditions: 'Terms & Conditions',
+  
   },
   ta: {
     aadhaar: 'ஆதார்',
@@ -205,13 +225,42 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const langParam = queryParams.get('lang')?.toLowerCase() || 'en';
+
   const [t, setT] = useState(translations.en);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState(langParam);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [notifications, setNotifications] = useState(3);
+  const [showNotifications, setShowNotifications] = useState(false);
 
-  
+  // Mock data for charts
+  const formStatusData = [
+    { name: 'Drafts', value: 4, color: '#3B82F6' },
+    { name: 'Submitted', value: 10, color: '#10B981' },
+    { name: 'Rejected', value: 2, color: '#EF4444' },
+    { name: 'Under Review', value: 6, color: '#F59E0B' },
+  ];
+
+  const monthlySubmissionsData = [
+    { month: 'Jan', submissions: 3 },
+    { month: 'Feb', submissions: 5 },
+    { month: 'Mar', submissions: 2 },
+    { month: 'Apr', submissions: 7 },
+    { month: 'May', submissions: 4 },
+    { month: 'Jun', submissions: 9 }
+  ];
+
+  // Mock recent activity data
+  const recentActivity = [
+    { id: 1, type: 'submission', title: 'Tenant Complaint Form', status: 'submitted', date: '12 May 2025' },
+    { id: 2, type: 'upload', title: 'ID Proof Document', status: 'approved', date: '10 May 2025' },
+    { id: 3, type: 'form', title: 'Property Dispute', status: 'draft', date: '08 May 2025' },
+    { id: 4, type: 'upload', title: 'Income Certificate', status: 'pending', date: '05 May 2025' },
+  ];
+
   useEffect(() => {
     const selected = translations[selectedLanguage] || translations['en'];
     setT(selected);
@@ -247,171 +296,63 @@ const Dashboard = () => {
       .finally(() => setLoading(false));
   }, [selectedLanguage, navigate]);
 
-
-  
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate(`/login?lang=${selectedLanguage}`);
   };
-  
+
   const handleLanguageChange = (e) => {
     setSelectedLanguage(e.target.value);
   };
 
   const handleNewFormClick = () => {
     const token = localStorage.getItem('token');
-    // Also store language preference
     localStorage.setItem('preferredLanguage', selectedLanguage);
     navigate('/Complaint', {
       state: { token },
       search: `?lang=${selectedLanguage}`
     });
   };
-  // Styles object
-  const styles = {
-    header: {
-      backgroundColor: "#0b5394", // Keep your new background color
-      color: "#fff",
-      padding: "10px 0", // Changed from 1rem
-      position: "fixed", // Changed from relative
-      top: 0,
-      width: "100%",
-      zIndex: 999,
-      boxShadow: "0 2px 5px rgba(0,0,0,0.1)" // Updated shadow
-    },
-    headerContainer: {
-      maxWidth: "1200px",
-      margin: "0 auto",
-      padding: "0 20px", // Added horizontal padding
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center"
-    },
-    logoSection: {
-      display: "flex",
-      alignItems: "center",
-      gap: "15px" // Changed from 1rem
-    },
-    logo: {
-      height: "48px" // Changed from width: 60px
-    },
-    title: {
-      fontSize: "26px", 
-      fontWeight: "bold", 
-      margin: 0,
-      color: "white" // Kept for visibility on dark background
-    },
-    subtitle: {
-      fontSize: "13px", 
-      margin: 0,
-      color: "#e0e0e0" // Kept for visibility on dark background
-    },
-    rightNav: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '1rem'
-    },
-    languageSelect: {
-      padding: '0.5rem',
-      borderRadius: '4px',
-      border: '1px solid #d1d5db',
-      background: '#f3f4f6',
-      cursor: 'pointer'
-    },
-    logoutBtn: {
-      background: '#ef4444',
-      color: 'white',
-      border: 'none',
-      padding: '0.6rem 1.2rem',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontWeight: '500',
-      transition: 'background 0.2s ease'
-    },
-    languagePopup: {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000
-    },
-    popupContent: {
-      background: 'white',
-      padding: '2rem',
-      borderRadius: '8px',
-      maxWidth: '500px',
-      width: '90%',
-      textAlign: 'center'
-    },
-    popupTitle: {
-      margin: '0 0 1.5rem 0',
-      color: '#1e293b'
-    },
-    languageButtons: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-      gap: '1rem'
-    },
-    languageButton: {
-      padding: '0.8rem 1.5rem',
-      background: '#f1f5f9',
-      border: '1px solid #e2e8f0',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontSize: '1rem',
-      transition: 'all 0.2s ease'
+
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'submitted': return styles.statusSubmitted;
+      case 'approved': return styles.statusApproved;
+      case 'draft': return styles.statusDraft;
+      case 'pending': return styles.statusPending;
+      default: return {};
     }
   };
 
-  if (loading) return <p style={{ textAlign: 'center', marginTop: '100px' }}>Loading...</p>;
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'submitted':
+      case 'approved':
+        return <CheckCircle size={16} />;
+      case 'draft':
+        return <Clock size={16} />;
+      case 'pending':
+        return <AlertCircle size={16} />;
+      default:
+        return null;
+    }
+  };
+
+  if (loading) return (
+    <div style={styles.loadingContainer}>
+      <div style={styles.spinner}></div>
+      <p>Loading dashboard...</p>
+    </div>
+  );
 
   return (
-<div style={{ 
-  fontFamily: "Segoe UI, sans-serif", 
-  minHeight: '100vh', 
-  display: 'flex', 
-  flexDirection: 'column', 
-  background: 'linear-gradient(to bottom right, #f3f4f6, #e0f2fe)',
-  paddingTop: "80px" // Add this to account for fixed header
-}}>      
-<style>{`
-        .nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #0b5394; color: white; }
-        .lang-btn { background: white; color: #4338ca; padding: 0.5rem 1rem; margin-right: 0.5rem; border: none; cursor: pointer; }
-        .logout-btn { background: #ef4444; color: white; padding: 0.5rem 1rem; border: none; cursor: pointer; }
-        .hero { display: flex; justify-content: center; padding: 2rem; }
-        .hero img { width: 100%; max-width: 1000px; border-radius: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-        .main { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; padding: 2rem; }
-        .card { background: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; }
-        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .button-primary { background: #4338ca; color: white; padding: 0.75rem; border: none; border-radius: 0.5rem; margin-bottom: 1rem; cursor: pointer; width: 100%; }
-        .button-secondary { background: #e5e7eb; color: #111827; padding: 0.75rem; border: none; border-radius: 0.5rem; width: 100%; cursor: pointer; }
-        .file-input { display: block; width: 100%; margin: 1rem 0; padding: 0.5rem; }
-        .overview { grid-column: span 2; }
-        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
-        .status-box { padding: 1rem; border-radius: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
-        .draft { background: #eef2ff; color: #4338ca; }
-        .submitted { background: #dcfce7; color: #15803d; }
-        .uploaded { background: #fef9c3; color: #ca8a04; }
-        .footer { background: #111827; color: #d1d5db; padding: 2rem; margin-top: auto; }
-        .footer h4 { color: white; margin-bottom: 0.5rem; }
-        .footer ul { list-style: none; padding: 0; }
-        .footer li { margin-bottom: 0.3rem; }
-        .footer a { color: #93c5fd; text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
-      `}</style>
-      
-      {/* New Header with Custom Style */}
+    <div style={styles.appContainer}>
+      {/* Header */}
       <header style={styles.header}>
         <div style={styles.headerContainer}>
           <div style={styles.logoSection}>
-          <img src = "./indian-emblem.png" alt = "Indian Emblem" style = {styles.logo}/>
-            <img src="/prathinidhi.png" alt="Emblem" style={styles.logo} />
+            <img src="./indian-emblem.png" alt="Indian Emblem" style={styles.logo} />
+            <img src="/prathinidhi.png" alt="Prathinidhi Logo" style={styles.logo} />
             <div>
               <h1 style={styles.title}>Prathinidhi</h1>
               <p style={styles.subtitle}>
@@ -420,10 +361,53 @@ const Dashboard = () => {
             </div>
           </div>
           <div style={styles.rightNav}>
+            <div style={styles.searchContainer}>
+              <Search size={16} color="#64748b" />
+              <input
+                type="text"
+                placeholder={t.searchPlaceholder || "Search forms..."}
+                style={styles.searchInput}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            <div style={styles.notificationContainer}>
+              <button
+                style={styles.iconButton}
+                onClick={() => setShowNotifications(!showNotifications)}
+                aria-label="Notifications"
+              >
+                <Bell size={20} />
+                {notifications > 0 && (
+                  <span style={styles.notificationBadge}>{notifications}</span>
+                )}
+              </button>
+              {showNotifications && (
+                <div style={styles.notificationDropdown}>
+                  <h4 style={styles.notificationHeader}>Notifications</h4>
+                  <div style={styles.notificationItem}>
+                    <div style={styles.notificationDot}></div>
+                    <p>Your form #32145 has been approved</p>
+                  </div>
+                  <div style={styles.notificationItem}>
+                    <div style={styles.notificationDot}></div>
+                    <p>Please upload your income proof document</p>
+                  </div>
+                  <div style={styles.notificationItem}>
+                    <div style={styles.notificationDot}></div>
+                    <p>Form submission deadline approaching</p>
+                  </div>
+                  <button style={styles.viewAllButton}>View all notifications</button>
+                </div>
+              )}
+            </div>
+
             <select
               style={styles.languageSelect}
               value={selectedLanguage}
               onChange={handleLanguageChange}
+              aria-label="Select Language"
             >
               <option value="en">English</option>
               <option value="hi">हिंदी</option>
@@ -431,133 +415,617 @@ const Dashboard = () => {
               <option value="te">తెలుగు</option>
               <option value="bn">বাংলা</option>
             </select>
-            <button 
-              style={styles.logoutBtn} 
-              onClick={handleLogout}
-            >
+
+            <button style={styles.logoutBtn} onClick={handleLogout} aria-label="Logout">
               {t.logout}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Language Selection Pop-Up */}
-      {isPopupOpen && (
-        <div style={styles.languagePopup}>
-          <div style={styles.popupContent}>
-            <h2 style={styles.popupTitle}>
-              {t.popupTitle}
-            </h2>
-            <div style={styles.languageButtons}>
-              {["en", "hi", "ta", "te", "bn"].map((lang) => (
-                <button
-                  key={lang}
-                  style={styles.languageButton}
-                  onClick={() => {
-                    setSelectedLanguage(lang);
-                    setIsPopupOpen(false);
-                  }}
-                >
-                  {lang === "en"
-                    ? "English"
-                    : lang === "hi"
-                    ? "हिंदी"
-                    : lang === "ta"
-                    ? "தமிழ்"
-                    : lang === "te"
-                    ? "తెలుగు"
-                    : "বাংলা"}
-                </button>
-              ))}
+      <div style={styles.mainContainer}>
+        {/* Sidebar */}
+        <aside style={styles.sidebar}>
+          <div style={styles.userProfile}>
+            <div style={styles.userAvatar}>
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
             </div>
+            <div style={styles.userInfo}>
+              <h3 style={styles.userName}>{user?.name || 'User'}</h3>
+              <p style={styles.userRole}>{user?.role || 'Guest'}</p>
+            </div>
+          </div>
+
+          <nav style={styles.sidebarNav}>
+            <button
+              style={activeTab === 'overview' ? { ...styles.navItem, ...styles.activeNavItem } : styles.navItem}
+              onClick={() => setActiveTab('overview')}
+            >
+              <span style={styles.navIcon}>📊</span>
+              {t.overview || 'Overview'}
+            </button>
+            <button
+              style={activeTab === 'forms' ? { ...styles.navItem, ...styles.activeNavItem } : styles.navItem}
+              onClick={() => setActiveTab('forms')}
+            >
+              <span style={styles.navIcon}>📝</span>
+              {t.forms || 'Forms'}
+            </button>
+            <button
+              style={activeTab === 'complaints' ? { ...styles.navItem, ...styles.activeNavItem } : styles.navItem}
+              onClick={() => setActiveTab('complaints')}
+            >
+              <span style={styles.navIcon}>📁</span>
+              {t.complaints || 'Complaints'}
+            </button>
+          </nav>
+        </aside>
+
+        {/* Content Area */}
+        <section style={styles.contentArea}>
+          {/* Overview tab */}
+          {activeTab === 'overview' && (
+            <>
+              <div style={styles.statsGrid}>
+                <div style={styles.statCard}>
+                  <h4>{t.formsSubmitted || 'Forms Submitted'}</h4>
+                  <p>{formStatusData.reduce((acc, cur) => acc + cur.value, 0)}</p>
+                </div>
+                <div style={styles.statCard}>
+                  <h4>{t.pendingApprovals || 'Pending Approvals'}</h4>
+                  <p>{formStatusData.find((f) => f.name === 'Under Review')?.value || 0}</p>
+                </div>
+                <div style={styles.statCard}>
+                  <h4>{t.rejectedForms || 'Rejected Forms'}</h4>
+                  <p>{formStatusData.find((f) => f.name === 'Rejected')?.value || 0}</p>
+                </div>
+              </div>
+
+              <div style={styles.chartsContainer}>
+                <div style={styles.pieChartContainer}>
+                  <h4>{t.formStatus || 'Form Status'}</h4>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                      <Pie
+                        data={formStatusData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        label
+                      >
+                        {formStatusData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+
+                <div style={styles.barChartContainer}>
+                  <h4>{t.monthlySubmissions || 'Monthly Submissions'}</h4>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={monthlySubmissionsData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="submissions" fill="#2563EB" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div style={styles.quickActions}>
+                <button style={styles.newFormBtn} onClick={handleNewFormClick}>
+                  {t.newForm || 'New Form'}
+                </button>
+                <button style={styles.uploadBtn}>
+                  <Upload size={16} />
+                  {t.uploadDocuments || 'Upload Documents'}
+                </button>
+              </div>
+
+              <div style={styles.recentActivity}>
+                <h3>{t.recentActivity || 'Recent Activity'}</h3>
+                <ul style={styles.activityList}>
+                  {recentActivity.map((activity) => (
+                    <li key={activity.id} style={styles.activityItem}>
+                      <div style={styles.activityIcon}>
+                        {activity.type === 'submission' && <FileText size={20} />}
+                        {activity.type === 'upload' && <Upload size={20} />}
+                        {activity.type === 'form' && <Calendar size={20} />}
+                      </div>
+                      <div>
+                        <h4>{activity.title}</h4>
+                        <p>
+                          <span style={getStatusClass(activity.status)}>
+                            {getStatusIcon(activity.status)} {activity.status}
+                          </span>{' '}
+                          - {activity.date}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
+
+          {/* Forms tab */}
+          {activeTab === 'forms' && (
+            <div>
+              <h2>{t.forms || 'Forms'}</h2>
+              <p>Form list and details go here.</p>
+            </div>
+          )}
+
+          {/* Complaints tab */}
+          {activeTab === 'complaints' && (
+            <div>
+              <h2>{t.complaints || 'Complaints'}</h2>
+              <p>Complaint details go here.</p>
+            </div>
+          )}
+        </section>
+      </div>
+
+      {/* Popup example (if needed) */}
+      {isPopupOpen && (
+        <div style={styles.popupOverlay} onClick={() => setIsPopupOpen(false)}>
+          <div style={styles.popupContent} onClick={(e) => e.stopPropagation()}>
+            <h3>Popup Title</h3>
+            <p>Popup content...</p>
+            <button onClick={() => setIsPopupOpen(false)}>Close</button>
           </div>
         </div>
       )}
-
-      <nav className="nav">
-        <span>{t.welcome}, {user?.name || 'User'} ({user?.role})</span>
-      </nav>
-
-      <div className="hero">
-        <img src="/images/prathinidhi.svg" alt="Legal Application India" />
-      </div>
-
-      <main className="main">
-      <div className="card">
-  <h3>{t.userDetails}</h3>
-  <p><strong>{t.aadhaar}:</strong> {user?.aadhaar}</p>
-  <p><strong>{t.mobile}:</strong> {user?.mobile}</p>
-  <p><strong>{t.otp}:</strong> {user?.otp}</p>
-
-
-</div>
-
-        
-        <div className="card">
-          <h3>{t.fileForms}</h3>
-          <button className="button-primary" onClick={handleNewFormClick}>{t.newForm}</button>
-          <button className="button-secondary">{t.continueDraft}</button>
-        </div>
-
-        <div className="card">
-          <h3>{t.uploadDocs}</h3>
-          <input type="file" multiple className="file-input" />
-          <p style={{ fontSize: '0.9rem' }}>{t.acceptedFormats}</p>
-        </div>
-
-        <div className="card overview">
-          <h3>{t.statusTitle}</h3>
-          <div className="status-grid">
-            <div className="status-box draft">📄 {t.drafts}: <strong>4</strong></div>
-            <div className="status-box submitted">✅ {t.submitted}: <strong>10</strong></div>
-            <div className="status-box uploaded">📤 {t.uploaded}: <strong>6</strong></div>
-          </div>
-            {/* Display complaints if any */}
-  {user?.complaints && user.complaints.length > 0 && (
-    <div>
-      <h4>{t.complaints}</h4>
-      <ul>
-        {user.complaints.map((complaint, index) => (
-          <li key={index}>
-            <p><strong>{t.applicationType}:</strong> {complaint.applicationType}</p>
-            <p><strong>{t.receivedThrough}:</strong> {complaint.receivedThrough}</p>
-            <p><strong>{t.problemSummary}:</strong> {complaint.problemSummary}</p>
-            <p><strong>{t.religion}:</strong> {complaint.religion}</p>
-            <p><strong>{t.caste}:</strong> {complaint.caste}</p>
-            <p><strong>{t.occupation}:</strong> {complaint.occupation}</p>
-            <p><strong>{t.timestamp}:</strong> {complaint.timestamp}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
-        </div>
-
-        
-      </main>
-
-      <footer className="footer">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
-          <div>
-            <h4>{t.quickLinks}</h4>
-            <ul>
-              <li><a href="/faqs">{t.faqs}</a></li>
-              <li><a href="/user-guide">{t.userGuide}</a></li>
-              <li><a href="https://www.india.gov.in/" target="_blank" rel="noopener noreferrer">{t.govPortal}</a></li>
-              <li><a href="/terms-and-conditions">{t.terms}</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>{t.contact}</h4>
-            <ul>
-              <li>{t.phone}: +91-1234-567890</li>
-              <li>{t.email}: support@prathinidhi.in</li>
-            </ul>
-          </div>
-        </div>
-      </footer>
     </div>
   );
+};
+// Enhanced styles object
+const styles = {
+  appContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    backgroundColor: '#f8fafc',
+  },
+  header: {
+    backgroundColor: '#0b5394',
+    color: '#fff',
+    padding: '12px 0',
+    position: 'sticky',
+    top: 0,
+    width: '100%',
+    zIndex: 1000,
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    backdropFilter: 'saturate(180%) blur(12px)',
+    transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+    fontFamily: "'Merriweather', serif",
+  },
+  headerContainer: {
+    maxWidth: 1300,
+    margin: '0 auto',
+    padding: '0 20px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  logoSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 18,
+  },
+  logo: {
+    height: 42,
+    objectFit: 'contain',
+    filter: 'drop-shadow(0 0 2px rgba(0,0,0,0.15))',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 700,
+    margin: 0,
+    color: '#fff',
+    letterSpacing: 0.5,
+  },
+  subtitle: {
+    fontSize: 12,
+    margin: '2px 0 0 0',
+    color: '#e2e8f0',
+    fontWeight: 500,
+  },
+  rightNav: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 16,
+  },
+  searchContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 24,
+    padding: '6px 16px',
+    width: 240,
+  },
+  searchInput: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: '#fff',
+    marginLeft: 8,
+    width: '100%',
+    outline: 'none',
+    fontSize: 14,
+  },
+  languageSelect: {
+    padding: '8px 12px',
+    borderRadius: 6,
+    border: 'none',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    color: '#fff',
+    fontWeight: 500,
+    fontSize: 14,
+    cursor: 'pointer',
+    outline: 'none',
+  },
+  logoutBtn: {
+    background: 'linear-gradient(45deg, #ffb300, #f29900)',
+    color: '#111',
+    border: 'none',
+    padding: '8px 16px',
+    borderRadius: 24,
+    fontWeight: 600,
+    fontSize: 14,
+    cursor: 'pointer',
+    boxShadow: '0 4px 8px rgba(255, 179, 0, 0.4)',
+  },
+  iconButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    border: 'none',
+    borderRadius: '50%',
+    width: 36,
+    height: 36,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    position: 'relative',
+  },
+  notificationBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: '#EF4444',
+    color: '#fff',
+    borderRadius: '50%',
+    width: 18,
+    height: 18,
+    fontSize: 11,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  notificationContainer: {
+    position: 'relative',
+  },
+  notificationDropdown: {
+    position: 'absolute',
+    top: 44,
+    right: 0,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+    width: 300,
+    padding: 12,
+    zIndex: 1000,
+  },
+  notificationHeader: {
+    margin: '0 0 12px 0',
+    fontSize: 16,
+    color: '#1e293b',
+  },
+  notificationItem: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    padding: '8px 0',
+    borderBottom: '1px solid #f1f5f9',
+    gap: 10,
+  },
+  notificationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: '50%',
+    backgroundColor: '#3B82F6',
+    marginTop: 6,
+  },
+  viewAllButton: {
+    backgroundColor: '#f8fafc',
+    border: 'none',
+    borderRadius: 6,
+    padding: 8,
+    width: '100%',
+    marginTop: 8,
+    cursor: 'pointer',
+    fontSize: 14,
+    color: '#64748b',
+  },
+  mainContainer: {
+    display: 'flex',
+    flex: 1,
+    maxWidth: 1300,
+    margin: '0 auto',
+    width: '100%',
+    padding: 20,
+    gap: 24,
+  },
+  sidebar: {
+    width: 250,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+    padding: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    height: 'calc(100vh - 140px)',
+    position: 'sticky',
+    top: 100,
+  },
+  userProfile: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    padding: '12px 0',
+    borderBottom: '1px solid #f1f5f9',
+    marginBottom: 20,
+  },
+  userAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: '50%',
+    backgroundColor: '#0b5394',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 20,
+    fontWeight: 600,
+  },
+  userInfo: {
+    overflow: 'hidden',
+  },
+  userName: {
+    margin: 0,
+    fontSize: 16,
+    fontWeight: 600,
+    color: '#1e293b',
+  },
+  userRole: {
+    margin: '2px 0 0 0',
+    fontSize: 12,
+    color: '#64748b',
+  },
+  sidebarNav: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+  },
+  navItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    padding: '12px 16px',
+    borderRadius: 8,
+    margin: '4px 0',
+    backgroundColor: 'transparent',
+    color: '#334155',
+    fontSize: 14,
+    fontWeight: 500,
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    textAlign: 'left',
+  },
+  navItemHover: {
+    backgroundColor: '#eff6ff',
+    color: '#0b5394',
+    fontWeight: 600,
+  },
+  activeNavItem: {
+    backgroundColor: '#eff6ff',
+    color: '#0b5394',
+    fontWeight: 600,
+  },
+  navIcon: {
+    fontSize: 18,
+  },
+  sidebarFooter: {
+    marginTop: 'auto',
+    borderTop: '1px solid #f1f5f9',
+    paddingTop: 16,
+  },
+  sidebarFooterTitle: {
+    margin: '0 0 8px 0',
+    fontSize: 14,
+    fontWeight: 600,
+    color: '#334155',
+  },
+  sidebarFooterText: {
+    margin: '4px 0',
+    fontSize: 13,
+    color: '#64748b',
+  },
+  sidebarLink: {
+    color: '#0b5394',
+    textDecoration: 'none',
+  },
+  mainContent: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 24,
+  },
+  dashboardHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  welcomeMessage: {
+    margin: 0,
+    fontSize: 24,
+    fontWeight: 700,
+    color: '#1e293b',
+  },
+  dashboardSubtitle: {
+    margin: '4px 0 0 0',
+    fontSize: 14,
+    color: '#64748b',
+  },
+  dateContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: 14,
+    color: '#64748b',
+    backgroundColor: '#fff',
+    padding: '8px 16px',
+    borderRadius: 8,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+  },
+  quickStats: {
+    display: 'flex',
+    gap: 24,
+    flexWrap: 'wrap',
+  },
+  statCard: {
+    background: 'linear-gradient(135deg, #4f46e5, #2563eb)',
+    color: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    flex: '1 1 220px',
+    boxShadow: '0 8px 16px rgba(37, 99, 235, 0.3)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  statIcon: {
+    fontSize: 36,
+    marginBottom: 12,
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: 700,
+  },
+  statLabel: {
+    fontSize: 14,
+    fontWeight: 600,
+    opacity: 0.85,
+  },
+  statsChart: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+    padding: 20,
+  },
+  chartTitle: {
+    margin: '0 0 12px 0',
+    fontSize: 16,
+    fontWeight: 700,
+    color: '#1e293b',
+  },
+  recentActivity: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+    padding: 20,
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  recentActivityHeader: {
+    margin: '0 0 12px 0',
+    fontSize: 18,
+    fontWeight: 700,
+    color: '#1e293b',
+  },
+  activityList: {
+    overflowY: 'auto',
+  },
+  activityItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    borderBottom: '1px solid #f1f5f9',
+    padding: '12px 0',
+    gap: 6,
+  },
+  activityTitle: {
+    margin: 0,
+    fontSize: 14,
+    fontWeight: 600,
+    color: '#0b5394',
+  },
+  activityDescription: {
+    margin: 0,
+    fontSize: 13,
+    color: '#64748b',
+  },
+  quickActions: {
+    display: 'flex',
+    gap: 16,
+    flexWrap: 'wrap',
+  },
+  actionCard: {
+    backgroundColor: '#0b5394',
+    borderRadius: 12,
+    padding: 20,
+    flex: '1 1 200px',
+    color: '#fff',
+    cursor: 'pointer',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+    transition: 'background-color 0.3s ease',
+  },
+  actionCardHover: {
+    backgroundColor: '#144e8e',
+  },
+  actionIcon: {
+    fontSize: 28,
+  },
+  actionLabel: {
+    fontSize: 16,
+    fontWeight: 600,
+  },
+  complaintList: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+    padding: 20,
+    marginTop: 24,
+  },
+  complaintListHeader: {
+    margin: '0 0 12px 0',
+    fontSize: 18,
+    fontWeight: 700,
+    color: '#1e293b',
+  },
+  complaintItem: {
+    padding: '12px 0',
+    borderBottom: '1px solid #f1f5f9',
+  },
+  complaintTitle: {
+    margin: 0,
+    fontSize: 14,
+    fontWeight: 600,
+    color: '#0b5394',
+  },
+  complaintStatus: {
+    fontSize: 12,
+    color: '#64748b',
+    marginTop: 4,
+  },
 };
 
 export default Dashboard;

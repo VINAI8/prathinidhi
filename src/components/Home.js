@@ -329,7 +329,7 @@ const Home = () => {
       stat3: "৯৮%",
       stat3Label: "ব্যবহারকারী সন্তুষ্টি",
     },
-  };
+  }; 
 
   const handleLanguageChange = (e) => {
     setSelectedLanguage(e.target.value);
@@ -343,7 +343,7 @@ const Home = () => {
   "/justice.jpg",
   "/court.jpg",
   "/digital-india.png",
-  "/h3.jpeg",
+  "/bhashini.png",
 ];
 
 const [currentSlide, setCurrentSlide] = useState(0);
@@ -397,46 +397,50 @@ useEffect(() => {
 
 
       {/* Language Selection Pop-Up */}
-      {isPopupOpen && (
-        <div style={styles.languagePopup}>
-          <div style={styles.popupContent}>
-            <h2 style={styles.popupTitle}>
-              {languageData[selectedLanguage].popupTitle}
-            </h2>
-            <div style={styles.languageButtons}>
-              {["en", "hi", "ta", "te", "bn"].map((lang) => (
-                <button
-                  key={lang}
-                  style={{
-                    ...styles.languageButton,
-                    transform: `scale(1)`,
-                    transition: 'transform 0.3s ease',
-                    ':hover': {
-                      transform: 'scale(1.05)'
-                    }
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                  onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                  onClick={() => {
-                    setSelectedLanguage(lang);
-                    setIsPopupOpen(false);
-                  }}
-                >
-                  {lang === "en"
-                    ? "English"
-                    : lang === "hi"
-                    ? "हिंदी"
-                    : lang === "ta"
-                    ? "தமிழ்"
-                    : lang === "te"
-                    ? "తెలుగు"
-                    : "বাংলা"}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+    {isPopupOpen && (
+  <div style={styles.languagePopup}>
+    <div style={styles.popupCard}>
+      <img src="/bhashini.png" alt="Bhashini Languages" style={styles.popupImage} />
+      <h2 style={styles.popupTitle}>
+        {languageData[selectedLanguage].popupTitle}
+      </h2>
+      <p style={styles.popupSubtitle}>
+        Bridging India’s Languages with AI — Powered by BHASHINI 🇮🇳
+      </p>
+      <div style={styles.languageButtons}>
+        {["en", "hi", "ta", "te", "bn"].map((lang) => (
+          <button
+            key={lang}
+            style={styles.languageButton}
+            onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.06)')}
+            onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+            onClick={() => {
+              setSelectedLanguage(lang);
+              setIsPopupOpen(false);
+            }}
+          >
+            {lang === "en"
+              ? "English"
+              : lang === "hi"
+              ? "हिंदी"
+              : lang === "ta"
+              ? "தமிழ்"
+              : lang === "te"
+              ? "తెలుగు"
+              : "বাংলা"}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
+
+      
+
+
+
+
 <section style={{ ...styles.hero, ...styles.fadeInSection, opacity: isVisible.hero ? 1 : 0 }}>
   <div style={styles.heroContent}>
     <div style={styles.heroTextBox}>
@@ -654,52 +658,62 @@ useEffect(() => {
       </section>
 
       {/* Call to Action - NEW */}
-      <section style={styles.cta}>
-        <div style={styles.ctaContent}>
-          <h2 style={styles.ctaTitle}>BHASHINI + Prathinidhi</h2>
-          <p style={styles.ctaText}>Experience the power of AI-driven language translation for legal processes</p>
-          <button 
-            style={styles.ctaButton}
-            onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
-          >
-            {languageData[selectedLanguage].startFiling}
-          </button>
-        </div>
-      </section>
+     <section style={styles.cta}>
+  <div style={styles.ctaContent}>
+    <img src="/bhashini.png" alt="Bhashini" style={styles.ctaLogo} />
+    <h2 style={styles.ctaTitle}>BHASHINI + PRATHINIDHI</h2>
+    <p style={styles.ctaText}>
+      Enabling every citizen to access legal aid in their own language — powered by AI & the Government of India.
+    </p>
+    <button 
+      style={styles.ctaButton}
+      onClick={() => navigate(`/login?lang=${selectedLanguage}`)}
+    >
+      {languageData[selectedLanguage].startFiling}
+    </button>
+  </div>
+</section>
+
 
       {/* Footer */}
-      <footer style={styles.footer}>
-        <div style={styles.footerContent}>
-          <div style={styles.footerLogo}>
-            <img src="/prathinidhi.svg" alt="Prathinidhi" style={styles.footerLogoImg} />
-            <p>{languageData[selectedLanguage].footer1}</p>
-            <p>{languageData[selectedLanguage].footer2}</p>
-          </div>
-          <div style={styles.footerLinks}>
-            <div style={styles.footerLinkColumn}>
-              <h4 style={styles.footerLinkTitle}>Quick Links</h4>
-              <a href="/about" style={styles.footerLink}>About</a>
-              <a href="/services" style={styles.footerLink}>Services</a>
-              <a href="/contact" style={styles.footerLink}>Contact</a>
-            </div>
-            <div style={styles.footerLinkColumn}>
-              <h4 style={styles.footerLinkTitle}>Legal</h4>
-              <a href="/privacy" style={styles.footerLink}>{languageData[selectedLanguage].privacy}</a>
-              <a href="/terms" style={styles.footerLink}>{languageData[selectedLanguage].terms}</a>
-              <a href="/help" style={styles.footerLink}>{languageData[selectedLanguage].help}</a>
-            </div>
-            <div style={styles.footerLinkColumn}>
-              <h4 style={styles.footerLinkTitle}>Connect</h4>
-              <a href="https://twitter.com/prathinidhi" style={styles.footerLink}>Twitter</a>
-              <a href="https://facebook.com/prathinidhi" style={styles.footerLink}>Facebook</a>
-              <a href="https://instagram.com/prathinidhi" style={styles.footerLink}>Instagram</a>
-            </div>
-          </div>
-        </div>
-        <div style={styles.footerBottom}>
-          <p>© 2025 Prathinidhi | A Government of India Initiative</p>
-        </div>
-      </footer>
+     <footer style={styles.footer}>
+  <div style={styles.footerContent}>
+    <div style={styles.footerLogo}>
+      <img src="/gov-emblem.svg" alt="India Emblem" style={{ height: "60px", marginBottom: "10px" }} />
+      <img src="/prathinidhi.svg" alt="Prathinidhi" style={styles.footerLogoImg} />
+      <p>{languageData[selectedLanguage].footer1}</p>
+      <p>{languageData[selectedLanguage].footer2}</p>
+      <p style={{ fontWeight: "bold", marginTop: "10px" }}>Ministry of Law & Justice, Government of India</p>
+    </div>
+
+    <div style={styles.footerLinks}>
+      <div style={styles.footerLinkColumn}>
+        <h4 style={styles.footerLinkTitle}>Quick Links</h4>
+        <a href="/about" style={styles.footerLink}>📘 About</a>
+        <a href="/services" style={styles.footerLink}>🛠️ Services</a>
+        <a href="/contact" style={styles.footerLink}>📞 Contact</a>
+      </div>
+      <div style={styles.footerLinkColumn}>
+        <h4 style={styles.footerLinkTitle}>Legal</h4>
+        <a href="/privacy" style={styles.footerLink}>{languageData[selectedLanguage].privacy}</a>
+        <a href="/terms" style={styles.footerLink}>{languageData[selectedLanguage].terms}</a>
+        <a href="/help" style={styles.footerLink}>{languageData[selectedLanguage].help}</a>
+      </div>
+      <div style={styles.footerLinkColumn}>
+        <h4 style={styles.footerLinkTitle}>Support</h4>
+        <p style={{ color: "#ccc", marginBottom: "10px" }}>📞 1800-123-4567 (Toll-free)</p>
+        <p style={{ color: "#ccc", marginBottom: "10px" }}>✉️ support@prathinidhi.gov.in</p>
+        <p style={{ color: "#ccc" }}>🌐 www.prathinidhi.gov.in</p>
+      </div>
+    </div>
+  </div>
+
+  <div style={styles.footerBottom}>
+    <p>© 2025 Prathinidhi | A Government of India Initiative</p>
+    <p style={{ fontSize: "12px", marginTop: "5px" }}>Last Updated: May 15, 2025</p>
+  </div>
+</footer>
+
     </main>
   );
 };
@@ -789,57 +803,78 @@ const styles = {
     boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
   },
   // Pop-Up Styles
-  languagePopup: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 9999,
-    animation: "fadeIn 0.5s ease",
-  },
-  popupContent: {
-    backgroundColor: "#fff",
-    padding: "30px 40px",
-    borderRadius: "12px",
-    boxShadow: "0 15px 40px rgba(0, 0, 0, 0.2)",
-    textAlign: "center",
-    width: "320px",
-    animation: "scaleIn 0.5s ease",
-  },
-  popupTitle: {
-    fontSize: "26px",
-    fontWeight: "bold",
-    color: "#0b5394",
-    marginBottom: "20px",
-  },
-  languageButtons: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: "12px",
-  },
-  languageButton: {
-    padding: "10px 16px",
-    backgroundColor: "#0b5394",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "16px",
-    borderRadius: "8px",
-    flex: "1 1 auto",
-    minWidth: "100px",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    "&:hover": {
-      backgroundColor: "#094a86",
-      transform: "scale(1.05)"
-    }
-  },
+languagePopup: {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.75)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 9999,
+  backdropFilter: "blur(10px)",
+  animation: "fadeIn 0.4s ease",
+},
+
+popupCard: {
+  background: "rgba(255, 255, 255, 0.95)",
+  borderRadius: "24px",
+  padding: "40px 30px",
+  width: "400px",
+  boxShadow: "0 25px 80px rgba(0,0,0,0.3)",
+  textAlign: "center",
+  animation: "scaleIn 0.3s ease",
+  backdropFilter: "blur(14px)",
+  border: "1px solid rgba(255,255,255,0.5)",
+},
+
+popupImage: {
+  width: "180px",
+  height: "180px",
+  objectFit: "contain",
+  margin: "0 auto 20px",
+},
+
+popupTitle: {
+  fontSize: "24px",
+  fontWeight: "700",
+  color: "#0b5394",
+  marginBottom: "10px",
+  fontFamily: "'Merriweather', serif",
+},
+
+popupSubtitle: {
+  fontSize: "15px",
+  color: "#333",
+  marginBottom: "25px",
+  fontWeight: "500",
+  fontStyle: "italic",
+},
+
+languageButtons: {
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "center",
+  gap: "12px",
+},
+
+languageButton: {
+  padding: "10px 18px",
+  backgroundColor: "#0b5394",
+  color: "#fff",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "15px",
+  fontWeight: "600",
+  borderRadius: "12px",
+  flex: "1 1 auto",
+  minWidth: "100px",
+  transition: "all 0.3s ease",
+  boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
+  letterSpacing: "0.3px",
+},
   // Animation classes
   fadeInSection: {
     transition: "opacity 1s ease, transform 1s ease",
@@ -1139,43 +1174,54 @@ const styles = {
     margin: "30px auto 0",
   },
   cta: {
-    padding: "80px 20px",
-    backgroundColor: "#0b5394",
-    color: "#fff",
-    textAlign: "center",
-  },
-  ctaContent: {
-    maxWidth: "800px",
-    margin: "0 auto",
-  },
-  ctaTitle: {
-    fontSize: "36px",
-    fontWeight: "bold",
-    marginBottom: "20px",
-  },
-  ctaText: {
-    fontSize: "18px",
-    marginBottom: "30px",
-    lineHeight: "1.6",
-    maxWidth: "600px",
-    margin: "0 auto 30px",
-  },
-  ctaButton: {
-    backgroundColor: "#ffb300",
-    color: "#000",
-    border: "none",
-    padding: "14px 32px",
-    fontSize: "18px",
-    borderRadius: "999px",
-    cursor: "pointer",
-    fontWeight: "600",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-    "&:hover": {
-      transform: "translateY(-3px)",
-      boxShadow: "0 6px 15px rgba(0,0,0,0.25)",
-    }
-  },
+  padding: "100px 20px",
+  background: "linear-gradient(135deg, #0b5394 0%, #06437a 100%)",
+  color: "#fff",
+  textAlign: "center",
+  borderTop: "4px solid #ffb300",
+  borderBottom: "4px solid #ffb300",
+  fontFamily: "'Merriweather', serif",
+},
+ctaContent: {
+  maxWidth: "900px",
+  margin: "0 auto",
+},
+ctaLogo: {
+  height: "60px",
+  marginBottom: "20px",
+},
+ctaTitle: {
+  fontSize: "42px",
+  fontWeight: "800",
+  letterSpacing: "1px",
+  marginBottom: "20px",
+  textTransform: "uppercase",
+},
+ctaText: {
+  fontSize: "20px",
+  lineHeight: "1.8",
+  maxWidth: "700px",
+  margin: "0 auto 40px",
+  color: "#e0e0e0",
+},
+ctaButton: {
+  backgroundColor: "#ffb300",
+  color: "#000",
+  border: "none",
+  padding: "16px 40px",
+  fontSize: "20px",
+  borderRadius: "999px",
+  cursor: "pointer",
+  fontWeight: "700",
+  letterSpacing: "0.5px",
+  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+  boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
+  "&:hover": {
+    transform: "translateY(-3px)",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+  }
+},
+
   footer: {
     backgroundColor: "#07396b",
     color: "#fff",
