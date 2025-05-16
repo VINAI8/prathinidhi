@@ -493,38 +493,74 @@ useEffect(() => {
   </div>
 </section>
 
+<section
+  id="about-section"
+  style={{
+    ...styles.about,
+    ...styles.fadeInSection,
+    opacity: isVisible.about ? 1 : 0,
+  }}
+>
+  <div style={styles.contentContainer}>
+    <h2 style={styles.sectionTitle}>
+      {languageData[selectedLanguage].aboutTitle}
+    </h2>
 
+    <div style={styles.aboutContent}>
+      <div style={styles.aboutText}>
+        <p style={styles.paragraph}>
+          {languageData[selectedLanguage].aboutText}
+        </p>
 
-      {/* About Section - NEW */}
-      <section id="about-section" style={{...styles.about, ...styles.fadeInSection, opacity: isVisible.about ? 1 : 0}}>
-        <div style={styles.contentContainer}>
-          <h2 style={styles.sectionTitle}>{languageData[selectedLanguage].aboutTitle}</h2>
-          <div style={styles.aboutContent}>
-            <div style={styles.aboutText}>
-              <p style={styles.paragraph}>{languageData[selectedLanguage].aboutText}</p>
-              
-              {/* Stats Row */}
-              <div style={styles.statsRow}>
-                <div style={styles.statItem}>
-                  <div style={styles.statNumber}>{languageData[selectedLanguage].stat1}</div>
-                  <div style={styles.statLabel}>{languageData[selectedLanguage].stat1Label}</div>
-                </div>
-                <div style={styles.statItem}>
-                  <div style={styles.statNumber}>{languageData[selectedLanguage].stat2}</div>
-                  <div style={styles.statLabel}>{languageData[selectedLanguage].stat2Label}</div>
-                </div>
-                <div style={styles.statItem}>
-                  <div style={styles.statNumber}>{languageData[selectedLanguage].stat3}</div>
-                  <div style={styles.statLabel}>{languageData[selectedLanguage].stat3Label}</div>
-                </div>
-              </div>
+        <div style={styles.statsRow}>
+          <div style={styles.statItem}>
+            <div style={styles.statNumber}>
+              {languageData[selectedLanguage].stat1}
             </div>
-            <div style={styles.aboutImageContainer}>
-              <img src="/digital-india.png" alt="Digital India" style={styles.aboutImage} />
+            <div style={styles.statLabel}>
+              {languageData[selectedLanguage].stat1Label}
+            </div>
+          </div>
+          <div style={styles.statItem}>
+            <div style={styles.statNumber}>
+              {languageData[selectedLanguage].stat2}
+            </div>
+            <div style={styles.statLabel}>
+              {languageData[selectedLanguage].stat2Label}
+            </div>
+          </div>
+          <div style={styles.statItem}>
+            <div style={styles.statNumber}>
+              {languageData[selectedLanguage].stat3}
+            </div>
+            <div style={styles.statLabel}>
+              {languageData[selectedLanguage].stat3Label}
             </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      <div style={styles.aboutImageContainer}>
+        <img
+          src="/digital-india.png"
+          alt="Digital India"
+          style={styles.aboutImage}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
 
       {/* Features Section - NEW */}
       <section id="features-section" style={{...styles.features, ...styles.fadeInSection, opacity: isVisible.features ? 1 : 0}}>
@@ -894,63 +930,80 @@ const styles = {
   fadeInSection: {
     transition: "opacity 1s ease-in-out, transform 1s ease-in-out",
   },
-  about: {
-    padding: "80px 0",
+    about: {
+    padding: "100px 0",
     backgroundColor: "#ffffff",
+  },
+  contentContainer: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    padding: "0 24px",
+  },
+  sectionTitle: {
+    fontSize: "36px",
+    color: "#0b5394",
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: "60px",
+    position: "relative",
+    paddingBottom: "16px",
   },
   aboutContent: {
     display: "flex",
     flexWrap: "wrap",
-    alignItems: "center",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
     gap: "40px",
   },
   aboutText: {
     flex: "1 1 500px",
+    paddingRight: "16px",
   },
   paragraph: {
     fontSize: "18px",
-    lineHeight: "1.8",
-    marginBottom: "30px",
-    color: "#444",
+    lineHeight: "1.75",
+    color: "#333",
+    marginBottom: "40px",
   },
   statsRow: {
     display: "flex",
     justifyContent: "space-between",
     flexWrap: "wrap",
-    marginTop: "40px",
-    gap: "20px",
+    gap: "24px",
   },
   statItem: {
+    flex: "1 1 160px",
     textAlign: "center",
-    flex: "1 1 150px",
-    padding: "20px",
-    borderRadius: "8px",
     backgroundColor: "#f5f9ff",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
+    padding: "24px 16px",
+    borderRadius: "12px",
+    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.05)",
     transition: "transform 0.3s ease",
-    "&:hover": {
-      transform: "translateY(-5px)",
-    }
   },
   statNumber: {
-    fontSize: "32px",
+    fontSize: "34px",
+    fontWeight: "700",
     color: "#0b5394",
-    fontWeight: "bold",
-    marginBottom: "10px",
+    marginBottom: "8px",
   },
   statLabel: {
     fontSize: "16px",
-    color: "#666",
+    color: "#555",
   },
   aboutImageContainer: {
     flex: "1 1 400px",
     display: "flex",
     justifyContent: "center",
+    alignItems: "center",
   },
   aboutImage: {
-    maxWidth: "100%",
-    borderRadius: "10px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+    width: "100%",
+    maxWidth: "400px",
+    borderRadius: "12px",
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+  },
+  fadeInSection: {
+    transition: "opacity 1s ease-in-out, transform 1s ease-in-out",
   },
   features: {
     padding: "80px 0",
