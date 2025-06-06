@@ -277,7 +277,7 @@ const Dashboard = () => {
       return;
     }
 
-    fetch('https://prathinidhi-backend-b6cg.onrender.com/dashboard', {
+    fetch('https://api-1-ij19.onrender.com/dashboard', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
