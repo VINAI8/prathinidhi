@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell 
-} from 'recharts';
+
 import { Calendar, ChevronDown, Bell, Search, FileText, Upload, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 const translations = {
   en: { welcome: 'Welcome',
@@ -346,6 +343,7 @@ const Dashboard = () => {
   );
 
   return (
+    
     <div style={styles.appContainer}>
       {/* Header */}
       <header style={styles.header}>
@@ -466,67 +464,74 @@ const Dashboard = () => {
           {/* Overview tab */}
           {activeTab === 'overview' && (
             <>
-              <div style={styles.statsGrid}>
-                <div style={styles.statCard}>
-                  <h4>{t.formsSubmitted || 'Forms Submitted'}</h4>
-                  <p>{formStatusData.reduce((acc, cur) => acc + cur.value, 0)}</p>
-                </div>
-                <div style={styles.statCard}>
-                  <h4>{t.pendingApprovals || 'Pending Approvals'}</h4>
-                  <p>{formStatusData.find((f) => f.name === 'Under Review')?.value || 0}</p>
-                </div>
-                <div style={styles.statCard}>
-                  <h4>{t.rejectedForms || 'Rejected Forms'}</h4>
-                  <p>{formStatusData.find((f) => f.name === 'Rejected')?.value || 0}</p>
-                </div>
-              </div>
+              <div style={styles.horizontalStatsContainer}>
+  <div style={styles.horizontalStatCard}>
+    <div style={styles.statIcon}>📊</div>
+    <div style={styles.statContent}>
+      <h3 style={styles.statNumber}>{formStatusData.reduce((acc, cur) => acc + cur.value, 0)}</h3>
+      <p style={styles.statLabel}>{t.formsSubmitted || 'Forms Submitted'}</p>
+    </div>
+  </div>
+  <div style={styles.horizontalStatCard}>
+    <div style={styles.statIcon}>⏳</div>
+    <div style={styles.statContent}>
+      <h3 style={styles.statNumber}>{formStatusData.find((f) => f.name === 'Under Review')?.value || 0}</h3>
+      <p style={styles.statLabel}>{t.pendingApprovals || 'Pending Approvals'}</p>
+    </div>
+  </div>
+  <div style={styles.horizontalStatCard}>
+    <div style={styles.statIcon}>❌</div>
+    <div style={styles.statContent}>
+      <h3 style={styles.statNumber}>{formStatusData.find((f) => f.name === 'Rejected')?.value || 0}</h3>
+      <p style={styles.statLabel}>{t.rejectedForms || 'Rejected Forms'}</p>
+    </div>
+  </div>
+</div>
+<style jsx>{`
+  .enhanced-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+  }
+  
+  .enhanced-new-form-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.4);
+  }
+  
+  .enhanced-new-form-btn:hover .button-arrow {
+    transform: translateX(4px);
+  }
+  
+  .enhanced-upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(5, 150, 105, 0.4);
+  }
+  
+  .enhanced-upload-btn:hover .button-arrow {
+    transform: translateX(4px);
+  }
+`}</style>
+              
 
-              <div style={styles.chartsContainer}>
-                <div style={styles.pieChartContainer}>
-                  <h4>{t.formStatus || 'Form Status'}</h4>
-                  <ResponsiveContainer width="100%" height={250}>
-                    <PieChart>
-                      <Pie
-                        data={formStatusData}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        label
-                      >
-                        {formStatusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div style={styles.barChartContainer}>
-                  <h4>{t.monthlySubmissions || 'Monthly Submissions'}</h4>
-                  <ResponsiveContainer width="100%" height={250}>
-                    <BarChart data={monthlySubmissionsData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="submissions" fill="#2563EB" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              <div style={styles.quickActions}>
-                <button style={styles.newFormBtn} onClick={handleNewFormClick}>
-                  {t.newForm || 'New Form'}
-                </button>
-                <button style={styles.uploadBtn}>
-                  <Upload size={16} />
-                  {t.uploadDocuments || 'Upload Documents'}
-                </button>
-              </div>
+              <div style={styles.enhancedQuickActions}>
+  <button style={styles.enhancedNewFormBtn} className='enhanced-new-form-btn' onClick={handleNewFormClick}>
+    <div style={styles.buttonIcon}>📄</div>
+    <div style={styles.buttonContent}>
+      <h4 style={styles.buttonTitle}>{t.newForm || 'File New Legal Form'}</h4>
+      <p style={styles.buttonSubtitle}>Start a new legal application</p>
+    </div>
+    <div style={styles.buttonArrow} className="enhanced-stat-card button-arrow">→</div>
+  </button>
+  
+  <button style={styles.enhancedUploadBtn} className='enhanced-upload-btn'>
+    <div style={styles.buttonIcon}>📤</div>
+    <div style={styles.buttonContent}>
+      <h4 style={styles.buttonTitle}>{t.uploadDocuments || 'Upload Documents'}</h4>
+      <p style={styles.buttonSubtitle}>Upload supporting documents</p>
+    </div>
+    <div style={styles.buttonArrow} className="enhanced-stat-card button-arrow">→</div>
+  </button>
+</div>
 
               <div style={styles.recentActivity}>
                 <h3>{t.recentActivity || 'Recent Activity'}</h3>
@@ -1026,6 +1031,119 @@ const styles = {
     color: '#64748b',
     marginTop: 4,
   },
+  // Add these to your existing styles object
+horizontalStatsContainer: {
+  display: 'flex',
+  gap: 24,
+  marginBottom: 32,
+  flexWrap: 'wrap',
+},
+
+horizontalStatCard: {
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  borderRadius: 16,
+  padding: 24,
+  flex: '1 1 280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: 16,
+  boxShadow: '0 8px 25px rgba(102, 126, 234, 0.25)',
+  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  cursor: 'pointer',
+  border: 'none',
+  color: '#fff',
+},
+
+statIcon: {
+  fontSize: 36,
+  opacity: 0.9,
+},
+
+statContent: {
+  flex: 1,
+},
+
+statNumber: {
+  fontSize: 32,
+  fontWeight: 700,
+  margin: '0 0 4px 0',
+  color: '#fff',
+},
+
+statLabel: {
+  fontSize: 14,
+  fontWeight: 500,
+  margin: 0,
+  color: 'rgba(255, 255, 255, 0.85)',
+},
+
+enhancedQuickActions: {
+  display: 'flex',
+  gap: 20,
+  marginBottom: 32,
+  flexWrap: 'wrap',
+},
+
+enhancedNewFormBtn: {
+  background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+  border: 'none',
+  borderRadius: 16,
+  padding: 24,
+  flex: '1 1 300px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: 16,
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  boxShadow: '0 8px 25px rgba(79, 70, 229, 0.3)',
+  color: '#fff',
+  textAlign: 'left',
+},
+
+enhancedUploadBtn: {
+  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+  border: 'none',
+  borderRadius: 16,
+  padding: 24,
+  flex: '1 1 300px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: 16,
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  boxShadow: '0 8px 25px rgba(5, 150, 105, 0.3)',
+  color: '#fff',
+  textAlign: 'left',
+},
+
+buttonIcon: {
+  fontSize: 32,
+  opacity: 0.9,
+},
+
+buttonContent: {
+  flex: 1,
+},
+
+buttonTitle: {
+  fontSize: 16,
+  fontWeight: 600,
+  margin: '0 0 4px 0',
+  color: '#fff',
+},
+
+buttonSubtitle: {
+  fontSize: 12,
+  margin: 0,
+  color: 'rgba(255, 255, 255, 0.8)',
+},
+
+buttonArrow: {
+  fontSize: 20,
+  fontWeight: 600,
+  opacity: 0.7,
+  transition: 'transform 0.3s ease',
+},
 };
 
 export default Dashboard;
