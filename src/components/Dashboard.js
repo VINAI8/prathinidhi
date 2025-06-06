@@ -1,220 +1,164 @@
+
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 import { Calendar, ChevronDown, Bell, Search, FileText, Upload, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+
 const translations = {
-  en: { welcome: 'Welcome',
-    governmentOfIndia: 'Government of India',
-    ministryOfLaw: 'Ministry of Law and Justice',
-    fileForms: 'File Legal Forms',
-    newForm: '📄 File New Legal Form',
-    continueDraft: '📝 Continue Draft Application',
-    uploadDocs: '📤 Upload Supporting Documents',
-    acceptedFormats: 'Accepted formats: PDF, JPG, PNG',
-    statusTitle: '📊 Application Status Overview',
-    drafts: 'Draft Applications',
-    submitted: 'Submitted Applications',
-    uploaded: 'Uploaded Documents',
-    logout: '🚪 Logout',
-    language: '🌐 Language',
-    userDetails: 'User Details',
-    aadhaar: 'Aadhaar',
-    mobile: 'Mobile',
-    otp: 'OTP',
-    quickLinks: 'Quick Links',
-    faqs: 'FAQs',
-    userGuide: 'User Guide',
-    govPortal: 'Government Portal',
-    terms: 'Terms of Use',
-    contact: 'Contact Support',
-    email: 'Email',
-    phone: 'Phone',
-    hours: 'Hours',
-    name : "Name",
-    role:"Role",
-    address: 'Address',
-    about: 'About Platform',
-    aboutText: 'This platform is developed under the Digital India initiative to streamline legal application services for all citizens in multiple regional languages.',
-    copyright: () => `© ${new Date().getFullYear()} Government of India. All Rights Reserved. 🇮🇳`,
-    popupTitle: 'Select Language',
-    applicationType: "Application Type",
-    receivedThrough: "Received Through",
-    problemSummary: "Problem Summary",
-    religion: "Religion",
-    caste: "Caste",
-    occupation: "Occupation",
-    timestamp: "Timestamp",
-
-    // 🔽 New labels for dashboard (Charts, Activity, Footer, etc.)
-    formStatus: 'Form Status Distribution',
-    monthlySubmissions: 'Monthly Submissions',
-    recentActivity: 'Recent Activity',
-    viewAllActivity: 'View All Activity',
-    quickActions: 'Quick Actions',
-    checkStatus: 'Check Status',
+  en: {
+    welcome: 'Welcome',
+    logout: 'Logout',
+    language: 'Language',
+    searchPlaceholder: 'Search forms...',
     notifications: 'Notifications',
+    overview: 'Overview',
+    forms: 'Forms',
     complaints: 'Your Complaints',
-    status: 'Status',
-    inProgress: 'In Progress',
-
-    // Footer enhancements
-    followUs: 'Follow Us',
-    termsAndConditions: 'Terms & Conditions',
-  
-  },
-  ta: {
-    aadhaar: 'ஆதார்',
-    mobile: 'மொபைல்',
-    otp: 'ஒரு தடவை கடவுச்சொல் (OTP)',
-    welcome: 'வரவேற்கிறோம்',
-    fileForms: 'சட்ட படிவங்களை தாக்கல் செய்யவும்',
-    newForm: '📄 புதிய சட்ட படிவத்தை தாக்கல் செய்யவும்',
-    continueDraft: '📝 கரைசல் விண்ணப்பத்தை தொடரவும்',
-    uploadDocs: '📤 ஆதார ஆவணங்களை பதிவேற்றவும்',
-    acceptedFormats: 'ஏற்கப்படும் வடிவங்கள்: PDF, JPG, PNG',
-    statusTitle: '📊 விண்ணப்ப நிலைமேற்கோள்',
-    drafts: 'கரைசல் விண்ணப்பங்கள்',
-    submitted: 'தாக்கல் செய்யப்பட்ட விண்ணப்பங்கள்',
-    uploaded: 'பதிவேற்றப்பட்ட ஆவணங்கள்',
-    logout: '🚪 வெளியேறு',
-    language: '🌐 மொழி',
-    quickLinks: 'விரைவு இணைப்புகள்',
-    faqs: 'அடிக்கடி கேட்கப்படும் கேள்விகள்',
-    userGuide: 'பயனர் வழிகாட்டி',
-    govPortal: 'அரசு போர்டல்',
-    terms: 'பயன்பாட்டு விதிமுறைகள்',
-    contact: 'ஆதரவை தொடர்பு கொள்ளவும்',
-    email: 'மின்னஞ்சல்',
-    phone: 'தொலைபேசி',
-    hours: 'வேலை நேரம்',
-    address: 'முகவரி',
-    about: 'தளத்தைப் பற்றி',
-    aboutText: 'இந்த தளம் "டிஜிட்டல் இந்தியா" முயற்சியின் கீழ், பல மண்டல மொழிகளில் உள்ள குடிமக்களுக்கு சட்ட சேவைகளை எளிமைப்படுத்த உருவாக்கப்பட்டுள்ளது.',
-    copyright: () => `© ${new Date().getFullYear()} இந்திய அரசு. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை. 🇮🇳`,
-    popupTitle: 'மொழியை தேர்ந்தெடுக்கவும்',
-    applicationType: "விண்ணப்ப வகை",
-receivedThrough: "பெறப்பட்ட வழி",
-problemSummary: "பிரச்சனை சுருக்கம்",
-religion: "மதம்",
-caste: "சாதி",
-occupation: "தொழில்",
-timestamp: "நேரமுத்திரை",
-  },
-  hi: {
-    aadhaar: 'आधार',
-    mobile: 'मोबाइल',
-    otp: 'ओटीपी',
-    welcome: 'स्वागत है',
-    fileForms: 'कानूनी फॉर्म भरें',
-    newForm: '📄 नया कानूनी फॉर्म भरें',
-    continueDraft: '📝 ड्राफ्ट आवेदन जारी रखें',
-    uploadDocs: '📤 सहायक दस्तावेज़ अपलोड करें',
-    acceptedFormats: 'स्वीकृत प्रारूप: PDF, JPG, PNG',
-    statusTitle: '📊 आवेदन स्थिति का अवलोकन',
-    drafts: 'ड्राफ्ट आवेदन',
-    submitted: 'प्रस्तुत आवेदन',
-    uploaded: 'अपलोड किए गए दस्तावेज़',
-    logout: '🚪 लॉगआउट',
-    language: '🌐 भाषा',
-    quickLinks: 'त्वरित लिंक',
-    faqs: 'अक्सर पूछे जाने वाले प्रश्न',
-    userGuide: 'उपयोगकर्ता मार्गदर्शिका',
-    govPortal: 'सरकारी पोर्टल',
-    terms: 'उपयोग की शर्तें',
-    contact: 'सहायता से संपर्क करें',
-    email: 'ईमेल',
-    phone: 'फोन',
-    hours: 'घंटे',
-    address: 'पता',
-    about: 'प्लेटफ़ॉर्म के बारे में',
-    aboutText: 'यह प्लेटफ़ॉर्म डिजिटल इंडिया पहल के तहत नागरिकों के लिए बहुभाषी कानूनी सेवाओं को सरल बनाने के लिए विकसित किया गया है।',
-    copyright: () => `© ${new Date().getFullYear()} भारत सरकार। सर्वाधिकार सुरक्षित। 🇮🇳`,
-    popupTitle: 'भाषा चुनें',
-    applicationType: "आवेदन का प्रकार",
-receivedThrough: "प्राप्त माध्यम",
-problemSummary: "समस्या का सारांश",
-religion: "धर्म",
-caste: "जाति",
-occupation: "व्यवसाय",
-timestamp: "समय टिकट",
+    newForm: 'File New Legal Form',
+    uploadDocuments: 'Upload Documents',
+    formsSubmitted: 'Forms Submitted',
+    pendingApprovals: 'Pending Approvals',
+    rejectedForms: 'Rejected Forms',
+    startNewApplication: 'Start a new legal application',
+    uploadSupportingDocs: 'Upload supporting documents',
+    recentActivity: 'Recent Activity',
+    loadingDashboard: 'Loading dashboard...',
+    formListDetails: 'Form list and details go here.',
+    complaintDetails: 'Complaint details go here.',
+    viewAllNotifications: 'View all notifications',
+    formApproved: 'Your form #32145 has been approved',
+    uploadIncomeProof: 'Please upload your income proof document',
+    submissionDeadline: 'Form submission deadline approaching',
+    close: 'Close',
+    // Activity statuses
+    submitted: 'Submitted',
+    approved: 'Approved',
+    draft: 'Draft',
+    pending: 'Pending'
   },
   te: {
-    aadhaar: 'ఆధార్',
-    mobile: 'మొబైల్',
-    otp: 'ఓటీపీ',
     welcome: 'స్వాగతం',
-    fileForms: 'చట్టపరమైన ఫారాలను దాఖలు చేయండి',
-    newForm: '📄 కొత్త ఫారం దాఖలు చేయండి',
-    continueDraft: '📝 ముసాయిదా దరఖాస్తును కొనసాగించండి',
-    uploadDocs: '📤 మద్దతు పత్రాలను అప్‌లోడ్ చేయండి',
-    acceptedFormats: 'అంగీకరించిన ఫార్మాట్లు: PDF, JPG, PNG',
-    statusTitle: '📊 దరఖాస్తు స్థితి అవలోకనం',
-    drafts: 'ముసాయిదా దరఖాస్తులు',
-    submitted: 'దాఖలు చేసిన దరఖాస్తులు',
-    uploaded: 'అప్‌లోడ్ చేసిన పత్రాలు',
-    logout: '🚪 లాగౌట్',
-    language: '🌐 భాష',
-    quickLinks: 'త్వరిత లింకులు',
-    faqs: 'తరచుగా అడిగే ప్రశ్నలు',
-    userGuide: 'వినియోగదారుల గైడ్',
-    govPortal: 'ప్రభుత్వ పోర్టల్',
-    terms: 'వినియోగ నిబంధనలు',
-    contact: 'సహాయం కోసం సంప్రదించండి',
-    email: 'ఇమెయిల్',
-    phone: 'ఫోన్',
-    hours: 'పనిచేసే గంటలు',
-    address: 'చిరునామా',
-    about: 'వేదిక గురించి',
-    aboutText: 'ఈ వేదిక డిజిటల్ ఇండియా చొరవలో భాగంగా భారత పౌరుల కోసం అనేక ప్రాంతీయ భాషల్లో చట్టపరమైన సేవలను సరళీకృతం చేయడానికి అభివృద్ధి చేయబడింది.',
-    copyright: () => `© ${new Date().getFullYear()} భారత ప్రభుత్వం. అన్ని హక్కులు నిలుపుకోబడ్డాయి. 🇮🇳`,
-    popupTitle: 'భాష ఎంచుకోండి',
-    applicationType: "దరఖాస్తు రకం",
-receivedThrough: "అందిన మార్గం",
-problemSummary: "సమస్య సంగ్రహం",
-religion: "మతం",
-caste: "కులం",
-occupation: "వృత్తి",
-timestamp: "సమయ ముద్ర",
+    logout: 'లాగౌట్',
+    language: 'భాష',
+    searchPlaceholder: 'ఫారాలను వెతకండి...',
+    notifications: 'ప్రకటనలు',
+    overview: 'అవలోకనం',
+    forms: 'ఫారాలు',
+    complaints: 'మీ ఫిర్యాదులు',
+    newForm: 'కొత్త న్యాయ ఫారం దాఖలు చేయండి',
+    uploadDocuments: 'పత్రాలను అప్‌లోడ్ చేయండి',
+    formsSubmitted: 'దాఖలు చేసిన ఫారాలు',
+    pendingApprovals: 'పెండింగ్ ఆమోదాలు',
+    rejectedForms: 'తిరస్కరించిన ఫారాలు',
+    startNewApplication: 'కొత్త న్యాయ దరఖాస్తును ప్రారంభించండి',
+    uploadSupportingDocs: 'మద్దతు పత్రాలను అప్‌లోడ్ చేయండి',
+    recentActivity: 'ఇటీవలి చర్య',
+    loadingDashboard: 'డ్యాష్‌బోర్డ్ లోడ్ అవుతోంది...',
+    formListDetails: 'ఫారం జాబితా మరియు వివరాలు ఇక్కడ ఉంటాయి.',
+    complaintDetails: 'ఫిర్యాదు వివరాలు ఇక్కడ ఉంటాయి.',
+    viewAllNotifications: 'అన్ని ప్రకటనలను చూడండి',
+    formApproved: 'మీ ఫారం #32145 ఆమోదించబడింది',
+    uploadIncomeProof: 'దయచేసి మీ ఆదాయ రుజువు పత్రాన్ని అప్‌లోడ్ చేయండి',
+    submissionDeadline: 'ఫారం సమర్పణ గడువు దగ్గర పడుతోంది',
+    close: 'మూసివేయండి',
+    // Activity statuses
+    submitted: 'సమర్పించబడింది',
+    approved: 'ఆమోదించబడింది',
+    draft: 'మసాలా',
+    pending: 'పెండింగ్‌లో ఉంది'
+  },
+hi : {
+  welcome: 'स्वागत है',
+logout: 'लॉगआउट',
+language: 'भाषा',
+searchPlaceholder: 'फॉर्म खोजें...',
+notifications: 'सूचनाएं',
+overview: 'अवलोकन',
+forms: 'फॉर्म्स',
+complaints: 'आपकी शिकायतें',
+newForm: 'नया कानूनी फॉर्म दाखिल करें',
+uploadDocuments: 'दस्तावेज़ अपलोड करें',
+formsSubmitted: 'सबमिट किए गए फॉर्म्स',
+pendingApprovals: 'लंबित अनुमोदन',
+rejectedForms: 'अस्वीकृत फॉर्म्स',
+startNewApplication: 'नया कानूनी आवेदन शुरू करें',
+uploadSupportingDocs: 'सहायक दस्तावेज़ अपलोड करें',
+recentActivity: 'हाल की गतिविधि',
+loadingDashboard: 'डैशबोर्ड लोड हो रहा है...',
+formListDetails: 'फॉर्म सूची और विवरण यहाँ हैं।',
+complaintDetails: 'शिकायत विवरण यहाँ हैं।',
+viewAllNotifications: 'सभी सूचनाएं देखें',
+formApproved: 'आपका फॉर्म #32145 स्वीकृत हो गया है',
+uploadIncomeProof: 'कृपया अपनी आय प्रमाण पत्र अपलोड करें',
+submissionDeadline: 'फॉर्म सबमिट करने की अंतिम तिथि निकट है',
+close: 'बंद करें',
+submitted: 'सबमिट किया गया',
+approved: 'स्वीकृत',
+draft: 'ड्राफ्ट',
+pending: 'लंबित'
 
-  },
-  bn: {
-    aadhaar: 'আধার',
-    mobile: 'মোবাইল',
-    otp: 'ওটিপি',
-    welcome: 'স্বাগতম',
-    fileForms: 'আইনি ফর্ম জমা দিন',
-    newForm: '📄 নতুন আইনি ফর্ম জমা দিন',
-    continueDraft: '📝 খসড়া আবেদন চালিয়ে যান',
-    uploadDocs: '📤 সহায়ক নথি আপলোড করুন',
-    acceptedFormats: 'গৃহীত ফরম্যাট: PDF, JPG, PNG',
-    statusTitle: '📊 আবেদন অবস্থা সংক্ষিপ্ত বিবরণ',
-    drafts: 'খসড়া আবেদন',
-    submitted: 'জমা দেওয়া আবেদন',
-    uploaded: 'আপলোড করা নথি',
-    logout: '🚪 লগআউট',
-    language: '🌐 ভাষা',
-    quickLinks: 'দ্রুত লিঙ্কসমূহ',
-    faqs: 'প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী',
-    userGuide: 'ব্যবহারকারী গাইড',
-    govPortal: 'সরকারি পোর্টাল',
-    terms: 'ব্যবহারের শর্তাবলী',
-    contact: 'সহায়তা যোগাযোগ',
-    email: 'ইমেইল',
-    phone: 'ফোন',
-    hours: 'সময়',
-    address: 'ঠিকানা',
-    about: 'প্ল্যাটফর্ম সম্পর্কে',
-    aboutText: 'এই প্ল্যাটফর্মটি ডিজিটাল ইন্ডিয়া উদ্যোগের অধীনে বহু ভাষায় নাগরিকদের জন্য আইনি আবেদন পরিষেবাগুলি সহজ করার জন্য তৈরি করা হয়েছে।',
-    copyright: () => `© ${new Date().getFullYear()} ভারত সরকার। সর্বস্বত্ব সংরক্ষিত। 🇮🇳`,
-    popupTitle: 'ভাষা নির্বাচন করুন',
-    applicationType: "আবেদন প্রকার",
-receivedThrough: "প্রাপ্তির মাধ্যম",
-problemSummary: "সমস্যার সারাংশ",
-religion: "ধর্ম",
-caste: "জাতি",
-occupation: "পেশা",
-timestamp: "টাইমস্ট্যাম্প",
-  },
+},
+ta : {
+  welcome: 'வரவேற்பு',
+logout: 'வெளியேறு',
+language: 'மொழி',
+searchPlaceholder: 'படிவங்களைத் தேடு...',
+notifications: 'அறிவிப்புகள்',
+overview: 'மேலோட்டம்',
+forms: 'படிவங்கள்',
+complaints: 'உங்கள் புகார்கள்',
+newForm: 'புதிய சட்டப் படிவத்தை தாக்கல் செய்க',
+uploadDocuments: 'ஆவணங்களை பதிவேற்றவும்',
+formsSubmitted: 'தாக்கல் செய்யப்பட்ட படிவங்கள்',
+pendingApprovals: 'நிலுவையில் உள்ள ஒப்புதல்கள்',
+rejectedForms: 'நிராகரிக்கப்பட்ட படிவங்கள்',
+startNewApplication: 'புதிய சட்ட விண்ணப்பத்தை தொடங்குங்கள்',
+uploadSupportingDocs: 'ஆதரவு ஆவணங்களை பதிவேற்றவும்',
+recentActivity: 'சமீபத்திய செயல்பாடு',
+loadingDashboard: 'டாஷ்போர்டு ஏற்றப்படுகிறது...',
+formListDetails: 'படிவ பட்டியல் மற்றும் விவரங்கள் இங்கே',
+complaintDetails: 'புகார் விவரங்கள் இங்கே',
+viewAllNotifications: 'அனைத்து அறிவிப்புகளையும் பார்க்கவும்',
+formApproved: 'உங்கள் படிவம் #32145 ஒப்புதலாகியுள்ளது',
+uploadIncomeProof: 'தயவுசெய்து உங்கள் வருமான ஆதார ஆவணத்தை பதிவேற்றவும்',
+submissionDeadline: 'படிவத்தை சமர்ப்பிக்கும் கடைசி நாள் நெருங்குகிறது',
+close: 'மூடு',
+submitted: 'தாக்கல் செய்யப்பட்டது',
+approved: 'ஒப்புதல் வழங்கப்பட்டது',
+draft: 'வரைவு',
+pending: 'நிலுவையில் உள்ளது'
+
+},
+bn : {
+  welcome: 'স্বাগতম',
+logout: 'লগআউট',
+language: 'ভাষা',
+searchPlaceholder: 'ফর্ম অনুসন্ধান করুন...',
+notifications: 'বিজ্ঞপ্তি',
+overview: 'সংক্ষিপ্ত বিবরণ',
+forms: 'ফর্মসমূহ',
+complaints: 'আপনার অভিযোগ',
+newForm: 'নতুন আইনি ফর্ম দাখিল করুন',
+uploadDocuments: 'নথিপত্র আপলোড করুন',
+formsSubmitted: 'দাখিল করা ফর্মসমূহ',
+pendingApprovals: 'অনিষ্পন্ন অনুমোদনসমূহ',
+rejectedForms: 'প্রত্যাখ্যাত ফর্মসমূহ',
+startNewApplication: 'নতুন আইনি আবেদন শুরু করুন',
+uploadSupportingDocs: 'সহায়ক নথিপত্র আপলোড করুন',
+recentActivity: 'সাম্প্রতিক কার্যকলাপ',
+loadingDashboard: 'ড্যাশবোর্ড লোড হচ্ছে...',
+formListDetails: 'ফর্ম তালিকা এবং বিবরণ এখানে।',
+complaintDetails: 'অভিযোগের বিবরণ এখানে।',
+viewAllNotifications: 'সব বিজ্ঞপ্তি দেখুন',
+formApproved: 'আপনার ফর্ম #32145 অনুমোদিত হয়েছে',
+uploadIncomeProof: 'অনুগ্রহ করে আপনার আয়ের প্রমাণপত্র আপলোড করুন',
+submissionDeadline: 'ফর্ম জমা দেওয়ার শেষ তারিখ ঘনিয়ে আসছে',
+close: 'বন্ধ করুন',
+submitted: 'দাখিল হয়েছে',
+approved: 'অনুমোদিত',
+draft: 'খসড়া',
+pending: 'অনিষ্পন্ন'
+
+}
 };
 
 const Dashboard = () => {
@@ -241,14 +185,7 @@ const Dashboard = () => {
     { name: 'Under Review', value: 6, color: '#F59E0B' },
   ];
 
-  const monthlySubmissionsData = [
-    { month: 'Jan', submissions: 3 },
-    { month: 'Feb', submissions: 5 },
-    { month: 'Mar', submissions: 2 },
-    { month: 'Apr', submissions: 7 },
-    { month: 'May', submissions: 4 },
-    { month: 'Jun', submissions: 9 }
-  ];
+
 
   // Mock recent activity data
   const recentActivity = [
@@ -338,12 +275,11 @@ const Dashboard = () => {
   if (loading) return (
     <div style={styles.loadingContainer}>
       <div style={styles.spinner}></div>
-      <p>Loading dashboard...</p>
+      <p>{t.loadingDashboard}</p>
     </div>
   );
 
   return (
-    
     <div style={styles.appContainer}>
       {/* Header */}
       <header style={styles.header}>
@@ -363,7 +299,7 @@ const Dashboard = () => {
               <Search size={16} color="#64748b" />
               <input
                 type="text"
-                placeholder={t.searchPlaceholder || "Search forms..."}
+                placeholder={t.searchPlaceholder}
                 style={styles.searchInput}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -374,7 +310,7 @@ const Dashboard = () => {
               <button
                 style={styles.iconButton}
                 onClick={() => setShowNotifications(!showNotifications)}
-                aria-label="Notifications"
+                aria-label={t.notifications}
               >
                 <Bell size={20} />
                 {notifications > 0 && (
@@ -383,20 +319,20 @@ const Dashboard = () => {
               </button>
               {showNotifications && (
                 <div style={styles.notificationDropdown}>
-                  <h4 style={styles.notificationHeader}>Notifications</h4>
+                  <h4 style={styles.notificationHeader}>{t.notifications}</h4>
                   <div style={styles.notificationItem}>
                     <div style={styles.notificationDot}></div>
-                    <p>Your form #32145 has been approved</p>
+                    <p>{t.formApproved}</p>
                   </div>
                   <div style={styles.notificationItem}>
                     <div style={styles.notificationDot}></div>
-                    <p>Please upload your income proof document</p>
+                    <p>{t.uploadIncomeProof}</p>
                   </div>
                   <div style={styles.notificationItem}>
                     <div style={styles.notificationDot}></div>
-                    <p>Form submission deadline approaching</p>
+                    <p>{t.submissionDeadline}</p>
                   </div>
-                  <button style={styles.viewAllButton}>View all notifications</button>
+                  <button style={styles.viewAllButton}>{t.viewAllNotifications}</button>
                 </div>
               )}
             </div>
@@ -405,16 +341,16 @@ const Dashboard = () => {
               style={styles.languageSelect}
               value={selectedLanguage}
               onChange={handleLanguageChange}
-              aria-label="Select Language"
+              aria-label={t.language}
             >
               <option value="en">English</option>
-              <option value="hi">हिंदी</option>
-              <option value="ta">தமிழ்</option>
               <option value="te">తెలుగు</option>
+              <option value="ta">தமிழ்</option>
+              <option value="hi">हिंदी</option>
               <option value="bn">বাংলা</option>
             </select>
 
-            <button style={styles.logoutBtn} onClick={handleLogout} aria-label="Logout">
+            <button style={styles.logoutBtn} onClick={handleLogout} aria-label={t.logout}>
               {t.logout}
             </button>
           </div>
@@ -440,21 +376,21 @@ const Dashboard = () => {
               onClick={() => setActiveTab('overview')}
             >
               <span style={styles.navIcon}>📊</span>
-              {t.overview || 'Overview'}
+              {t.overview}
             </button>
             <button
               style={activeTab === 'forms' ? { ...styles.navItem, ...styles.activeNavItem } : styles.navItem}
               onClick={() => setActiveTab('forms')}
             >
               <span style={styles.navIcon}>📝</span>
-              {t.forms || 'Forms'}
+              {t.forms}
             </button>
             <button
               style={activeTab === 'complaints' ? { ...styles.navItem, ...styles.activeNavItem } : styles.navItem}
               onClick={() => setActiveTab('complaints')}
             >
               <span style={styles.navIcon}>📁</span>
-              {t.complaints || 'Complaints'}
+              {t.complaints}
             </button>
           </nav>
         </aside>
@@ -465,76 +401,51 @@ const Dashboard = () => {
           {activeTab === 'overview' && (
             <>
               <div style={styles.horizontalStatsContainer}>
-  <div style={styles.horizontalStatCard}>
-    <div style={styles.statIcon}>📊</div>
-    <div style={styles.statContent}>
-      <h3 style={styles.statNumber}>{formStatusData.reduce((acc, cur) => acc + cur.value, 0)}</h3>
-      <p style={styles.statLabel}>{t.formsSubmitted || 'Forms Submitted'}</p>
-    </div>
-  </div>
-  <div style={styles.horizontalStatCard}>
-    <div style={styles.statIcon}>⏳</div>
-    <div style={styles.statContent}>
-      <h3 style={styles.statNumber}>{formStatusData.find((f) => f.name === 'Under Review')?.value || 0}</h3>
-      <p style={styles.statLabel}>{t.pendingApprovals || 'Pending Approvals'}</p>
-    </div>
-  </div>
-  <div style={styles.horizontalStatCard}>
-    <div style={styles.statIcon}>❌</div>
-    <div style={styles.statContent}>
-      <h3 style={styles.statNumber}>{formStatusData.find((f) => f.name === 'Rejected')?.value || 0}</h3>
-      <p style={styles.statLabel}>{t.rejectedForms || 'Rejected Forms'}</p>
-    </div>
-  </div>
-</div>
-<style jsx>{`
-  .enhanced-stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-  }
-  
-  .enhanced-new-form-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.4);
-  }
-  
-  .enhanced-new-form-btn:hover .button-arrow {
-    transform: translateX(4px);
-  }
-  
-  .enhanced-upload-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(5, 150, 105, 0.4);
-  }
-  
-  .enhanced-upload-btn:hover .button-arrow {
-    transform: translateX(4px);
-  }
-`}</style>
-              
+                <div style={styles.horizontalStatCard}>
+                  <div style={styles.statIcon}>📊</div>
+                  <div style={styles.statContent}>
+                    <h3 style={styles.statNumber}>{formStatusData.reduce((acc, cur) => acc + cur.value, 0)}</h3>
+                    <p style={styles.statLabel}>{t.formsSubmitted}</p>
+                  </div>
+                </div>
+                <div style={styles.horizontalStatCard}>
+                  <div style={styles.statIcon}>⏳</div>
+                  <div style={styles.statContent}>
+                    <h3 style={styles.statNumber}>{formStatusData.find((f) => f.name === 'Under Review')?.value || 0}</h3>
+                    <p style={styles.statLabel}>{t.pendingApprovals}</p>
+                  </div>
+                </div>
+                <div style={styles.horizontalStatCard}>
+                  <div style={styles.statIcon}>❌</div>
+                  <div style={styles.statContent}>
+                    <h3 style={styles.statNumber}>{formStatusData.find((f) => f.name === 'Rejected')?.value || 0}</h3>
+                    <p style={styles.statLabel}>{t.rejectedForms}</p>
+                  </div>
+                </div>
+              </div>
 
               <div style={styles.enhancedQuickActions}>
-  <button style={styles.enhancedNewFormBtn} className='enhanced-new-form-btn' onClick={handleNewFormClick}>
-    <div style={styles.buttonIcon}>📄</div>
-    <div style={styles.buttonContent}>
-      <h4 style={styles.buttonTitle}>{t.newForm || 'File New Legal Form'}</h4>
-      <p style={styles.buttonSubtitle}>Start a new legal application</p>
-    </div>
-    <div style={styles.buttonArrow} className="enhanced-stat-card button-arrow">→</div>
-  </button>
-  
-  <button style={styles.enhancedUploadBtn} className='enhanced-upload-btn'>
-    <div style={styles.buttonIcon}>📤</div>
-    <div style={styles.buttonContent}>
-      <h4 style={styles.buttonTitle}>{t.uploadDocuments || 'Upload Documents'}</h4>
-      <p style={styles.buttonSubtitle}>Upload supporting documents</p>
-    </div>
-    <div style={styles.buttonArrow} className="enhanced-stat-card button-arrow">→</div>
-  </button>
-</div>
+                <button style={styles.enhancedNewFormBtn} onClick={handleNewFormClick}>
+                  <div style={styles.buttonIcon}>📄</div>
+                  <div style={styles.buttonContent}>
+                    <h4 style={styles.buttonTitle}>{t.newForm}</h4>
+                    <p style={styles.buttonSubtitle}>{t.startNewApplication}</p>
+                  </div>
+                  <div style={styles.buttonArrow}>→</div>
+                </button>
+                
+                <button style={styles.enhancedUploadBtn}>
+                  <div style={styles.buttonIcon}>📤</div>
+                  <div style={styles.buttonContent}>
+                    <h4 style={styles.buttonTitle}>{t.uploadDocuments}</h4>
+                    <p style={styles.buttonSubtitle}>{t.uploadSupportingDocs}</p>
+                  </div>
+                  <div style={styles.buttonArrow}>→</div>
+                </button>
+              </div>
 
               <div style={styles.recentActivity}>
-                <h3>{t.recentActivity || 'Recent Activity'}</h3>
+                <h3>{t.recentActivity}</h3>
                 <ul style={styles.activityList}>
                   {recentActivity.map((activity) => (
                     <li key={activity.id} style={styles.activityItem}>
@@ -547,7 +458,7 @@ const Dashboard = () => {
                         <h4>{activity.title}</h4>
                         <p>
                           <span style={getStatusClass(activity.status)}>
-                            {getStatusIcon(activity.status)} {activity.status}
+                            {getStatusIcon(activity.status)} {t[activity.status]}
                           </span>{' '}
                           - {activity.date}
                         </p>
@@ -562,16 +473,16 @@ const Dashboard = () => {
           {/* Forms tab */}
           {activeTab === 'forms' && (
             <div>
-              <h2>{t.forms || 'Forms'}</h2>
-              <p>Form list and details go here.</p>
+              <h2>{t.forms}</h2>
+              <p>{t.formListDetails}</p>
             </div>
           )}
 
           {/* Complaints tab */}
           {activeTab === 'complaints' && (
             <div>
-              <h2>{t.complaints || 'Complaints'}</h2>
-              <p>Complaint details go here.</p>
+              <h2>{t.complaints}</h2>
+              <p>{t.complaintDetails}</p>
             </div>
           )}
         </section>
@@ -583,7 +494,7 @@ const Dashboard = () => {
           <div style={styles.popupContent} onClick={(e) => e.stopPropagation()}>
             <h3>Popup Title</h3>
             <p>Popup content...</p>
-            <button onClick={() => setIsPopupOpen(false)}>Close</button>
+            <button onClick={() => setIsPopupOpen(false)}>{t.close}</button>
           </div>
         </div>
       )}
