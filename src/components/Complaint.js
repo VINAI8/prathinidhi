@@ -558,7 +558,7 @@ const [selectedCategory, setSelectedCategory] = useState('');
       return;
     }
 
-    fetch('https://api-1-ij19.onrender.com/dashboard', {
+    fetch('https://prathinidhi-gndeeye6bvd4atbh.centralindia-01.azurewebsites.net/dashboard', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -782,104 +782,49 @@ const [selectedCategory, setSelectedCategory] = useState('');
     reader.readAsDataURL(audioBlob);
   };
   
-  const sendAudioToServer = (base64Audio) => {
-    setLoading(true);
-    
-    // Get language code based on selectedLanguage
-    const languageCode = getLanguageCode(selectedLanguage);
-    const serviceId = getServiceId(languageCode);
-    
-    // Log request details for debugging
-    console.log("Sending audio request with:", {
-      languageCode,
-      serviceId,
-      audioLength: base64Audio.length
-    });
-    
-    const requestBody = {
-      "pipelineTasks": [
-        {
-          "taskType": "asr",
-          "config": {
-            "language": {
-              "sourceLanguage": languageCode
-            },
-            "serviceId": serviceId,
-            "audioFormat": "webm", // Changed to match the blob format
-            "samplingRate": 16000,
-            "postprocessors": [
-              "itn"
-            ]
-          }
-        }
-      ],
-      "inputData": {
-        "audio": [
-          {
-            "audioContent": base64Audio
-          }
-        ]
-      }
-    };
-    
-    // Add a timeout to make sure the request doesn't hang indefinitely
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-    
-    fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'X4I4l0ijv2j_OV2lELJ2NF5QNvJetBgZGA2gUwfhRF-sCHxcGmZHQehi84nfJKdb',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(requestBody),
-      signal: controller.signal
-    })
-    .then(response => {
-      clearTimeout(timeoutId);
-      console.log("API Response Status:", response.status);
-      
-      if (!response.ok) {
-        return response.text().then(text => {
-          console.error("API Error Response:", text);
-          throw new Error(`Failed to process audio: ${response.status} ${text || ''}`);
-        });
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log("API Success Response:", data);
-      // Extract the text from the response
-      let transcribedText = '';
-    
-      if (data && 
-          data.pipelineResponse && 
-          Array.isArray(data.pipelineResponse) && 
-          data.pipelineResponse[0] && 
-          data.pipelineResponse[0].output && 
-          Array.isArray(data.pipelineResponse[0].output) && 
-          data.pipelineResponse[0].output[0] && 
-          data.pipelineResponse[0].output[0].source) {
-        
-        transcribedText = data.pipelineResponse[0].output[0].source;
-      }
-      
-      // Update the problem summary with the transcribed text
-      setFormData(prevData => ({
-        ...prevData,
-        problemSummary: transcribedText || prevData.problemSummary
-      }));
-    })
-    .catch(error => {
-      clearTimeout(timeoutId);
-      console.error('Error processing audio:', error);
-      setError(`Error processing audio: ${error.message}. Please try again or type manually.`);
-    })
-    .finally(() => {
-      setLoading(false);
-    });
+const sendAudioToServer = (base64Audio) => {
+  setLoading(true);
+  
+  // Get language code based on selectedLanguage
+  const languageCode = getLanguageCode(selectedLanguage);
+  
+  const requestBody = {
+    audioContent: base64Audio,
+    languageCode: languageCode
   };
+  
+  fetch('https://prathinidhi-gndeeye6bvd4atbh.centralindia-01.azurewebsites.net/speech', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` // Include auth token if needed
+    },
+    body: JSON.stringify(requestBody)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Speech processing failed: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Extract transcribed text from your backend response
+    const transcribedText = data.transcribedText || data.text || '';
+    
+    // Update the problem summary with the transcribed text
+    setFormData(prevData => ({
+      ...prevData,
+      problemSummary: transcribedText || prevData.problemSummary
+    }));
+  })
+  .catch(error => {
+    console.error('Error processing audio:', error);
+    setError(`Error processing audio: ${error.message}. Please try again or type manually.`);
+  })
+  .finally(() => {
+    setLoading(false);
+  });
+};
   
   // Helper function to get language code
   const getLanguageCode = (language) => {
@@ -895,22 +840,12 @@ const [selectedCategory, setSelectedCategory] = useState('');
   };
   
   // Helper function to get service ID based on language code
-  const getServiceId = (languageCode) => {
-    const serviceIdMap = {
-      'te': 'bhashini/iitm/asr-dravidian--gpu--t4',
-      'hi': 'ai4bharat/conformer-hi-gpu--t4',
-      'ta': 'bhashini/iitm/asr-dravidian--gpu--t4',
-      'en': 'ai4bharat/whisper-medium-en--gpu--t4',
-      'bn': 'bhashini/iitm/asr-indoaryan--gpu--t4'
-    };
-    
-    return serviceIdMap[languageCode] || serviceIdMap['en'];
-  };
+
 
   const saveDraft = () => {
     setLoading(true);
     
-    fetch('https://api-1-ij19.onrender.com/complaint', {
+    fetch('https://prathinidhi-gndeeye6bvd4atbh.centralindia-01.azurewebsites.net/complaint', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -943,7 +878,7 @@ const [selectedCategory, setSelectedCategory] = useState('');
   const handleSubmit = () => {
     setLoading(true);
     
-    fetch('https://api-1-ij19.onrender.com/complaint', {
+    fetch('https://prathinidhi-gndeeye6bvd4atbh.centralindia-01.azurewebsites.net/complaint', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

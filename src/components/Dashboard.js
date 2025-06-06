@@ -211,7 +211,7 @@ const Dashboard = () => {
       return;
     }
 
-    fetch('https://api-1-ij19.onrender.com/dashboard', {
+    fetch('https://prathinidhi-gndeeye6bvd4atbh.centralindia-01.azurewebsites.net/dashboard', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
