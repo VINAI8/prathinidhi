@@ -1,281 +1,422 @@
-
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Calendar, ChevronDown, Bell, Search, FileText, Upload, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Mic, MicOff, Download, FileText, AlertCircle } from 'lucide-react';
+import jsPDF from 'jspdf';
 
 const translations = {
   en: {
     welcome: 'Welcome',
     logout: 'Logout',
     language: 'Language',
-    searchPlaceholder: 'Search forms...',
-    notifications: 'Notifications',
     overview: 'Overview',
     forms: 'Forms',
     complaints: 'Your Complaints',
-    newForm: 'File New Legal Form',
-    uploadDocuments: 'Upload Documents',
-    formsSubmitted: 'Forms Submitted',
-    pendingApprovals: 'Pending Approvals',
-    rejectedForms: 'Rejected Forms',
-    startNewApplication: 'Start a new legal application',
-    uploadSupportingDocs: 'Upload supporting documents',
-    recentActivity: 'Recent Activity',
-    loadingDashboard: 'Loading dashboard...',
-    formListDetails: 'Form list and details go here.',
-    complaintDetails: 'Complaint details go here.',
-    viewAllNotifications: 'View all notifications',
-    formApproved: 'Your form #32145 has been approved',
-    uploadIncomeProof: 'Please upload your income proof document',
-    submissionDeadline: 'Form submission deadline approaching',
-    close: 'Close',
-    // Activity statuses
-    submitted: 'Submitted',
-    approved: 'Approved',
-    draft: 'Draft',
-    pending: 'Pending'
+    bailApplication: 'Bail Application',
+    startRecording: 'Start Recording',
+    stopRecording: 'Stop Recording',
+    downloadPDF: 'Download as PDF',
+    fillAllFields: 'Please fill all required fields through voice input',
+    processing: 'Processing voice...',
+    speakNext: 'Please speak the',
+    recordingAudio: 'Recording audio...',
+    // Field names for speech prompts
+    courtName: 'Court Name',
+    accusedName: 'Accused Name',
+    policeStation: 'Police Station',
+    firNumber: 'FIR Number',
+    section: 'Section',
+    custodyDate: 'Custody Date',
+    accusedFatherName: 'Accused Father Name',
+    arrestDate: 'Arrest Date'
   },
-  te: {
-    welcome: 'స్వాగతం',
-    logout: 'లాగౌట్',
-    language: 'భాష',
-    searchPlaceholder: 'ఫారాలను వెతకండి...',
-    notifications: 'ప్రకటనలు',
-    overview: 'అవలోకనం',
-    forms: 'ఫారాలు',
-    complaints: 'మీ ఫిర్యాదులు',
-    newForm: 'కొత్త న్యాయ ఫారం దాఖలు చేయండి',
-    uploadDocuments: 'పత్రాలను అప్‌లోడ్ చేయండి',
-    formsSubmitted: 'దాఖలు చేసిన ఫారాలు',
-    pendingApprovals: 'పెండింగ్ ఆమోదాలు',
-    rejectedForms: 'తిరస్కరించిన ఫారాలు',
-    startNewApplication: 'కొత్త న్యాయ దరఖాస్తును ప్రారంభించండి',
-    uploadSupportingDocs: 'మద్దతు పత్రాలను అప్‌లోడ్ చేయండి',
-    recentActivity: 'ఇటీవలి చర్య',
-    loadingDashboard: 'డ్యాష్‌బోర్డ్ లోడ్ అవుతోంది...',
-    formListDetails: 'ఫారం జాబితా మరియు వివరాలు ఇక్కడ ఉంటాయి.',
-    complaintDetails: 'ఫిర్యాదు వివరాలు ఇక్కడ ఉంటాయి.',
-    viewAllNotifications: 'అన్ని ప్రకటనలను చూడండి',
-    formApproved: 'మీ ఫారం #32145 ఆమోదించబడింది',
-    uploadIncomeProof: 'దయచేసి మీ ఆదాయ రుజువు పత్రాన్ని అప్‌లోడ్ చేయండి',
-    submissionDeadline: 'ఫారం సమర్పణ గడువు దగ్గర పడుతోంది',
-    close: 'మూసివేయండి',
-    // Activity statuses
-    submitted: 'సమర్పించబడింది',
-    approved: 'ఆమోదించబడింది',
-    draft: 'మసాలా',
-    pending: 'పెండింగ్‌లో ఉంది'
-  },
-hi : {
-  welcome: 'स्वागत है',
-logout: 'लॉगआउट',
-language: 'भाषा',
-searchPlaceholder: 'फॉर्म खोजें...',
-notifications: 'सूचनाएं',
-overview: 'अवलोकन',
-forms: 'फॉर्म्स',
-complaints: 'आपकी शिकायतें',
-newForm: 'नया कानूनी फॉर्म दाखिल करें',
-uploadDocuments: 'दस्तावेज़ अपलोड करें',
-formsSubmitted: 'सबमिट किए गए फॉर्म्स',
-pendingApprovals: 'लंबित अनुमोदन',
-rejectedForms: 'अस्वीकृत फॉर्म्स',
-startNewApplication: 'नया कानूनी आवेदन शुरू करें',
-uploadSupportingDocs: 'सहायक दस्तावेज़ अपलोड करें',
-recentActivity: 'हाल की गतिविधि',
-loadingDashboard: 'डैशबोर्ड लोड हो रहा है...',
-formListDetails: 'फॉर्म सूची और विवरण यहाँ हैं।',
-complaintDetails: 'शिकायत विवरण यहाँ हैं।',
-viewAllNotifications: 'सभी सूचनाएं देखें',
-formApproved: 'आपका फॉर्म #32145 स्वीकृत हो गया है',
-uploadIncomeProof: 'कृपया अपनी आय प्रमाण पत्र अपलोड करें',
-submissionDeadline: 'फॉर्म सबमिट करने की अंतिम तिथि निकट है',
-close: 'बंद करें',
-submitted: 'सबमिट किया गया',
-approved: 'स्वीकृत',
-draft: 'ड्राफ्ट',
-pending: 'लंबित'
-
-},
-ta : {
-  welcome: 'வரவேற்பு',
-logout: 'வெளியேறு',
-language: 'மொழி',
-searchPlaceholder: 'படிவங்களைத் தேடு...',
-notifications: 'அறிவிப்புகள்',
-overview: 'மேலோட்டம்',
-forms: 'படிவங்கள்',
-complaints: 'உங்கள் புகார்கள்',
-newForm: 'புதிய சட்டப் படிவத்தை தாக்கல் செய்க',
-uploadDocuments: 'ஆவணங்களை பதிவேற்றவும்',
-formsSubmitted: 'தாக்கல் செய்யப்பட்ட படிவங்கள்',
-pendingApprovals: 'நிலுவையில் உள்ள ஒப்புதல்கள்',
-rejectedForms: 'நிராகரிக்கப்பட்ட படிவங்கள்',
-startNewApplication: 'புதிய சட்ட விண்ணப்பத்தை தொடங்குங்கள்',
-uploadSupportingDocs: 'ஆதரவு ஆவணங்களை பதிவேற்றவும்',
-recentActivity: 'சமீபத்திய செயல்பாடு',
-loadingDashboard: 'டாஷ்போர்டு ஏற்றப்படுகிறது...',
-formListDetails: 'படிவ பட்டியல் மற்றும் விவரங்கள் இங்கே',
-complaintDetails: 'புகார் விவரங்கள் இங்கே',
-viewAllNotifications: 'அனைத்து அறிவிப்புகளையும் பார்க்கவும்',
-formApproved: 'உங்கள் படிவம் #32145 ஒப்புதலாகியுள்ளது',
-uploadIncomeProof: 'தயவுசெய்து உங்கள் வருமான ஆதார ஆவணத்தை பதிவேற்றவும்',
-submissionDeadline: 'படிவத்தை சமர்ப்பிக்கும் கடைசி நாள் நெருங்குகிறது',
-close: 'மூடு',
-submitted: 'தாக்கல் செய்யப்பட்டது',
-approved: 'ஒப்புதல் வழங்கப்பட்டது',
-draft: 'வரைவு',
-pending: 'நிலுவையில் உள்ளது'
-
-},
-bn : {
-  welcome: 'স্বাগতম',
-logout: 'লগআউট',
-language: 'ভাষা',
-searchPlaceholder: 'ফর্ম অনুসন্ধান করুন...',
-notifications: 'বিজ্ঞপ্তি',
-overview: 'সংক্ষিপ্ত বিবরণ',
-forms: 'ফর্মসমূহ',
-complaints: 'আপনার অভিযোগ',
-newForm: 'নতুন আইনি ফর্ম দাখিল করুন',
-uploadDocuments: 'নথিপত্র আপলোড করুন',
-formsSubmitted: 'দাখিল করা ফর্মসমূহ',
-pendingApprovals: 'অনিষ্পন্ন অনুমোদনসমূহ',
-rejectedForms: 'প্রত্যাখ্যাত ফর্মসমূহ',
-startNewApplication: 'নতুন আইনি আবেদন শুরু করুন',
-uploadSupportingDocs: 'সহায়ক নথিপত্র আপলোড করুন',
-recentActivity: 'সাম্প্রতিক কার্যকলাপ',
-loadingDashboard: 'ড্যাশবোর্ড লোড হচ্ছে...',
-formListDetails: 'ফর্ম তালিকা এবং বিবরণ এখানে।',
-complaintDetails: 'অভিযোগের বিবরণ এখানে।',
-viewAllNotifications: 'সব বিজ্ঞপ্তি দেখুন',
-formApproved: 'আপনার ফর্ম #32145 অনুমোদিত হয়েছে',
-uploadIncomeProof: 'অনুগ্রহ করে আপনার আয়ের প্রমাণপত্র আপলোড করুন',
-submissionDeadline: 'ফর্ম জমা দেওয়ার শেষ তারিখ ঘনিয়ে আসছে',
-close: 'বন্ধ করুন',
-submitted: 'দাখিল হয়েছে',
-approved: 'অনুমোদিত',
-draft: 'খসড়া',
-pending: 'অনিষ্পন্ন'
-
-}
 };
 
 const Dashboard = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const queryParams = new URLSearchParams(location.search);
-  const langParam = queryParams.get('lang')?.toLowerCase() || 'en';
-
   const [t, setT] = useState(translations.en);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedLanguage, setSelectedLanguage] = useState(langParam);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [notifications, setNotifications] = useState(3);
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [user, setUser] = useState({ name: 'John Doe', role: 'Citizen' });
+  const [loading, setLoading] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [activeTab, setActiveTab] = useState('forms');
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState('');
 
-  // Mock data for charts
-  const formStatusData = [
-    { name: 'Drafts', value: 4, color: '#3B82F6' },
-    { name: 'Submitted', value: 10, color: '#10B981' },
-    { name: 'Rejected', value: 2, color: '#EF4444' },
-    { name: 'Under Review', value: 6, color: '#F59E0B' },
+  // Audio recording refs
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+
+  // Essential bail application fields in order
+  const fieldOrder = [
+    'courtName',
+    'accusedName', 
+    'policeStation',
+    'firNumber',
+    'section',
+    'custodyDate',
+    'accusedFatherName',
+    'arrestDate'
   ];
 
-
-
-  // Mock recent activity data
-  const recentActivity = [
-    { id: 1, type: 'submission', title: 'Tenant Complaint Form', status: 'submitted', date: '12 May 2025' },
-    { id: 2, type: 'upload', title: 'ID Proof Document', status: 'approved', date: '10 May 2025' },
-    { id: 3, type: 'form', title: 'Property Dispute', status: 'draft', date: '08 May 2025' },
-    { id: 4, type: 'upload', title: 'Income Certificate', status: 'pending', date: '05 May 2025' },
-  ];
+  const [currentFieldIndex, setCurrentFieldIndex] = useState(0);
+  
+  // Bail application form state - only essential fields
+  const [bailForm, setBailForm] = useState({
+    courtName: '',
+    accusedName: '',
+    policeStation: '',
+    firNumber: '',
+    section: '',
+    custodyDate: '',
+    accusedFatherName: '',
+    arrestDate: ''
+  });
 
   useEffect(() => {
     const selected = translations[selectedLanguage] || translations['en'];
     setT(selected);
-    // Update URL with selected language
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('lang', selectedLanguage);
-    window.history.pushState({}, '', newUrl);
   }, [selectedLanguage]);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate(`/login?lang=${selectedLanguage}`);
-      return;
-    }
-
-    fetch('https://prathinidhi-gndeeye6bvd4atbh.centralindia-01.azurewebsites.net/dashboard', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Invalid token');
-        return res.json();
-      })
-      .then((data) => setUser(data.user))
-      .catch(() => {
-        localStorage.removeItem('token');
-        navigate(`/login?lang=${selectedLanguage}`);
-      })
-      .finally(() => setLoading(false));
-  }, [selectedLanguage, navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate(`/login?lang=${selectedLanguage}`);
-  };
 
   const handleLanguageChange = (e) => {
     setSelectedLanguage(e.target.value);
   };
 
-  const handleNewFormClick = () => {
-    const token = localStorage.getItem('token');
-    localStorage.setItem('preferredLanguage', selectedLanguage);
-    navigate('/Complaint', {
-      state: { token },
-      search: `?lang=${selectedLanguage}`
+  const handleLogout = () => {
+    // Simulate logout
+    console.log('Logged out');
+  };
+
+  // Helper function to get language code
+  const getLanguageCode = (language) => {
+    const languageCodes = {
+      'en': 'en',
+      'te': 'te',
+      'ta': 'ta',
+      'hi': 'hi',
+      'bn': 'bn'
+    };
+    
+    return languageCodes[language] || 'en';
+  };
+  
+  // Helper function to get service ID based on language code
+  const getServiceId = (languageCode) => {
+    const serviceIdMap = {
+      'te': 'bhashini/iitm/asr-dravidian--gpu--t4',
+      'hi': 'ai4bharat/conformer-hi-gpu--t4',
+      'ta': 'bhashini/iitm/asr-dravidian--gpu--t4',
+      'en': 'ai4bharat/whisper-medium-en--gpu--t4',
+      'bn': 'bhashini/iitm/asr-indoaryan--gpu--t4'
+    };
+    
+    return serviceIdMap[languageCode] || serviceIdMap['en'];
+  };
+
+  const sendAudioToServer = (base64Audio) => {
+    setIsProcessing(true);
+    setError('');
+    
+    // Get language code based on selectedLanguage
+    const languageCode = getLanguageCode(selectedLanguage);
+    const serviceId = getServiceId(languageCode);
+    
+    // Log request details for debugging
+    console.log("Sending audio request with:", {
+      languageCode,
+      serviceId,
+      audioLength: base64Audio.length
+    });
+    
+    const requestBody = {
+      "pipelineTasks": [
+        {
+          "taskType": "asr",
+          "config": {
+            "language": {
+              "sourceLanguage": languageCode
+            },
+            "serviceId": serviceId,
+            "audioFormat": "webm",
+            "samplingRate": 16000,
+            "postprocessors": [
+              "itn"
+            ]
+          }
+        }
+      ],
+      "inputData": {
+        "audio": [
+          {
+            "audioContent": base64Audio
+          }
+        ]
+      }
+    };
+    
+    // Add a timeout to make sure the request doesn't hang indefinitely
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
+    fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'X4I4l0ijv2j_OV2lELJ2NF5QNvJetBgZGA2gUwfhRF-sCHxcGmZHQehi84nfJKdb',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal
+    })
+    .then(response => {
+      clearTimeout(timeoutId);
+      console.log("API Response Status:", response.status);
+      
+      if (!response.ok) {
+        return response.text().then(text => {
+          console.error("API Error Response:", text);
+          throw new Error(`Failed to process audio: ${response.status} ${text || ''}`);
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("API Success Response:", data);
+      // Extract the text from the response
+      let transcribedText = '';
+    
+      if (data && 
+          data.pipelineResponse && 
+          Array.isArray(data.pipelineResponse) && 
+          data.pipelineResponse[0] && 
+          data.pipelineResponse[0].output && 
+          Array.isArray(data.pipelineResponse[0].output) && 
+          data.pipelineResponse[0].output[0] && 
+          data.pipelineResponse[0].output[0].source) {
+        
+        transcribedText = data.pipelineResponse[0].output[0].source;
+      }
+      
+      // Update the current field with the transcribed text
+      const currentField = fieldOrder[currentFieldIndex];
+      setBailForm(prev => ({
+        ...prev,
+        [currentField]: transcribedText || prev[currentField]
+      }));
+      
+      // Move to next field if transcription was successful and not at the end
+      if (transcribedText && currentFieldIndex < fieldOrder.length - 1) {
+        setCurrentFieldIndex(prev => prev + 1);
+      }
+    })
+    .catch(error => {
+      clearTimeout(timeoutId);
+      console.error('Error processing audio:', error);
+      setError(`Error processing audio: ${error.message}. Please try again or type manually.`);
+    })
+    .finally(() => {
+      setIsProcessing(false);
     });
   };
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case 'submitted': return styles.statusSubmitted;
-      case 'approved': return styles.statusApproved;
-      case 'draft': return styles.statusDraft;
-      case 'pending': return styles.statusPending;
-      default: return {};
+  // Convert blob to base64
+  const blobToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Remove the data URL prefix to get just the base64 string
+        const base64String = reader.result.split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  // Voice recording functions
+  const startRecording = async () => {
+    try {
+      setError('');
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          sampleRate: 16000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true
+        } 
+      });
+      
+      // Clear previous chunks
+      audioChunksRef.current = [];
+      
+      // Create MediaRecorder with webm format
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm;codecs=opus'
+      });
+      
+      mediaRecorderRef.current = mediaRecorder;
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+      
+      mediaRecorder.onstop = async () => {
+        // Stop all tracks to release microphone
+        stream.getTracks().forEach(track => track.stop());
+        
+        // Create blob from recorded chunks
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        
+        try {
+          // Convert to base64
+          const base64Audio = await blobToBase64(audioBlob);
+          
+          // Send to Bhashini API
+          sendAudioToServer(base64Audio);
+        } catch (error) {
+          console.error('Error converting audio to base64:', error);
+          setError('Error processing audio. Please try again.');
+          setIsProcessing(false);
+        }
+      };
+      
+      mediaRecorder.start();
+      setIsRecording(true);
+      console.log('Recording started');
+      
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      setError('Error accessing microphone. Please check permissions.');
+      setIsRecording(false);
     }
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'submitted':
-      case 'approved':
-        return <CheckCircle size={16} />;
-      case 'draft':
-        return <Clock size={16} />;
-      case 'pending':
-        return <AlertCircle size={16} />;
-      default:
-        return null;
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      console.log('Recording stopped');
     }
+  };
+
+  const isFormComplete = () => {
+    return fieldOrder.every(field => bailForm[field].trim() !== '');
+  };
+
+  const getCurrentFieldName = () => {
+    if (currentFieldIndex >= fieldOrder.length) return '';
+    return t[fieldOrder[currentFieldIndex]] || fieldOrder[currentFieldIndex];
+  };
+
+  const downloadPDF = () => {
+    try {
+      // Create new jsPDF instance
+      const doc = new jsPDF();
+      
+      // Set font size and style for title
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      
+      // Add title
+      doc.text("BAIL APPLICATION", 105, 20, { align: "center" });
+      
+      // Set normal font for content
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      
+      // Add court section
+      doc.text("IN THE COURT OF " + (bailForm.courtName || "____________________"), 20, 40);
+      
+      // Add case details section
+      doc.text("IN THE MATTER OF", 20, 60);
+      doc.text("STATE", 20, 75);
+      doc.text("VS", 20, 85);
+      doc.text(bailForm.accusedName || "____________________", 20, 95);
+      doc.text("S/O " + (bailForm.accusedFatherName || "____________________"), 20, 105);
+      
+      // Add case information
+      doc.text("Police Station: " + (bailForm.policeStation || "____________________"), 20, 125);
+      doc.text("FIR NO: " + (bailForm.firNumber || "____________________"), 20, 135);
+      doc.text("U/S: " + (bailForm.section || "____________________"), 20, 145);
+      doc.text("Accused under police custody since: " + (bailForm.custodyDate || "____________________"), 20, 155);
+      
+      // Add application header
+      doc.setFont("helvetica", "bold");
+      doc.text("APPLICATION UNDER SECTION 439 Cr. Pc FOR GRANT OF BAIL", 20, 175);
+      doc.text("ON BEHALF OF THE ACCUSED", 20, 185);
+      
+      // Add respectfully submitted section
+      doc.text("MOST RESPECTFULLY SUBMITTED AS UNDER :-", 20, 205);
+      
+      // Set normal font for paragraphs
+      doc.setFont("helvetica", "normal");
+      
+      // Add paragraphs with text wrapping
+      const paragraphs = [
+        "1. That the police has falsely implicated the applicant in the present case and have arrested him without any reason on " + (bailForm.arrestDate || "____________________") + ", the applicant is in police custody since then.",
+        "2. That the applicant is innocent and has been falsely implicated in the present case.",
+        "3. That the applicant is ready to furnish bail bond and surety as may be required by this Hon'ble Court.",
+        "4. That the applicant has deep roots in society and is not likely to flee from justice.",
+        "5. That the applicant has been in custody since " + (bailForm.custodyDate || "____________________") + " and has suffered enough."
+      ];
+      
+      let yPosition = 220;
+      
+      paragraphs.forEach((paragraph) => {
+        const lines = doc.splitTextToSize(paragraph, 170);
+        doc.text(lines, 20, yPosition);
+        yPosition += lines.length * 7 + 5;
+        
+        // Add new page if content exceeds page height
+        if (yPosition > 270) {
+          doc.addPage();
+          yPosition = 20;
+        }
+      });
+      
+      // Add prayer section
+      const prayerText = "Therefore, it is most respectfully prayed that this Hon'ble Court may be pleased to grant bail to the applicant.";
+      const prayerLines = doc.splitTextToSize(prayerText, 170);
+      doc.text(prayerLines, 20, yPosition);
+      yPosition += prayerLines.length * 7 + 20;
+      
+      // Add signature section
+      doc.text("Yours faithfully,", 20, yPosition);
+      doc.text("[Advocate Name]", 20, yPosition + 10);
+      doc.text("Advocate for the Applicant", 20, yPosition + 20);
+      
+      // Add date
+      const currentDate = new Date().toLocaleDateString();
+      doc.text("Date: " + currentDate, 20, yPosition + 40);
+      
+      // Save the PDF
+      const fileName = `bail_application_${bailForm.accusedName.replace(/\s+/g, '_') || 'application'}.pdf`;
+      doc.save(fileName);
+      
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      setError('Error generating PDF. Please try again.');
+    }
+  };
+
+  const resetForm = () => {
+    setBailForm({
+      courtName: '',
+      accusedName: '',
+      policeStation: '',
+      firNumber: '',
+      section: '',
+      custodyDate: '',
+      accusedFatherName: '',
+      arrestDate: ''
+    });
+    setCurrentFieldIndex(0);
+    setError('');
   };
 
   if (loading) return (
     <div style={styles.loadingContainer}>
       <div style={styles.spinner}></div>
-      <p>{t.loadingDashboard}</p>
+      <p>Loading dashboard...</p>
     </div>
   );
 
@@ -285,8 +426,8 @@ const Dashboard = () => {
       <header style={styles.header}>
         <div style={styles.headerContainer}>
           <div style={styles.logoSection}>
-            <img src="./indian-emblem.png" alt="Indian Emblem" style={styles.logo} />
-            <img src="/prathinidhi.png" alt="Prathinidhi Logo" style={styles.logo} />
+            <div style={styles.logoPlaceholder}>🏛️</div>
+            <div style={styles.logoPlaceholder}>⚖️</div>
             <div>
               <h1 style={styles.title}>Prathinidhi</h1>
               <p style={styles.subtitle}>
@@ -295,48 +436,6 @@ const Dashboard = () => {
             </div>
           </div>
           <div style={styles.rightNav}>
-            <div style={styles.searchContainer}>
-              <Search size={16} color="#64748b" />
-              <input
-                type="text"
-                placeholder={t.searchPlaceholder}
-                style={styles.searchInput}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-
-            <div style={styles.notificationContainer}>
-              <button
-                style={styles.iconButton}
-                onClick={() => setShowNotifications(!showNotifications)}
-                aria-label={t.notifications}
-              >
-                <Bell size={20} />
-                {notifications > 0 && (
-                  <span style={styles.notificationBadge}>{notifications}</span>
-                )}
-              </button>
-              {showNotifications && (
-                <div style={styles.notificationDropdown}>
-                  <h4 style={styles.notificationHeader}>{t.notifications}</h4>
-                  <div style={styles.notificationItem}>
-                    <div style={styles.notificationDot}></div>
-                    <p>{t.formApproved}</p>
-                  </div>
-                  <div style={styles.notificationItem}>
-                    <div style={styles.notificationDot}></div>
-                    <p>{t.uploadIncomeProof}</p>
-                  </div>
-                  <div style={styles.notificationItem}>
-                    <div style={styles.notificationDot}></div>
-                    <p>{t.submissionDeadline}</p>
-                  </div>
-                  <button style={styles.viewAllButton}>{t.viewAllNotifications}</button>
-                </div>
-              )}
-            </div>
-
             <select
               style={styles.languageSelect}
               value={selectedLanguage}
@@ -396,118 +495,190 @@ const Dashboard = () => {
         </aside>
 
         {/* Content Area */}
-        <section style={styles.contentArea}>
-          {/* Overview tab */}
-          {activeTab === 'overview' && (
-            <>
-              <div style={styles.horizontalStatsContainer}>
-                <div style={styles.horizontalStatCard}>
-                  <div style={styles.statIcon}>📊</div>
-                  <div style={styles.statContent}>
-                    <h3 style={styles.statNumber}>{formStatusData.reduce((acc, cur) => acc + cur.value, 0)}</h3>
-                    <p style={styles.statLabel}>{t.formsSubmitted}</p>
-                  </div>
+        <div style={styles.contentContainer}>
+          {/* Voice Recording Section */}
+          <div style={styles.voiceSection}>
+            <div style={styles.micContainer}>
+              <button
+                style={isRecording ? { ...styles.micButton, ...styles.micButtonRecording } : styles.micButton}
+                onClick={isRecording ? stopRecording : startRecording}
+                disabled={isProcessing || isFormComplete()}
+              >
+                {isRecording ? <MicOff size={32} /> : <Mic size={32} />}
+              </button>
+              <p style={styles.micStatus}>
+                {isProcessing ? t.processing : 
+                 isRecording ? t.recordingAudio : 
+                 isFormComplete() ? 'All fields completed!' :
+                 `${t.speakNext} ${getCurrentFieldName()}`}
+              </p>
+              
+              {/* Error display */}
+              {error && (
+                <div style={styles.errorContainer}>
+                  <AlertCircle size={16} />
+                  <p style={styles.errorText}>{error}</p>
                 </div>
-                <div style={styles.horizontalStatCard}>
-                  <div style={styles.statIcon}>⏳</div>
-                  <div style={styles.statContent}>
-                    <h3 style={styles.statNumber}>{formStatusData.find((f) => f.name === 'Under Review')?.value || 0}</h3>
-                    <p style={styles.statLabel}>{t.pendingApprovals}</p>
-                  </div>
+              )}
+              
+              {/* Progress indicator */}
+              <div style={styles.progressContainer}>
+                <div style={styles.progressBar}>
+                  <div 
+                    style={{
+                      ...styles.progressFill,
+                      width: `${((currentFieldIndex) / fieldOrder.length) * 100}%`
+                    }}
+                  />
                 </div>
-                <div style={styles.horizontalStatCard}>
-                  <div style={styles.statIcon}>❌</div>
-                  <div style={styles.statContent}>
-                    <h3 style={styles.statNumber}>{formStatusData.find((f) => f.name === 'Rejected')?.value || 0}</h3>
-                    <p style={styles.statLabel}>{t.rejectedForms}</p>
-                  </div>
-                </div>
+                <p style={styles.progressText}>
+                  {currentFieldIndex}/{fieldOrder.length} fields completed
+                </p>
               </div>
 
-              <div style={styles.enhancedQuickActions}>
-                <button style={styles.enhancedNewFormBtn} onClick={handleNewFormClick}>
-                  <div style={styles.buttonIcon}>📄</div>
-                  <div style={styles.buttonContent}>
-                    <h4 style={styles.buttonTitle}>{t.newForm}</h4>
-                    <p style={styles.buttonSubtitle}>{t.startNewApplication}</p>
-                  </div>
-                  <div style={styles.buttonArrow}>→</div>
-                </button>
+              {/* Reset button */}
+              <button style={styles.resetButton} onClick={resetForm}>
+                Reset Form
+              </button>
+            </div>
+          </div>
+
+          {/* Bail Application Document */}
+          <div style={styles.bailFormContainer}>
+            <div style={styles.bailFormHeader}>
+              <FileText size={24} />
+              <h2 style={styles.bailFormTitle}>{t.bailApplication}</h2>
+            </div>
+            
+            <div style={styles.bailApplicationDocument}>
+              <div style={styles.documentContent}>
+                <h3 style={styles.documentTitle}>BAIL APPLICATION</h3>
                 
-                <button style={styles.enhancedUploadBtn}>
-                  <div style={styles.buttonIcon}>📤</div>
-                  <div style={styles.buttonContent}>
-                    <h4 style={styles.buttonTitle}>{t.uploadDocuments}</h4>
-                    <p style={styles.buttonSubtitle}>{t.uploadSupportingDocs}</p>
-                  </div>
-                  <div style={styles.buttonArrow}>→</div>
+                <div style={styles.courtSection}>
+                  <p style={styles.documentText}>
+                    IN THE COURT OF <span style={styles.fillableField}>
+                      {bailForm.courtName || '____________________'}
+                    </span>
+                  </p>
+                </div>
+
+                <div style={styles.documentSection}>
+                  <p style={styles.documentText}>IN THE MATTER OF</p>
+                  <br/>
+                  <p style={styles.documentText}>STATE</p>
+                  <br/>
+                  <p style={styles.documentText}>VS</p>
+                  <br/>
+                  <p style={styles.documentText}>
+                    <span style={styles.fillableField}>
+                      {bailForm.accusedName || '____________________'}
+                    </span>
+                  </p>
+                  <p style={styles.documentText}>
+                    S/O <span style={styles.fillableField}>
+                      {bailForm.accusedFatherName || '____________________'}
+                    </span>
+                  </p>
+                </div>
+
+                <div style={styles.documentSection}>
+                  <p style={styles.documentText}>
+                    Police Station: <span style={styles.fillableField}>
+                      {bailForm.policeStation || '____________________'}
+                    </span>
+                  </p>
+                  <p style={styles.documentText}>
+                    FIR NO: <span style={styles.fillableField}>
+                      {bailForm.firNumber || '____________________'}
+                    </span>
+                  </p>
+                  <p style={styles.documentText}>
+                    U/S: <span style={styles.fillableField}>
+                      {bailForm.section || '____________________'}
+                    </span>
+                  </p>
+                  <p style={styles.documentText}>
+                    Accused under police custody since: <span style={styles.fillableField}>
+                      {bailForm.custodyDate || '____________________'}
+                    </span>
+                  </p>
+                </div>
+
+                <div style={styles.documentSection}>
+                  <p style={styles.documentText}>
+                    <strong>APPLICATION UNDER SECTION 439 Cr. Pc FOR GRANT OF BAIL ON BEHALF OF THE ACCUSED</strong>
+                  </p>
+                </div>
+
+                <div style={styles.documentSection}>
+                  <p style={styles.documentText}>
+                    <strong><u>MOST RESPECTFULLY SUBMITTED AS UNDER :-</u></strong>
+                  </p>
+                  <br/>
+                  <p style={styles.documentText}>
+                    1. That the police has falsely implicated the applicant in the present case and have arrested him without any reason on <span style={styles.fillableField}>
+                      {bailForm.arrestDate || '____________________'}
+                    </span>, the applicant is in police custody since then.
+                  </p>
+                  <br/>
+                  <p style={styles.documentText}>
+                    2. That the applicant is innocent and has been falsely implicated in the present case.
+                  </p>
+                  <br/>
+                  <p style={styles.documentText}>
+                    3. That the applicant is ready to furnish bail bond and surety as may be required by this Hon'ble Court.
+                  </p>
+                  <br/>
+                  <p style={styles.documentText}>
+                    4. That the applicant has deep roots in society and is not likely to flee from justice.
+                  </p>
+                  <br/>
+                  <p style={styles.documentText}>
+                    5. That the applicant has been in custody since <span style={styles.fillableField}>
+                      {bailForm.custodyDate || '____________________'}
+                    </span> and has suffered enough.
+                  </p>
+                  <br/>
+                  <p style={styles.documentText}>
+                    Therefore, it is most respectfully prayed that this Hon'ble Court may be pleased to grant bail to the applicant.
+                  </p>
+                  <br/>
+                  <p style={styles.documentText}>
+                    Yours faithfully,<br/>
+                    [Advocate Name]<br/>
+                    Advocate for the Applicant
+                  </p>
+                </div>
+              </div>
+              
+              <div style={styles.downloadSection}>
+                <button
+                  style={isFormComplete() ? styles.downloadButton : styles.downloadButtonDisabled}
+                  onClick={downloadPDF}
+                  disabled={!isFormComplete()}
+                >
+                  <Download size={20} />
+                  {t.downloadPDF}
                 </button>
+                {!isFormComplete() && (
+                  <p style={styles.warningText}>{t.fillAllFields}</p>
+                )}
               </div>
-
-              <div style={styles.recentActivity}>
-                <h3>{t.recentActivity}</h3>
-                <ul style={styles.activityList}>
-                  {recentActivity.map((activity) => (
-                    <li key={activity.id} style={styles.activityItem}>
-                      <div style={styles.activityIcon}>
-                        {activity.type === 'submission' && <FileText size={20} />}
-                        {activity.type === 'upload' && <Upload size={20} />}
-                        {activity.type === 'form' && <Calendar size={20} />}
-                      </div>
-                      <div>
-                        <h4>{activity.title}</h4>
-                        <p>
-                          <span style={getStatusClass(activity.status)}>
-                            {getStatusIcon(activity.status)} {t[activity.status]}
-                          </span>{' '}
-                          - {activity.date}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </>
-          )}
-
-          {/* Forms tab */}
-          {activeTab === 'forms' && (
-            <div>
-              <h2>{t.forms}</h2>
-              <p>{t.formListDetails}</p>
             </div>
-          )}
-
-          {/* Complaints tab */}
-          {activeTab === 'complaints' && (
-            <div>
-              <h2>{t.complaints}</h2>
-              <p>{t.complaintDetails}</p>
-            </div>
-          )}
-        </section>
-      </div>
-
-      {/* Popup example (if needed) */}
-      {isPopupOpen && (
-        <div style={styles.popupOverlay} onClick={() => setIsPopupOpen(false)}>
-          <div style={styles.popupContent} onClick={(e) => e.stopPropagation()}>
-            <h3>Popup Title</h3>
-            <p>Popup content...</p>
-            <button onClick={() => setIsPopupOpen(false)}>{t.close}</button>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
-// Enhanced styles object
+
 const styles = {
   appContainer: {
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
     backgroundColor: '#f8fafc',
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
   },
   header: {
     backgroundColor: '#0b5394',
@@ -518,9 +689,6 @@ const styles = {
     width: '100%',
     zIndex: 1000,
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-    backdropFilter: 'saturate(180%) blur(12px)',
-    transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
-    fontFamily: "'Merriweather', serif",
   },
   headerContainer: {
     maxWidth: 1300,
@@ -535,10 +703,13 @@ const styles = {
     alignItems: 'center',
     gap: 18,
   },
-  logo: {
+  logoPlaceholder: {
+    fontSize: 32,
+    width: 42,
     height: 42,
-    objectFit: 'contain',
-    filter: 'drop-shadow(0 0 2px rgba(0,0,0,0.15))',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
@@ -557,23 +728,6 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: 16,
-  },
-  searchContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 24,
-    padding: '6px 16px',
-    width: 240,
-  },
-  searchInput: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: '#fff',
-    marginLeft: 8,
-    width: '100%',
-    outline: 'none',
-    fontSize: 14,
   },
   languageSelect: {
     padding: '8px 12px',
@@ -597,76 +751,6 @@ const styles = {
     cursor: 'pointer',
     boxShadow: '0 4px 8px rgba(255, 179, 0, 0.4)',
   },
-  iconButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    border: 'none',
-    borderRadius: '50%',
-    width: 36,
-    height: 36,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    position: 'relative',
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    backgroundColor: '#EF4444',
-    color: '#fff',
-    borderRadius: '50%',
-    width: 18,
-    height: 18,
-    fontSize: 11,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  notificationContainer: {
-    position: 'relative',
-  },
-  notificationDropdown: {
-    position: 'absolute',
-    top: 44,
-    right: 0,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-    width: 300,
-    padding: 12,
-    zIndex: 1000,
-  },
-  notificationHeader: {
-    margin: '0 0 12px 0',
-    fontSize: 16,
-    color: '#1e293b',
-  },
-  notificationItem: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    padding: '8px 0',
-    borderBottom: '1px solid #f1f5f9',
-    gap: 10,
-  },
-  notificationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: '50%',
-    backgroundColor: '#3B82F6',
-    marginTop: 6,
-  },
-  viewAllButton: {
-    backgroundColor: '#f8fafc',
-    border: 'none',
-    borderRadius: 6,
-    padding: 8,
-    width: '100%',
-    marginTop: 8,
-    cursor: 'pointer',
-    fontSize: 14,
-    color: '#64748b',
-  },
   mainContainer: {
     display: 'flex',
     flex: 1,
@@ -684,7 +768,7 @@ const styles = {
     padding: 20,
     display: 'flex',
     flexDirection: 'column',
-    height: 'calc(100vh - 140px)',
+    height: 'fit-content',
     position: 'sticky',
     top: 100,
   },
@@ -725,7 +809,7 @@ const styles = {
   sidebarNav: {
     display: 'flex',
     flexDirection: 'column',
-    flex: 1,
+    gap: 4,
   },
   navItem: {
     display: 'flex',
@@ -733,7 +817,6 @@ const styles = {
     gap: 12,
     padding: '12px 16px',
     borderRadius: 8,
-    margin: '4px 0',
     backgroundColor: 'transparent',
     color: '#334155',
     fontSize: 14,
@@ -743,11 +826,6 @@ const styles = {
     transition: 'all 0.2s ease',
     textAlign: 'left',
   },
-  navItemHover: {
-    backgroundColor: '#eff6ff',
-    color: '#0b5394',
-    fontWeight: 600,
-  },
   activeNavItem: {
     backgroundColor: '#eff6ff',
     color: '#0b5394',
@@ -756,305 +834,229 @@ const styles = {
   navIcon: {
     fontSize: 18,
   },
-  sidebarFooter: {
-    marginTop: 'auto',
-    borderTop: '1px solid #f1f5f9',
-    paddingTop: 16,
-  },
-  sidebarFooterTitle: {
-    margin: '0 0 8px 0',
-    fontSize: 14,
-    fontWeight: 600,
-    color: '#334155',
-  },
-  sidebarFooterText: {
-    margin: '4px 0',
-    fontSize: 13,
-    color: '#64748b',
-  },
-  sidebarLink: {
-    color: '#0b5394',
-    textDecoration: 'none',
-  },
-  mainContent: {
+  contentContainer: {
     flex: 1,
     display: 'flex',
-    flexDirection: 'column',
     gap: 24,
   },
-  dashboardHeader: {
+  voiceSection: {
     display: 'flex',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    width: 320,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+    height: 'fit-content',
+    position: 'sticky',
+    top: 100,
+  },
+  micContainer: {
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 16,
+    gap: 16,
   },
-  welcomeMessage: {
-    margin: 0,
-    fontSize: 24,
-    fontWeight: 700,
-    color: '#1e293b',
+  micButton: {
+    width: 80,
+    height: 80,
+    borderRadius: '50%',
+    border: 'none',
+    backgroundColor: '#0b5394',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 6px 20px rgba(11, 83, 148, 0.3)',
   },
-  dashboardSubtitle: {
-    margin: '4px 0 0 0',
+  micButtonRecording: {
+    backgroundColor: '#dc2626',
+    boxShadow: '0 6px 20px rgba(220, 38, 38, 0.4)',
+    animation: 'pulse 1.5s infinite',
+  },
+  micStatus: {
     fontSize: 14,
-    color: '#64748b',
+    fontWeight: 500,
+    color: '#475569',
+    textAlign: 'center',
+    margin: 0,
+    lineHeight: 1.4,
   },
-  dateContainer: {
+  errorContainer: {
     display: 'flex',
     alignItems: 'center',
     gap: 8,
-    fontSize: 14,
-    color: '#64748b',
-    backgroundColor: '#fff',
-    padding: '8px 16px',
+    padding: '12px 16px',
+    backgroundColor: '#fef2f2',
+    border: '1px solid #fecaca',
     borderRadius: 8,
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+    width: '100%',
   },
-  quickStats: {
-    display: 'flex',
-    gap: 24,
-    flexWrap: 'wrap',
-  },
-  statCard: {
-    background: 'linear-gradient(135deg, #4f46e5, #2563eb)',
-    color: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    flex: '1 1 220px',
-    boxShadow: '0 8px 16px rgba(37, 99, 235, 0.3)',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-  statIcon: {
-    fontSize: 36,
-    marginBottom: 12,
-  },
-  statValue: {
-    fontSize: 28,
-    fontWeight: 700,
-  },
-  statLabel: {
-    fontSize: 14,
-    fontWeight: 600,
-    opacity: 0.85,
-  },
-  statsChart: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-    padding: 20,
-  },
-  chartTitle: {
-    margin: '0 0 12px 0',
-    fontSize: 16,
-    fontWeight: 700,
-    color: '#1e293b',
-  },
-  recentActivity: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-    padding: 20,
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  recentActivityHeader: {
-    margin: '0 0 12px 0',
-    fontSize: 18,
-    fontWeight: 700,
-    color: '#1e293b',
-  },
-  activityList: {
-    overflowY: 'auto',
-  },
-  activityItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    borderBottom: '1px solid #f1f5f9',
-    padding: '12px 0',
-    gap: 6,
-  },
-  activityTitle: {
-    margin: 0,
-    fontSize: 14,
-    fontWeight: 600,
-    color: '#0b5394',
-  },
-  activityDescription: {
-    margin: 0,
+  errorText: {
     fontSize: 13,
-    color: '#64748b',
+    color: '#dc2626',
+    margin: 0,
+    fontWeight: 500,
   },
-  quickActions: {
-    display: 'flex',
-    gap: 16,
-    flexWrap: 'wrap',
-  },
-  actionCard: {
-    backgroundColor: '#0b5394',
-    borderRadius: 12,
-    padding: 20,
-    flex: '1 1 200px',
-    color: '#fff',
-    cursor: 'pointer',
+  progressContainer: {
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    gap: 12,
-    transition: 'background-color 0.3s ease',
+    gap: 8,
   },
-  actionCardHover: {
-    backgroundColor: '#144e8e',
+  progressBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: '#e2e8f0',
+    borderRadius: 4,
+    overflow: 'hidden',
   },
-  actionIcon: {
-    fontSize: 28,
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#0b5394',
+    borderRadius: 4,
+    transition: 'width 0.3s ease',
   },
-  actionLabel: {
-    fontSize: 16,
-    fontWeight: 600,
-  },
-  complaintList: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-    padding: 20,
-    marginTop: 24,
-  },
-  complaintListHeader: {
-    margin: '0 0 12px 0',
-    fontSize: 18,
-    fontWeight: 700,
-    color: '#1e293b',
-  },
-  complaintItem: {
-    padding: '12px 0',
-    borderBottom: '1px solid #f1f5f9',
-  },
-  complaintTitle: {
-    margin: 0,
-    fontSize: 14,
-    fontWeight: 600,
-    color: '#0b5394',
-  },
-  complaintStatus: {
+  progressText: {
     fontSize: 12,
     color: '#64748b',
-    marginTop: 4,
+    textAlign: 'center',
+    margin: 0,
+    fontWeight: 500,
   },
-  // Add these to your existing styles object
-horizontalStatsContainer: {
-  display: 'flex',
-  gap: 24,
-  marginBottom: 32,
-  flexWrap: 'wrap',
-},
-
-horizontalStatCard: {
-  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  borderRadius: 16,
-  padding: 24,
-  flex: '1 1 280px',
-  display: 'flex',
-  alignItems: 'center',
-  gap: 16,
-  boxShadow: '0 8px 25px rgba(102, 126, 234, 0.25)',
-  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  cursor: 'pointer',
-  border: 'none',
-  color: '#fff',
-},
-
-statIcon: {
-  fontSize: 36,
-  opacity: 0.9,
-},
-
-statContent: {
-  flex: 1,
-},
-
-statNumber: {
-  fontSize: 32,
-  fontWeight: 700,
-  margin: '0 0 4px 0',
-  color: '#fff',
-},
-
-statLabel: {
-  fontSize: 14,
-  fontWeight: 500,
-  margin: 0,
-  color: 'rgba(255, 255, 255, 0.85)',
-},
-
-enhancedQuickActions: {
-  display: 'flex',
-  gap: 20,
-  marginBottom: 32,
-  flexWrap: 'wrap',
-},
-
-enhancedNewFormBtn: {
-  background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-  border: 'none',
-  borderRadius: 16,
-  padding: 24,
-  flex: '1 1 300px',
-  display: 'flex',
-  alignItems: 'center',
-  gap: 16,
-  cursor: 'pointer',
-  transition: 'all 0.3s ease',
-  boxShadow: '0 8px 25px rgba(79, 70, 229, 0.3)',
-  color: '#fff',
-  textAlign: 'left',
-},
-
-enhancedUploadBtn: {
-  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-  border: 'none',
-  borderRadius: 16,
-  padding: 24,
-  flex: '1 1 300px',
-  display: 'flex',
-  alignItems: 'center',
-  gap: 16,
-  cursor: 'pointer',
-  transition: 'all 0.3s ease',
-  boxShadow: '0 8px 25px rgba(5, 150, 105, 0.3)',
-  color: '#fff',
-  textAlign: 'left',
-},
-
-buttonIcon: {
-  fontSize: 32,
-  opacity: 0.9,
-},
-
-buttonContent: {
-  flex: 1,
-},
-
-buttonTitle: {
-  fontSize: 16,
-  fontWeight: 600,
-  margin: '0 0 4px 0',
-  color: '#fff',
-},
-
-buttonSubtitle: {
-  fontSize: 12,
-  margin: 0,
-  color: 'rgba(255, 255, 255, 0.8)',
-},
-
-buttonArrow: {
-  fontSize: 20,
-  fontWeight: 600,
-  opacity: 0.7,
-  transition: 'transform 0.3s ease',
-},
+  resetButton: {
+    padding: '8px 16px',
+    backgroundColor: '#f1f5f9',
+    color: '#475569',
+    border: '1px solid #e2e8f0',
+    borderRadius: 6,
+    fontSize: 14,
+    fontWeight: 500,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+  },
+  bailFormContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+    overflow: 'hidden',
+  },
+  bailFormHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    padding: '20px 24px',
+    borderBottom: '1px solid #e2e8f0',
+    backgroundColor: '#f8fafc',
+  },
+  bailFormTitle: {
+    fontSize: 18,
+    fontWeight: 600,
+    color: '#1e293b',
+    margin: 0,
+  },
+  bailApplicationDocument: {
+    padding: 24,
+  },
+  documentContent: {
+    backgroundColor: '#fefefe',
+    border: '1px solid #e2e8f0',
+    borderRadius: 8,
+    padding: 32,
+    marginBottom: 24,
+    fontFamily: "'Times New Roman', serif",
+    lineHeight: 1.6,
+    minHeight: 600,
+  },
+  documentTitle: {
+    fontSize: 20,
+    fontWeight: 700,
+    textAlign: 'center',
+    margin: '0 0 24px 0',
+    color: '#1e293b',
+    textDecoration: 'underline',
+  },
+  courtSection: {
+    marginBottom: 20,
+  },
+  documentSection: {
+    marginBottom: 20,
+  },
+  documentText: {
+    fontSize: 14,
+    color: '#1e293b',
+    margin: '8px 0',
+    textAlign: 'justify',
+  },
+  fillableField: {
+    backgroundColor: '#fef3c7',
+    padding: '2px 4px',
+    borderRadius: 3,
+    fontWeight: 600,
+    color: '#92400e',
+    border: '1px solid #fbbf24',
+  },
+  downloadSection: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 12,
+  },
+  downloadButton: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '12px 24px',
+    backgroundColor: '#059669',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 8,
+    fontSize: 16,
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)',
+  },
+  downloadButtonDisabled: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '12px 24px',
+    backgroundColor: '#9ca3af',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 8,
+    fontSize: 16,
+    fontWeight: 600,
+    cursor: 'not-allowed',
+    opacity: 0.6,
+  },
+  warningText: {
+    fontSize: 14,
+    color: '#dc2626',
+    textAlign: 'center',
+    margin: 0,
+    fontWeight: 500,
+  },
+  loadingContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#f8fafc',
+    gap: 16,
+  },
+  spinner: {
+    width: 40,
+    height: 40,
+    border: '4px solid #e2e8f0',
+    borderTop: '4px solid #0b5394',
+    borderRadius: '50%',
+    animation: 'spin 1s linear infinite',
+  },
 };
-
 export default Dashboard;
