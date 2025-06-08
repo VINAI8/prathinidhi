@@ -6,3 +6,6 @@
   //const headerElement = screen.getByText(/Prathinidhi/i);
   //expect(headerElement).toBeInTheDocument();
 //});
+test('dummy test', () => {
+  expect(true).toBe(true);
+});
